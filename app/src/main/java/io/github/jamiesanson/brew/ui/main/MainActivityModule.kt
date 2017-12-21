@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import io.github.jamiesanson.brew.R
 import io.github.jamiesanson.brew.di.scope.ActivityScope
+import io.github.jamiesanson.brew.ui.main.navigator.BrewNavigator
 import ru.terrakok.cicerone.Navigator
 
 @Module

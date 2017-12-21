@@ -1,4 +1,4 @@
-package io.github.jamiesanson.brew.ui.main
+package io.github.jamiesanson.brew.ui.main.navigator
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager

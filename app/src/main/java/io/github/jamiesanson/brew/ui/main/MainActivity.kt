@@ -1,11 +1,14 @@
 package io.github.jamiesanson.brew.ui.main
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.github.jamiesanson.brew.R
 import io.github.jamiesanson.brew.util.arch.BrewViewModelFactory
 import io.github.jamiesanson.brew.util.extension.component
+import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import javax.inject.Inject
@@ -43,5 +46,16 @@ class MainActivity: AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         navigatorHolder.removeNavigator()
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        addDrinkButton.onClick {
+            viewModel.addDrink()
+        }
+
+        viewModel.drinkCount.observe(this, Observer {
+            countTextView.text = "Count: $it"
+        })
     }
 }

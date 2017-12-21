@@ -31,6 +31,13 @@ buildscript {
                         lifecycle: [
                                 extensions: "android.arch.lifecycle:extensions:${versions.arch}",
                                 compiler: "android.arch.lifecycle:compiler:${versions.arch}"
+                        ],
+                        persistence: [
+                                room: [
+                                        runtime: "android.arch.persistence.room:runtime:${versions.arch}",
+                                        compiler: "android.arch.persistence.room:compiler:${versions.arch}"
+                                ]
+
                         ]
                 ]
         ],

@@ -12,6 +12,12 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         release {
@@ -46,6 +52,9 @@ dependencies {
 
     implementation deps.android.arch.lifecycle.extensions
     kapt deps.android.arch.lifecycle.compiler
+
+    implementation deps.android.arch.persistence.room.runtime
+    kapt deps.android.arch.persistence.room.compiler
 
     implementation deps.cicerone
 

@@ -3,12 +3,17 @@ package io.github.jamiesanson.brew.di.module
 import android.content.Context
 import dagger.Module
 import dagger.Provides
+import io.github.jamiesanson.brew.data.local.dao.DrinkDao
 import io.github.jamiesanson.brew.di.scope.ApplicationScope
 import io.github.jamiesanson.brew.repository.config.ConfigurationRepository
 import io.github.jamiesanson.brew.repository.config.PreferencesManager
 import io.github.jamiesanson.brew.repository.drinks.DrinkRepository
 
-@Module
+@Module(
+        includes = [
+            DatabaseModule::class
+        ]
+)
 class RepositoryModule {
 
     @Provides
@@ -18,8 +23,8 @@ class RepositoryModule {
 
     @Provides
     @ApplicationScope
-    fun provideDrinkRepository(): DrinkRepository =
-            DrinkRepository()
+    fun provideDrinkRepository(drinkDao: DrinkDao): DrinkRepository =
+            DrinkRepository(drinkDao)
 
     @Provides
     @ApplicationScope
