@@ -1,18 +1,23 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "io.github.jamiesanson.brew"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         release {
@@ -20,14 +25,49 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation deps.kotlin.std
+    implementation deps.kotlin.reflect
+    implementation deps.kotlin.coroutines
+
+    implementation deps.anko.coroutines.core
+    implementation deps.anko.coroutines.sdk25
+    implementation deps.anko.appcompat
+
+    implementation deps.android.support.appcompat
+    implementation deps.android.support.compat
+    implementation deps.android.support.annotations
+    implementation deps.android.support.cardview
+    implementation deps.android.support.design
+    implementation deps.android.support.constraintlayout
+
+    implementation deps.dagger.core
+    kapt deps.dagger.compiler
+
+    implementation deps.android.arch.lifecycle.extensions
+    kapt deps.android.arch.lifecycle.compiler
+
+    implementation deps.android.arch.persistence.room.runtime
+    kapt deps.android.arch.persistence.room.compiler
+
+    implementation deps.cicerone
+
+    testImplementation deps.junit
+    androidTestImplementation deps.android.support.test.runner
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
+androidExtensions {
+    experimental = true
 }
