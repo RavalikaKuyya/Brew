@@ -16,16 +16,22 @@ class MainActivity: AppCompatActivity() {
     lateinit var navigatorHolder: NavigatorHolder
 
     @Inject
-    lateinit var viewModel: MainViewModel
+    lateinit var viewModelFactory: BrewViewModelFactory
 
     @Inject
     lateinit var navigator: Navigator
+
+    lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component
                 .plus(MainActivityModule(this))
                 .inject(this)
+
+        viewModel = ViewModelProviders
+                .of(this, viewModelFactory)
+                .get(MainViewModel::class.java)
     }
 
     override fun onResumeFragments() {
