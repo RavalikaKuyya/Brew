@@ -5,7 +5,7 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
-import io.github.jamiesanson.brew.model.Drink
+import io.github.jamiesanson.brew.data.model.Drink
 
 @Dao
 interface DrinkDao {

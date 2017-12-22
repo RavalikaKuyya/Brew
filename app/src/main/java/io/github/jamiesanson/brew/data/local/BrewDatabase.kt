@@ -3,7 +3,7 @@ package io.github.jamiesanson.brew.data.local
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 import io.github.jamiesanson.brew.data.local.dao.DrinkDao
-import io.github.jamiesanson.brew.model.Drink
+import io.github.jamiesanson.brew.data.model.Drink
 
 @Database(
         entities = [

@@ -1,4 +1,4 @@
-package io.github.jamiesanson.brew.model
+package io.github.jamiesanson.brew.data.model
 
 import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity

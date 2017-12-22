@@ -1,4 +1,4 @@
-package io.github.jamiesanson.brew.model
+package io.github.jamiesanson.brew.data.model
 
 data class Rating(
         val score: Double,
