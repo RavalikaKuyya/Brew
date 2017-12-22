@@ -44,18 +44,19 @@ class MainFragment: Fragment() {
 
     private lateinit var viewModel: MainFragmentViewModel
 
-    private lateinit var homeFragment: HomeFragment
-    private lateinit var discoverFragment: DiscoverFragment
-    private lateinit var profileFragment: ProfileFragment
-    private val bottomNavFragments
-        get() = arrayOf(homeFragment, discoverFragment, profileFragment)
+    private lateinit var homeTab: BottomTab
+    private lateinit var discoverTab: BottomTab
+    private lateinit var profileTab: BottomTab
+
+    private val bottomNavTabs
+        get() = arrayOf(homeTab, discoverTab, profileTab)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as MainActivity).component.inject(this)
         cicerone = ciceroneCache.getCicerone(MAIN_FRAGMENT_TAG)
         viewModel = ViewModelProviders
-                .of(this, viewModelFactory)
+                .of(activity as MainActivity, viewModelFactory)
                 .get(MainFragmentViewModel::class.java)
     }
 
@@ -65,59 +66,45 @@ class MainFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.currentScreen.observe(this, Observer {
-            cicerone.router.replaceScreen(it)
-        })
+        initialiseFragments()
 
         bottomNavigationView.setOnNavigationItemSelectedListener {
             item: MenuItem ->
 
-            when (item.itemId) {
-                R.id.action_home -> viewModel.setCurrentScreen(HOME)
-                R.id.action_discover -> viewModel.setCurrentScreen(DISCOVER)
-                R.id.action_profile -> viewModel.setCurrentScreen(PROFILE)
-                else -> throw IllegalStateException("Action not supported")
+            if (item.itemId != bottomNavigationView.selectedItemId) {
+                val tabSelected = bottomNavTabs.first { it.menuId == item.itemId }
+                Log.d("MainFragment", "Replacing: ${item.title}")
+                cicerone.router.replaceScreen(tabSelected.tag)
             }
 
             return@setOnNavigationItemSelectedListener true
         }
 
-        initialiseFragments()
+        viewModel.currentScreen.observe(this, Observer { screenName ->
+            bottomNavigationView.selectedItemId = bottomNavTabs.first { screenName == it.tag }.menuId
+        })
     }
 
     private fun initialiseFragments() {
         val manager = activity?.supportFragmentManager ?: return
 
-        if (manager.findFragmentByTag(HOME) == null) {
-            homeFragment = HomeFragment()
-            addFragment(homeFragment, HOME)
-        } else {
-            homeFragment = manager.findFragmentByTag(HOME) as HomeFragment
-        }
+        homeTab = BottomTab(
+                fragment = manager.findFragmentByTag(HOME) ?: HomeFragment(),
+                tag = HOME,
+                menuId = R.id.action_home)
 
-        if (manager.findFragmentByTag(PROFILE) == null) {
-            profileFragment = ProfileFragment()
-            addFragment(profileFragment, PROFILE)
-        } else {
-            profileFragment = manager.findFragmentByTag(PROFILE) as ProfileFragment
-        }
+        discoverTab = BottomTab(
+                fragment = manager.findFragmentByTag(DISCOVER) ?: DiscoverFragment(),
+                tag = DISCOVER,
+                menuId = R.id.action_discover)
 
-        if (manager.findFragmentByTag(DISCOVER) == null) {
-            discoverFragment = DiscoverFragment()
-            addFragment(discoverFragment, DISCOVER)
-        } else {
-            discoverFragment = manager.findFragmentByTag(DISCOVER) as DiscoverFragment
-        }
-    }
+        profileTab = BottomTab(
+                fragment = manager.findFragmentByTag(PROFILE) ?: ProfileFragment(),
+                tag = PROFILE,
+                menuId = R.id.action_profile)
 
-    private fun addFragment(fragment: Fragment, tag: String) {
-        val manager = activity?.supportFragmentManager ?: return
-
-        if (manager.findFragmentByTag(tag) == null) {
-            manager.beginTransaction()
-                    .add(R.id.fragmentContainer, fragment, tag)
-                    .detach(fragment)
-                    .commit()
+        bottomNavTabs.map {
+            it.addToContainer(R.id.fragmentContainer, manager)
         }
     }
 
@@ -141,27 +128,27 @@ class MainFragment: Fragment() {
                 is SystemMessage -> Toast.makeText(activity, command.message, Toast.LENGTH_SHORT).show()
                 is Replace -> {
                     val manager = activity?.supportFragmentManager ?: return
-                    when (command.screenKey) {
-                        BottomNavigationScreens.HOME -> manager.switchTo(homeFragment)
-                        BottomNavigationScreens.DISCOVER -> manager.switchTo(discoverFragment)
-                        BottomNavigationScreens.PROFILE -> manager.switchTo(profileFragment)
-                    }
+                    manager.switchTo(command.screenKey)
+                    viewModel.updateCurrentScreen(command.screenKey)
                 }
                 else -> throw IllegalStateException("Command not supported")
             }
         }
     }
 
-    private fun FragmentManager.switchTo(fragment: Fragment) {
+    private fun FragmentManager.switchTo(tag: String) {
+        Log.d("MainFragment", "SwitchTo: $tag")
         val transaction = beginTransaction()
 
-        for (item in bottomNavFragments) {
-            if (item.tag == fragment.tag) {
-                transaction.attach(fragment)
-            } else {
-                transaction.detach(item)
-            }
-        }
+        bottomNavTabs
+                .forEach {
+                    if (it.tag == tag) {
+                        Log.d("MainFragment", "FragmentAttached: ${it.fragment}")
+                        transaction.attach(it.fragment)
+                    } else {
+                        transaction.detach(it.fragment)
+                    }
+                }
 
         transaction.commit()
     }

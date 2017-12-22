@@ -10,7 +10,7 @@ class MainViewModel @Inject constructor(): ViewModel() {
 
     fun init(router: Router) {
         this.router = router
-        router.navigateTo(Screens.MAIN_SCREEN)
+        router.replaceScreen(Screens.MAIN_SCREEN)
     }
 
 

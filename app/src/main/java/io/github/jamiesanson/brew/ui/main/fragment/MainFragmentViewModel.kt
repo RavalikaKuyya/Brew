@@ -9,7 +9,9 @@ class MainFragmentViewModel @Inject constructor(): ViewModel() {
 
     val currentScreen: LiveData<String> = MutableLiveData()
 
-    fun setCurrentScreen(screen: String) {
-        (currentScreen as MutableLiveData).postValue(screen)
+    fun updateCurrentScreen(newScreen: String) {
+        if (currentScreen.value != newScreen) {
+            (currentScreen as MutableLiveData).postValue(newScreen)
+        }
     }
 }
