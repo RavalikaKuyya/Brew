@@ -3,7 +3,7 @@ package io.github.jamiesanson.brew.ui.main.navigator
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import io.github.jamiesanson.brew.ui.main.MainFragment
+import io.github.jamiesanson.brew.ui.main.fragment.MainFragment
 import ru.terrakok.cicerone.android.SupportFragmentNavigator
 
 class BrewNavigator(private val fragmentManager: FragmentManager, containerId: Int): SupportFragmentNavigator(fragmentManager, containerId) {

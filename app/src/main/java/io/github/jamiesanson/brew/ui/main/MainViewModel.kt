@@ -12,4 +12,6 @@ class MainViewModel @Inject constructor(): ViewModel() {
         this.router = router
         router.navigateTo(Screens.MAIN_SCREEN)
     }
+
+
 }

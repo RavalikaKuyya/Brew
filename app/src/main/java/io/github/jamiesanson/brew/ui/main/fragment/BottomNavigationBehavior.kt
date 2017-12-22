@@ -1,4 +1,4 @@
-package io.github.jamiesanson.brew.ui.main
+package io.github.jamiesanson.brew.ui.main.fragment
 
 import android.content.Context
 import android.support.design.widget.BottomNavigationView

@@ -7,8 +7,7 @@ import io.github.jamiesanson.brew.di.scope.ActivityScope
 @ActivityScope
 @Subcomponent(
         modules = [
-            MainActivityModule::class,
-            NavigationModule::class
+            MainActivityModule::class
         ]
 )
 interface MainActivityComponent {
