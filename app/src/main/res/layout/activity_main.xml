@@ -4,28 +4,4 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.github.jamiesanson.brew.BrewActivity">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center">
-
-        <Button
-            android:id="@+id/addDrinkButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/add"/>
-
-        <TextView
-            android:id="@+id/countTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-
-    </LinearLayout>
-
-
-</FrameLayout>
+    tools:context="io.github.jamiesanson.brew.ui.main.MainActivity"/>

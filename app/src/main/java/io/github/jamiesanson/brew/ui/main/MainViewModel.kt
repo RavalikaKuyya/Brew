@@ -1,20 +1,15 @@
 package io.github.jamiesanson.brew.ui.main
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
-import io.github.jamiesanson.brew.repository.drinks.DrinkRepository
+import io.github.jamiesanson.brew.ui.main.navigator.Screens
+import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(
-        private val drinkRepository: DrinkRepository
-): ViewModel() {
+class MainViewModel @Inject constructor(): ViewModel() {
+    private lateinit var router: Router
 
-    val drinkCount: LiveData<Int> = Transformations.map(
-            drinkRepository.getDrinks(),
-            { it.size })
-
-    fun addDrink() {
-        drinkRepository.insertRandomDrink()
+    fun init(router: Router) {
+        this.router = router
+        router.navigateTo(Screens.MAIN_SCREEN)
     }
 }
