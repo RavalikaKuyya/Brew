@@ -11,7 +11,7 @@ class BottomTab(
 ) {
 
     fun addToContainer(@IdRes id: Int, manager: FragmentManager) {
-        if (manager.findFragmentByTag(tag) == null) {
+        if (manager.findFragmentByTag(tag) == null && !fragment.isAdded) {
             manager.beginTransaction()
                     .add(id, fragment, tag)
                     .detach(fragment)

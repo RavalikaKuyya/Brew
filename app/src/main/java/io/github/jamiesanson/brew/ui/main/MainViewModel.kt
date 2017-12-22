@@ -10,7 +10,7 @@ class MainViewModel @Inject constructor(): ViewModel() {
 
     fun init(router: Router) {
         this.router = router
-        router.replaceScreen(Screens.MAIN_SCREEN)
+        router.newRootScreen(Screens.MAIN_SCREEN)
     }
 
 

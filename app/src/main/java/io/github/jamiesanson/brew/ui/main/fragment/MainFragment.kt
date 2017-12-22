@@ -48,6 +48,8 @@ class MainFragment: Fragment() {
     private lateinit var discoverTab: BottomTab
     private lateinit var profileTab: BottomTab
 
+    private var lastSelected = ""
+
     private val bottomNavTabs
         get() = arrayOf(homeTab, discoverTab, profileTab)
 
@@ -71,17 +73,18 @@ class MainFragment: Fragment() {
         bottomNavigationView.setOnNavigationItemSelectedListener {
             item: MenuItem ->
 
-            if (item.itemId != bottomNavigationView.selectedItemId) {
-                val tabSelected = bottomNavTabs.first { it.menuId == item.itemId }
-                Log.d("MainFragment", "Replacing: ${item.title}")
-                cicerone.router.replaceScreen(tabSelected.tag)
-            }
+            val tabSelected = bottomNavTabs.first { it.menuId == item.itemId }
+            viewModel.updateCurrentScreen(tabSelected.tag)
 
             return@setOnNavigationItemSelectedListener true
         }
 
         viewModel.currentScreen.observe(this, Observer { screenName ->
-            bottomNavigationView.selectedItemId = bottomNavTabs.first { screenName == it.tag }.menuId
+            if (lastSelected != screenName) {
+                bottomNavigationView.selectedItemId = bottomNavTabs.first { screenName == it.tag }.menuId
+                cicerone.router.replaceScreen(screenName)
+                lastSelected = screenName ?: ""
+            }
         })
     }
 
@@ -129,7 +132,6 @@ class MainFragment: Fragment() {
                 is Replace -> {
                     val manager = activity?.supportFragmentManager ?: return
                     manager.switchTo(command.screenKey)
-                    viewModel.updateCurrentScreen(command.screenKey)
                 }
                 else -> throw IllegalStateException("Command not supported")
             }
@@ -137,13 +139,15 @@ class MainFragment: Fragment() {
     }
 
     private fun FragmentManager.switchTo(tag: String) {
-        Log.d("MainFragment", "SwitchTo: $tag")
         val transaction = beginTransaction()
 
         bottomNavTabs
                 .forEach {
                     if (it.tag == tag) {
-                        Log.d("MainFragment", "FragmentAttached: ${it.fragment}")
+                        if (!it.fragment.isDetached) {
+                            transaction.detach(it.fragment)
+                        }
+
                         transaction.attach(it.fragment)
                     } else {
                         transaction.detach(it.fragment)

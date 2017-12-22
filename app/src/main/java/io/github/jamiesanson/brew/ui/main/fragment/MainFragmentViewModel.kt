@@ -9,6 +9,10 @@ class MainFragmentViewModel @Inject constructor(): ViewModel() {
 
     val currentScreen: LiveData<String> = MutableLiveData()
 
+    init {
+        updateCurrentScreen(MainFragment.BottomNavigationScreens.HOME)
+    }
+
     fun updateCurrentScreen(newScreen: String) {
         if (currentScreen.value != newScreen) {
             (currentScreen as MutableLiveData).postValue(newScreen)
