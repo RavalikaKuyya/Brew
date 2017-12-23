@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -33,7 +32,7 @@ import javax.inject.Inject
  * This class is responsible for maintaining the main screens of the application,
  * those being the three screens accessible through bottom navigation
  */
-class MainFragment: Fragment() {
+class MainFragment: NestedScrollListener, Fragment() {
 
     @Inject
     lateinit var viewModelFactory: BrewViewModelFactory
@@ -49,6 +48,7 @@ class MainFragment: Fragment() {
     private lateinit var profileTab: BottomTab
 
     private var lastSelected = ""
+    private var isAnimating = false
 
     private val bottomNavTabs
         get() = arrayOf(homeTab, discoverTab, profileTab)
@@ -88,8 +88,27 @@ class MainFragment: Fragment() {
         })
     }
 
+    override fun onScroll(direction: Direction) {
+        if (!isAnimating) {
+            val finalTranslation = when (direction) {
+                Direction.UP -> 0f
+                Direction.DOWN -> bottomNavigationView.height.toFloat()
+            }
+
+            bottomNavigationView
+                    .animate()
+                    .translationY(finalTranslation)
+                    .setDuration(200L)
+                    .withStartAction { isAnimating = true }
+                    .withEndAction { isAnimating = false }
+                    .start()
+        }
+
+
+    }
+
     private fun initialiseFragments() {
-        val manager = activity?.supportFragmentManager ?: return
+        val manager = childFragmentManager
 
         homeTab = BottomTab(
                 fragment = manager.findFragmentByTag(HOME) ?: HomeFragment(),
@@ -130,7 +149,7 @@ class MainFragment: Fragment() {
                 is Back -> activity?.finish()
                 is SystemMessage -> Toast.makeText(activity, command.message, Toast.LENGTH_SHORT).show()
                 is Replace -> {
-                    val manager = activity?.supportFragmentManager ?: return
+                    val manager = childFragmentManager
                     manager.switchTo(command.screenKey)
                 }
                 else -> throw IllegalStateException("Command not supported")

@@ -13,6 +13,5 @@ class ProfileFragment: Fragment() {
             inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        titleTextView.text = javaClass.simpleName
     }
 }
