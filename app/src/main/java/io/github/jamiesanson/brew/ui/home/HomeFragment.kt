@@ -1,20 +1,42 @@
 package io.github.jamiesanson.brew.ui.home
 
+import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.github.jamiesanson.brew.R
+import io.github.jamiesanson.brew.ui.main.MainActivity
 import io.github.jamiesanson.brew.ui.main.fragment.NestedScrollListener
+import io.github.jamiesanson.brew.util.RobotoMonoRegular
+import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
+import io.github.jamiesanson.brew.util.arch.BrewViewModelFactory
+import io.github.jamiesanson.brew.util.event.MoveToDrinkScreen
+import io.github.jamiesanson.brew.util.event.UiEventBus
+import io.github.jamiesanson.brew.util.extension.component
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import javax.inject.Inject
 import kotlin.math.abs
 
 class HomeFragment : Fragment() {
+
+    @Inject lateinit var eventBus: UiEventBus
+    @Inject lateinit var viewModelFactory: BrewViewModelFactory
+    private lateinit var viewModel: HomeViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity as MainActivity).component.inject(this)
+        viewModel = ViewModelProviders
+                .of(activity as MainActivity, viewModelFactory)
+                .get(HomeViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_home, container, false)
@@ -23,15 +45,28 @@ class HomeFragment : Fragment() {
         interceptScrollAndDispatchToParent()
         initialiseToolbar()
         applyTypeface()
-        floatingActionButton.onClick { onAddClicked() }
+        floatingActionButton.onClick { onAddClicked(true) }
     }
 
-    private fun onAddClicked() {
-        Log.d("HomeFragment", "onAddClicked")
+    private fun onAddClicked(fromFab: Boolean = false) {
+        val revealSettings = getRevealSettings(
+                ContextCompat.getColor(context!!, if (fromFab) R.color.colorAccent else R.color.colorPrimary)
+        )
+
+        eventBus.postEvent(MoveToDrinkScreen(revealSettings))
+    }
+
+    private fun getRevealSettings(startColor: Int): RevealAnimationSettings {
+        return RevealAnimationSettings(
+                (floatingActionButton.x + floatingActionButton.width / 2).toInt(),
+                (floatingActionButton.y + floatingActionButton.height / 2).toInt(),
+                parentLayout.width,
+                parentLayout.height,
+                startColor)
     }
 
     private fun applyTypeface() {
-        val typeface = Typeface.createFromAsset(context?.assets, "fonts/RobotoMono-Regular.ttf")
+        val typeface = Typeface.createFromAsset(context?.assets, RobotoMonoRegular().path)
         with (collapsingLayout) {
             setCollapsedTitleTypeface(typeface)
             setExpandedTitleTypeface(typeface)

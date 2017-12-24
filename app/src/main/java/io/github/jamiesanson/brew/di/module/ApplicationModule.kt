@@ -5,6 +5,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.github.jamiesanson.brew.di.scope.ApplicationScope
+import io.github.jamiesanson.brew.util.event.UiEventBus
 import io.github.jamiesanson.brew.util.nav.LocalCiceroneCache
 
 @Module(includes = [ViewModelModule::class])
@@ -22,4 +23,7 @@ class ApplicationModule(private val application: Application) {
     @ApplicationScope
     fun provideLocalCiceroneCache(): LocalCiceroneCache = LocalCiceroneCache()
 
+    @Provides
+    @ApplicationScope
+    fun provideUiEventBus(): UiEventBus = UiEventBus()
 }

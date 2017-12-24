@@ -11,9 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import io.github.jamiesanson.brew.R
 import ru.terrakok.cicerone.Navigator
-import ru.terrakok.cicerone.commands.Back
-import ru.terrakok.cicerone.commands.Command
-import ru.terrakok.cicerone.commands.SystemMessage
 import android.widget.Toast
 import io.github.jamiesanson.brew.ui.discover.DiscoverFragment
 import io.github.jamiesanson.brew.ui.home.HomeFragment
@@ -25,7 +22,7 @@ import io.github.jamiesanson.brew.util.nav.LocalCiceroneCache
 import kotlinx.android.synthetic.main.fragment_main.*
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.Router
-import ru.terrakok.cicerone.commands.Replace
+import ru.terrakok.cicerone.commands.*
 import javax.inject.Inject
 
 /**
