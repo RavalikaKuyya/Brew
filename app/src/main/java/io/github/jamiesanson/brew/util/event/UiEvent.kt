@@ -9,4 +9,4 @@ sealed class UiEvent
 
 class MoveToDrinkScreen(val settings: RevealAnimationSettings?): UiEvent()
 
-class ExitDrinkScreen(val settings: RevealAnimationSettings?): UiEvent()
+class ExitDrinkScreen: UiEvent()

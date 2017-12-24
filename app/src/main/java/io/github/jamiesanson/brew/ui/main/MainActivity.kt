@@ -5,11 +5,12 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.github.jamiesanson.brew.R
+import io.github.jamiesanson.brew.ui.main.navigator.BrewRouter
 import io.github.jamiesanson.brew.util.arch.BrewViewModelFactory
 import io.github.jamiesanson.brew.util.extension.component
+import io.github.jamiesanson.brew.util.nav.BackButtonListener
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
@@ -25,7 +26,7 @@ class MainActivity: AppCompatActivity() {
     lateinit var navigator: Navigator
 
     @Inject
-    lateinit var router: Router
+    lateinit var router: BrewRouter
 
     private lateinit var viewModel: MainViewModel
 
@@ -55,5 +56,16 @@ class MainActivity: AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
+    }
+
+    override fun onBackPressed() {
+        var handled = false
+        for (fragment in supportFragmentManager.fragments.filter { it is BackButtonListener }) {
+            handled = handled || (fragment as BackButtonListener).onBackPressed()
+        }
+
+        if (!handled) {
+            super.onBackPressed()
+        }
     }
 }

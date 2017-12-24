@@ -13,7 +13,6 @@ import android.content.Context
 
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AccelerateInterpolator
 import io.github.jamiesanson.brew.R
 
 object CircularRevealUtil {
@@ -23,7 +22,6 @@ object CircularRevealUtil {
     }
 
     const val ARG_REVEAL_SETTINGS = "reveal_settings"
-    const val ARG_START_COLOUR = "start_colour"
 
     @ColorInt
     private fun getColor(context: Context, @ColorRes colorId: Int): Int {
@@ -62,7 +60,7 @@ object CircularRevealUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun startCircularRevealExitAnimation(view: View, revealSettings: RevealAnimationSettings, startColor: Int, endColor: Int, listener: AnimationFinishedListener) {
+    private fun startCircularRevealExitAnimation(view: View, revealSettings: RevealAnimationSettings, startColor: Int, endColor: Int, listener: () -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val cx = revealSettings.centerX
             val cy = revealSettings.centerY
@@ -77,13 +75,13 @@ object CircularRevealUtil {
                 override fun onAnimationEnd(animation: Animator) {
                     //Important: This will prevent the view's flashing (visible between the finished animation and the Fragment remove)
                     view.visibility = View.GONE
-                    listener.onAnimationFinished()
+                    listener()
                 }
             })
             anim.start()
             startBackgroundColorAnimation(view, startColor, endColor, 300)
         } else {
-            listener.onAnimationFinished()
+            listener()
         }
     }
 
@@ -101,7 +99,7 @@ object CircularRevealUtil {
         registerCircularRevealAnimation(view, revealSettings, revealSettings.startColor, getColor(context, R.color.material_white), listener)
     }
 
-    fun registerAddDrinkRevealExitAnimation(context: Context, view: View, revealSettings: RevealAnimationSettings, listener: AnimationFinishedListener) {
+    fun registerAddDrinkRevealExitAnimation(context: Context, view: View, revealSettings: RevealAnimationSettings, listener: () -> Unit) {
         startCircularRevealExitAnimation(view, revealSettings, getColor(context, R.color.material_white), revealSettings.startColor, listener)
     }
 }
