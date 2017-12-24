@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import io.github.jamiesanson.brew.R
 import io.github.jamiesanson.brew.ui.main.fragment.NestedScrollListener
 import kotlinx.android.synthetic.main.fragment_home.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import kotlin.math.abs
 
 class HomeFragment : Fragment() {
@@ -21,6 +22,15 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         interceptScrollAndDispatchToParent()
         initialiseToolbar()
+        applyTypeface()
+        floatingActionButton.onClick { onAddClicked() }
+    }
+
+    private fun onAddClicked() {
+        Log.d("HomeFragment", "onAddClicked")
+    }
+
+    private fun applyTypeface() {
         val typeface = Typeface.createFromAsset(context?.assets, "fonts/RobotoMono-Regular.ttf")
         with (collapsingLayout) {
             setCollapsedTitleTypeface(typeface)
@@ -32,7 +42,10 @@ class HomeFragment : Fragment() {
         toolbar.inflateMenu(R.menu.home_toolbar_items)
         toolbar.setOnMenuItemClickListener {
             if (it.itemId == R.id.add_drink_item) {
-                Log.d("HomeFragment", "Add item clicked")
+                // Only fire the listener if the toolbar is actually visible
+                if (toolbar.alpha > 0f) {
+                    onAddClicked()
+                }
             }
 
             false
@@ -48,7 +61,7 @@ class HomeFragment : Fragment() {
             } else {
                 toolbar.animate().alpha(0f)
                         .withStartAction { toolbar.alpha = 1f }
-                        .setDuration(100L)
+                        .setDuration(10L)
                         .start()
             }
         }

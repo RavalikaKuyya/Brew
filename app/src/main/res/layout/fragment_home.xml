@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parentLayout"
     android:layout_width="match_parent"
@@ -16,7 +15,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="64sp"/>
+            android:textSize="64sp" />
 
     </android.support.v4.widget.NestedScrollView>
 
@@ -29,8 +28,8 @@
             android:id="@+id/collapsingLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:title="@string/app_name">
 
             <android.support.v4.widget.Space
@@ -41,8 +40,8 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                app:title="@string/app_name"
-                app:layout_collapseMode="pin"/>
+                app:layout_collapseMode="pin"
+                app:title="@string/app_name" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -50,15 +49,18 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginEnd="16dp"
         style="@style/Widget.Design.FloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:background="@color/colorAccent"
+        android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/ic_add_black_24dp"
         app:fabSize="auto"
         app:layout_anchor="@id/appBarLayout"
-        app:layout_anchorGravity="bottom|right|end"/>
+        app:layout_anchorGravity="bottom|right|end"
+        app:rippleColor="@color/colorAccentDark" />
 
     <View
         android:id="@+id/scrollInterceptorView"
