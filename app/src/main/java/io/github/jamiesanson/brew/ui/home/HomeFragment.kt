@@ -1,5 +1,6 @@
 package io.github.jamiesanson.brew.ui.home
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
@@ -20,6 +21,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         interceptScrollAndDispatchToParent()
         initialiseToolbar()
+        val typeface = Typeface.createFromAsset(context?.assets, "fonts/RobotoMono-Regular.ttf")
+        with (collapsingLayout) {
+            setCollapsedTitleTypeface(typeface)
+            setExpandedTitleTypeface(typeface)
+        }
     }
 
     private fun initialiseToolbar() {

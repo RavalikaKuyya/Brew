@@ -11,7 +11,10 @@ buildscript {
         arch: '1.0.0',
         dagger: '2.11',
         cicerone: '2.1.0',
-        constraint: '1.0.2'
+        constraint: '1.0.2',
+        junit: '4.12',
+        materialColors: '1.1.0',
+        caligraphy: '2.3.0'
     ]
 
     ext.deps = [
@@ -57,9 +60,10 @@ buildscript {
                 core: "com.google.dagger:dagger:${versions.dagger}",
                 compiler: "com.google.dagger:dagger-compiler:${versions.dagger}"
         ],
-        junit: "junit:junit:4.12",
+        junit: "junit:junit:${versions.junit}",
         cicerone: "ru.terrakok.cicerone:cicerone:${versions.cicerone}",
-        colours: "com.github.mcginty:material-colors:1.1.0"
+        colours: "com.github.mcginty:material-colors:${versions.materialColors}",
+        caligraphy: "uk.co.chrisjenx:calligraphy:${versions.caligraphy}"
     ]
 
     repositories {

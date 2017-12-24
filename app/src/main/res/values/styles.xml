@@ -21,16 +21,4 @@
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
-    <style name="ExpandedAppBar" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">28sp</item>
-        <item name="android:textColor">@color/material_black</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="CollapsedAppBar" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/material_black</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
 </resources>

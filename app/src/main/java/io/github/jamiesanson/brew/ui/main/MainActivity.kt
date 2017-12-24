@@ -1,6 +1,7 @@
 package io.github.jamiesanson.brew.ui.main
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import io.github.jamiesanson.brew.R
@@ -10,6 +11,7 @@ import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
 import javax.inject.Inject
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
 class MainActivity: AppCompatActivity() {
 
@@ -49,5 +51,9 @@ class MainActivity: AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         navigatorHolder.removeNavigator()
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
     }
 }

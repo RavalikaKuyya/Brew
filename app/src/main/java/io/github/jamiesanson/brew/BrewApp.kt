@@ -4,6 +4,9 @@ import android.app.Application
 import io.github.jamiesanson.brew.di.component.ApplicationComponent
 import io.github.jamiesanson.brew.di.component.DaggerApplicationComponent
 import io.github.jamiesanson.brew.di.module.ApplicationModule
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig
+
+
 
 class BrewApp: Application() {
 
@@ -16,6 +19,11 @@ class BrewApp: Application() {
                 .builder()
                 .applicationModule(ApplicationModule(this))
                 .build()
+        CalligraphyConfig.initDefault(CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/RobotoMono-Regular.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
+        )
     }
 
 }

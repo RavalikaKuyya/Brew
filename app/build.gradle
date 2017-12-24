@@ -60,6 +60,8 @@ dependencies {
 
     implementation deps.colours
 
+    implementation deps.caligraphy
+
     testImplementation deps.junit
     androidTestImplementation deps.android.support.test.runner
 }
