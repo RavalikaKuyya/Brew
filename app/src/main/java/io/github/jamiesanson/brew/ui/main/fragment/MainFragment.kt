@@ -103,8 +103,6 @@ class MainFragment: NestedScrollListener, Fragment() {
                     .withEndAction { isAnimating = false }
                     .start()
         }
-
-
     }
 
     private fun initialiseFragments() {

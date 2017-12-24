@@ -26,7 +26,7 @@ class HomeFragment: Fragment() {
      * scroll it needs to have access to callbacks fired by scrolling view layout behaviors. This
      * doesn't work in the current setup, as it isn't a direct child of the CoordinatorLayout.
      *
-     * Note: NestedScroll events can be dispatched from *any* nested child, however a bug with
+     * Note: NestedScroll events can be dispatched from *any* nested child or parent, however a bug with
      * CollapsingToolbarLayout causes events to not be dispatched to nested or parent behaviors.
      */
     private fun interceptScrollAndDispatchToParent() {
