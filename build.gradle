@@ -5,7 +5,7 @@ buildscript {
         supportLibrary: '27.0.2',
         androidPlugin: '3.0.1',
         androidTools: '26.0.0',
-        kotlin: '1.2.0',
+        kotlin: '1.2.10',
         coroutines: '0.20',
         anko: '0.10.2',
         arch: '1.0.0',
@@ -58,7 +58,8 @@ buildscript {
                 compiler: "com.google.dagger:dagger-compiler:${versions.dagger}"
         ],
         junit: "junit:junit:4.12",
-        cicerone: "ru.terrakok.cicerone:cicerone:${versions.cicerone}"
+        cicerone: "ru.terrakok.cicerone:cicerone:${versions.cicerone}",
+        colours: "com.github.mcginty:material-colors:1.1.0"
     ]
 
     repositories {
@@ -71,12 +72,13 @@ buildscript {
     }
 }
 
-
-
 allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url "https://jitpack.io"
+        }
     }
 }
 
