@@ -10,15 +10,42 @@ import android.view.ViewGroup
 import io.github.jamiesanson.brew.R
 import io.github.jamiesanson.brew.ui.main.fragment.NestedScrollListener
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlin.math.abs
 
-class HomeFragment: Fragment() {
+class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         interceptScrollAndDispatchToParent()
+        initialiseToolbar()
+    }
 
+    private fun initialiseToolbar() {
+        toolbar.inflateMenu(R.menu.home_toolbar_items)
+        toolbar.setOnMenuItemClickListener {
+            if (it.itemId == R.id.add_drink_item) {
+                Log.d("HomeFragment", "Add item clicked")
+            }
+
+            false
+        }
+        toolbar.alpha = 0f
+
+        appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+                toolbar.animate().alpha(1f)
+                        .withStartAction { toolbar.alpha = 0f }
+                        .setDuration(200L)
+                        .start()
+            } else {
+                toolbar.animate().alpha(0f)
+                        .withStartAction { toolbar.alpha = 1f }
+                        .setDuration(100L)
+                        .start()
+            }
+        }
     }
 
     /**
