@@ -12,6 +12,4 @@ class MainViewModel @Inject constructor(): ViewModel() {
         this.router = router
         router.newRootScreen(Screens.MAIN_SCREEN)
     }
-
-
 }
