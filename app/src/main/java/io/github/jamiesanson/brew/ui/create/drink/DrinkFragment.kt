@@ -1,8 +1,12 @@
 package io.github.jamiesanson.brew.ui.create.drink
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,12 +41,20 @@ class DrinkFragment : BackButtonListener, Fragment() {
         if (!viewModel.isViewRevealed) {
             CircularRevealUtil.registerAddDrinkRevealEnterAnimation(
                     context = context!!,
-                    view = view!!,
+                    view = view,
                     revealSettings = arguments?.getParcelable(CircularRevealUtil.ARG_REVEAL_SETTINGS) as RevealAnimationSettings,
                     listener = {
                         viewModel.isViewRevealed = true
                     }
             )
+
+            val anim = ValueAnimator()
+            anim.setIntValues(activity?.window?.statusBarColor ?: 0, ContextCompat.getColor(context!!, R.color.colorAccentDark))
+            anim.setEvaluator(ArgbEvaluator())
+            anim.duration = 500L
+            anim.interpolator = FastOutSlowInInterpolator()
+            anim.addUpdateListener { activity?.window?.statusBarColor = it.animatedValue as Int }
+            anim.start()
         }
 
         return view
@@ -64,6 +76,14 @@ class DrinkFragment : BackButtonListener, Fragment() {
                     viewModel.isViewRevealed = false
                 }
         )
+
+        val anim = ValueAnimator()
+        anim.setIntValues(activity?.window?.statusBarColor ?: 0, ContextCompat.getColor(context!!, R.color.colorPrimaryDark))
+        anim.setEvaluator(ArgbEvaluator())
+        anim.duration = 500L
+        anim.interpolator = FastOutSlowInInterpolator()
+        anim.addUpdateListener { activity?.window?.statusBarColor = it.animatedValue as Int }
+        anim.start()
 
         return true
     }
