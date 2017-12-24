@@ -6,6 +6,7 @@ import dagger.Binds
 import dagger.MapKey
 import dagger.Module
 import dagger.multibindings.IntoMap
+import io.github.jamiesanson.brew.ui.create.drink.DrinkViewModel
 import io.github.jamiesanson.brew.ui.home.HomeViewModel
 import io.github.jamiesanson.brew.ui.main.MainViewModel
 import io.github.jamiesanson.brew.ui.main.fragment.MainFragmentViewModel
@@ -29,6 +30,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainFragmentViewModel::class)
     abstract fun bindMainFragmentViewModel(mainFragmentViewModel: MainFragmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DrinkViewModel::class)
+    abstract fun bindDrinkViewModel(drinkViewModel: DrinkViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: BrewViewModelFactory): ViewModelProvider.Factory

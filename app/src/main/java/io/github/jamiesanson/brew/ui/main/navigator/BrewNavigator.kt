@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import io.github.jamiesanson.brew.ui.create.drink.CreateDrinkFragment
+import io.github.jamiesanson.brew.ui.create.drink.DrinkFragment
 import io.github.jamiesanson.brew.ui.main.fragment.MainFragment
 import io.github.jamiesanson.brew.util.anim.CircularRevealUtil
 import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
@@ -12,11 +12,15 @@ import ru.terrakok.cicerone.android.SupportFragmentNavigator
 import ru.terrakok.cicerone.commands.Command
 import ru.terrakok.cicerone.commands.Forward
 
-class BrewNavigator(private val fragmentManager: FragmentManager, private val containerId: Int): SupportFragmentNavigator(fragmentManager, containerId) {
+class BrewNavigator(
+        private val fragmentManager: FragmentManager,
+        private val containerId: Int
+): SupportFragmentNavigator(fragmentManager, containerId) {
+
     override fun createFragment(screenKey: String?, data: Any?): Fragment = when (screenKey) {
         Screens.MAIN_SCREEN -> MainFragment()
         Screens.ADD_DRINK_SCREEN -> {
-            val fragment = CreateDrinkFragment()
+            val fragment = DrinkFragment()
             if (data != null) {
                 val args = Bundle()
                 args.putParcelable(CircularRevealUtil.ARG_REVEAL_SETTINGS, data as RevealAnimationSettings)

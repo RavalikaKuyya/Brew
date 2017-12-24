@@ -28,7 +28,7 @@ object CircularRevealUtil {
         return ContextCompat.getColor(context, colorId)
     }
 
-    private fun registerCircularRevealAnimation(view: View, revealSettings: RevealAnimationSettings, startColor: Int, endColor: Int, listener: AnimationFinishedListener?) {
+    private fun registerCircularRevealAnimation(view: View, revealSettings: RevealAnimationSettings, startColor: Int, endColor: Int, listener: () -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -47,7 +47,7 @@ object CircularRevealUtil {
                     anim.interpolator = AccelerateDecelerateInterpolator()
                     anim.addListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
-                            listener?.onAnimationFinished()
+                            listener()
                         }
                     })
                     anim.start()
@@ -55,7 +55,7 @@ object CircularRevealUtil {
                 }
             })
         } else {
-            listener?.onAnimationFinished()
+            listener()
         }
     }
 
@@ -95,7 +95,7 @@ object CircularRevealUtil {
         anim.start()
     }
 
-    fun registerAddDrinkRevealEnterAnimation(context: Context, view: View, revealSettings: RevealAnimationSettings, listener: AnimationFinishedListener? = null) {
+    fun registerAddDrinkRevealEnterAnimation(context: Context, view: View, revealSettings: RevealAnimationSettings, listener: () -> Unit) {
         registerCircularRevealAnimation(view, revealSettings, revealSettings.startColor, getColor(context, R.color.material_white), listener)
     }
 

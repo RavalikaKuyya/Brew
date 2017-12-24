@@ -14,6 +14,7 @@ class MainViewModel @Inject constructor(
         uiEventBus: UiEventBus
 ): ViewModel() {
     private var router: BrewRouter? = null
+    private var mainRootSet: Boolean = false
 
     init {
         uiEventBus.events.observeForever(this::onUiEvent)
@@ -21,7 +22,11 @@ class MainViewModel @Inject constructor(
 
     fun init(router: BrewRouter) {
         this.router = router
-        router.newRootScreen(Screens.MAIN_SCREEN)
+
+        if (!mainRootSet) {
+            router.newRootScreen(Screens.MAIN_SCREEN)
+            mainRootSet = true
+        }
     }
 
     private fun onUiEvent(event: UiEvent?) {
