@@ -29,6 +29,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -55,6 +59,13 @@ dependencies {
 
     implementation deps.android.arch.persistence.room.runtime
     kapt deps.android.arch.persistence.room.compiler
+
+    kapt deps.android.databinding.compiler
+
+    // Kapt appears to have an issue due to not having an explicit annotation processor declaration
+    // on the classpath of the epoxy processor dependency. The fix for this is to use annotationProcessor for now
+    annotationProcessor deps.epoxy.processor
+    implementation deps.epoxy.databinding
 
     implementation deps.cicerone
 

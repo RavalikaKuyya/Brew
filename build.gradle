@@ -14,7 +14,8 @@ buildscript {
         constraint: '1.0.2',
         junit: '4.12',
         materialColors: '1.1.0',
-        caligraphy: '2.3.0'
+        caligraphy: '2.3.0',
+        epoxy: '2.8.0'
     ]
 
     ext.deps = [
@@ -42,6 +43,9 @@ buildscript {
                                 ]
 
                         ]
+                ],
+                databinding: [
+                        compiler: "com.android.databinding:compiler:${versions.androidPlugin}"
                 ]
         ],
         kotlin: [
@@ -59,6 +63,11 @@ buildscript {
         dagger: [
                 core: "com.google.dagger:dagger:${versions.dagger}",
                 compiler: "com.google.dagger:dagger-compiler:${versions.dagger}"
+        ],
+        epoxy: [
+                base: "com.airbnb.android:epoxy-databinding:${versions.epoxy}",
+                databinding: "com.airbnb.android:epoxy-processor:${versions.epoxy}",
+                processor: "com.airbnb.android:epoxy-processor:${versions.epoxy}"
         ],
         junit: "junit:junit:${versions.junit}",
         cicerone: "ru.terrakok.cicerone:cicerone:${versions.cicerone}",
