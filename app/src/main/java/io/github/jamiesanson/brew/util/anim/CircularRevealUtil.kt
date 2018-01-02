@@ -5,110 +5,101 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.view.ViewAnimationUtils
 import android.os.Build
 import android.annotation.TargetApi
-import android.support.v4.content.ContextCompat
-import android.support.annotation.ColorRes
-import android.support.annotation.ColorInt
-
-import android.content.Context
 
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import io.github.jamiesanson.brew.R
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 
+/**
+ * Utility object for circularly revealing views easily. To be used on fragments when opened from a
+ * FloatingActionButton interaction
+ */
 object CircularRevealUtil {
 
-    const val ARG_REVEAL_SETTINGS = "reveal_settings"
-
-    @ColorInt
-    private fun getColor(context: Context, @ColorRes colorId: Int): Int {
-        return ContextCompat.getColor(context, colorId)
-    }
-
-    private fun registerCircularRevealAnimation(view: View, revealSettings: RevealAnimationSettings, startColor: Int, endColor: Int, listener: () -> Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            view.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+    fun startCircularRevealEnterAnimation(revealSettings: RevealAnimationSettings, listener: () -> Unit) {
+        with (revealSettings) {
+            targetView?.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 override fun onLayoutChange(v: View, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
                     v.removeOnLayoutChangeListener(this)
 
-                    val cx = revealSettings.centerX
-                    val cy = revealSettings.centerY
-                    val width = revealSettings.width
-                    val height = revealSettings.height
-
-                    //Simply use the diagonal of the view
                     val finalRadius = Math.sqrt((width * width + height * height).toDouble()).toFloat()
-                    val anim = ViewAnimationUtils.createCircularReveal(v, cx, cy, 0f, finalRadius)
-                    anim.duration = 500L
-                    anim.interpolator = FastOutSlowInInterpolator()
-                    anim.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationStart(animation: Animator?) {
-                            view.findViewById<View>(R.id.revealScrim).setBackgroundColor(startColor)
-                            async(UI) {
-                                delay((anim.duration * 0.4f).toLong())
-                                startBackgroundColorAnimation(view.findViewById(R.id.revealScrim), startColor, endColor, 300)
+                    val anim = ViewAnimationUtils.createCircularReveal(v, centerX, centerY, 0f, finalRadius)
+                    with (anim) {
+                        duration = revealSettings.duration
+                        interpolator = FastOutSlowInInterpolator()
+                        addListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationStart(animation: Animator?) {
+                                backgroundView?.setBackgroundColor(startColor)
+                                async(UI) {
+                                    delay((anim.duration * 0.4f).toLong())
+                                    startBackgroundColorAnimation(backgroundView, startColor, endColor, 300)
+                                }
+
+                                if (statusBarAnimationSettings != null) {
+                                    startStatusBarColorAnimation(statusBarAnimationSettings!!, revealSettings.duration)
+                                }
                             }
-                        }
-                        override fun onAnimationEnd(animation: Animator) {
-                            listener()
-                        }
-                    })
-                    anim.start()
+                            override fun onAnimationEnd(animation: Animator) {
+                                listener()
+                            }
+                        })
+                        start()
+                    }
                 }
             })
-        } else {
-            listener()
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun startCircularRevealExitAnimation(view: View, revealSettings: RevealAnimationSettings, startColor: Int, endColor: Int, listener: () -> Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val cx = revealSettings.centerX
-            val cy = revealSettings.centerY
-            val width = revealSettings.width
-            val height = revealSettings.height
-
+    fun startCircularRevealExitAnimation(revealSettings: RevealAnimationSettings, listener: () -> Unit) {
+        with (revealSettings) {
             val initRadius = Math.sqrt((width * width + height * height).toDouble()).toFloat()
-            val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initRadius, 0f)
-            anim.duration = 300L
+            val anim = ViewAnimationUtils.createCircularReveal(targetView, centerX, centerY, initRadius, 0f)
+            anim.duration = revealSettings.duration
             anim.interpolator = FastOutSlowInInterpolator()
             anim.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationStart(animation: Animator?) {
-                        startBackgroundColorAnimation(view.findViewById(R.id.revealScrim), startColor, endColor, 300)
-                    }
+                override fun onAnimationStart(animation: Animator?) {
+                    if (backgroundView != null) {
+                        startBackgroundColorAnimation(backgroundView, endColor, startColor, revealSettings.duration)
 
-                    override fun onAnimationEnd(animation: Animator) {
-                        //Important: This will prevent the view's flashing (visible between the finished animation and the Fragment remove)
-                        view.visibility = View.GONE
-                        listener()
+                        if (statusBarAnimationSettings != null) {
+                            startStatusBarColorAnimation(statusBarAnimationSettings!!, revealSettings.duration)
+                        }
                     }
                 }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    //Important: This will prevent the view's flashing (visible between the finished animation and the Fragment remove)
+                    targetView?.visibility = View.GONE
+                    listener()
+                }
+            }
             )
             anim.start()
-        } else {
-            listener()
         }
     }
 
-    private fun startBackgroundColorAnimation(view: View, startColor: Int, endColor: Int, duration: Int) {
+    private fun startBackgroundColorAnimation(view: View?, startColor: Int, endColor: Int, duration: Long) {
         val anim = ValueAnimator()
         anim.setIntValues(startColor, endColor)
         anim.setEvaluator(ArgbEvaluator())
-        anim.duration = duration.toLong()
+        anim.duration = duration
         anim.interpolator = FastOutSlowInInterpolator()
-        anim.addUpdateListener { valueAnimator -> view.setBackgroundColor(valueAnimator.animatedValue as Int) }
+        anim.addUpdateListener { valueAnimator -> view?.setBackgroundColor(valueAnimator.animatedValue as Int) }
         anim.start()
     }
 
-    fun registerAddDrinkRevealEnterAnimation(context: Context, view: View, revealSettings: RevealAnimationSettings, listener: () -> Unit) {
-        registerCircularRevealAnimation(view, revealSettings, revealSettings.startColor, getColor(context, android.R.color.transparent), listener)
-    }
-
-    fun registerAddDrinkRevealExitAnimation(context: Context, view: View, revealSettings: RevealAnimationSettings, listener: () -> Unit) {
-        startCircularRevealExitAnimation(view, revealSettings, getColor(context, R.color.material_white), revealSettings.startColor, listener)
+    private fun startStatusBarColorAnimation(statusBarAnimationSettings: StatusBarAnimationSettings, dur: Long) {
+        with (statusBarAnimationSettings) {
+            with (ValueAnimator()) {
+                setIntValues(startColor, endColor)
+                setEvaluator(ArgbEvaluator())
+                duration = dur
+                interpolator = FastOutSlowInInterpolator()
+                addUpdateListener { window?.statusBarColor = it.animatedValue as Int }
+                start()
+            }
+        }
     }
 }

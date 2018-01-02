@@ -5,8 +5,8 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import io.github.jamiesanson.brew.ui.create.drink.DrinkFragment
+import io.github.jamiesanson.brew.ui.create.drink.DrinkFragment.Companion.ARG_REVEAL_SETTINGS
 import io.github.jamiesanson.brew.ui.main.fragment.MainFragment
-import io.github.jamiesanson.brew.util.anim.CircularRevealUtil
 import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
 import ru.terrakok.cicerone.android.SupportFragmentNavigator
 import ru.terrakok.cicerone.commands.Command
@@ -23,7 +23,7 @@ class BrewNavigator(
             val fragment = DrinkFragment()
             if (data != null) {
                 val args = Bundle()
-                args.putParcelable(CircularRevealUtil.ARG_REVEAL_SETTINGS, data as RevealAnimationSettings)
+                args.putParcelable(ARG_REVEAL_SETTINGS, data as RevealAnimationSettings)
                 fragment.arguments = args
             }
             fragment
