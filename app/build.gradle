@@ -65,6 +65,7 @@ dependencies {
     // Kapt appears to have an issue due to not having an explicit annotation processor declaration
     // on the classpath of the epoxy processor dependency. The fix for this is to use annotationProcessor for now
     annotationProcessor deps.epoxy.processor
+    implementation deps.epoxy.base
     implementation deps.epoxy.databinding
 
     implementation deps.cicerone
