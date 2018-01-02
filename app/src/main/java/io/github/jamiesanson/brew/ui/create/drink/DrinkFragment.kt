@@ -9,8 +9,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tylersuehr.chips.ChipsInputLayout
+import com.tylersuehr.chips.data.Chip
+import com.tylersuehr.chips.data.ChipSelectionObserver
 import io.github.jamiesanson.brew.R
 import io.github.jamiesanson.brew.addPhotoHeader
+import io.github.jamiesanson.brew.drinkTagInput
 import io.github.jamiesanson.brew.ui.main.MainActivity
 import io.github.jamiesanson.brew.util.anim.CircularRevealUtil
 import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
@@ -23,6 +27,7 @@ import io.github.jamiesanson.brew.util.extension.withModels
 import io.github.jamiesanson.brew.util.nav.BackButtonListener
 import kotlinx.android.synthetic.main.fragment_drink.*
 import kotlinx.android.synthetic.main.fragment_drink.view.*
+import kotlinx.android.synthetic.main.view_holder_drink_tag_input.view.*
 import javax.inject.Inject
 
 class DrinkFragment : BackButtonListener, Fragment() {
@@ -64,6 +69,15 @@ class DrinkFragment : BackButtonListener, Fragment() {
                     Log.d("DrinkFragment", "Clicked")
                 }
             }
+
+            drinkTagInput {
+                id("tag input")
+                filterableTags(emptyList())
+
+                onBind { _, view, _ ->
+                    setupChipSelectionObserver(view.dataBinding.root.chipsInputLayout)
+                }
+            }
         }
     }
 
@@ -74,6 +88,20 @@ class DrinkFragment : BackButtonListener, Fragment() {
         }
 
         return true
+    }
+
+    private fun setupChipSelectionObserver(layout: ChipsInputLayout) {
+        layout.addChipSelectionObserver( object: ChipSelectionObserver {
+            override fun onChipSelected(p0: Chip?) {
+                Log.d("DrinkFragment", "Selected: ${p0?.title}")
+
+            }
+
+            override fun onChipDeselected(p0: Chip?) {
+                Log.d("DrinkFragment", "Deselected: ${p0?.title}")
+            }
+
+        })
     }
 
     private fun showCircularReveal(view: View) {

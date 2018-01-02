@@ -9,17 +9,11 @@
     android:clickable="true"
     android:focusable="true">
 
-    <android.support.v4.widget.NestedScrollView
+    <com.airbnb.epoxy.EpoxyRecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <com.airbnb.epoxy.EpoxyRecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </android.support.v4.widget.NestedScrollView>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -34,7 +28,7 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/DialogActionBarTheme"
             app:navigationIcon="@drawable/ic_close_black_24dp"
-            app:title="Add Drink" />
+            app:title="What are you drinking?" />
 
     </android.support.design.widget.AppBarLayout>
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="filterableTags"
+            type="java.util.List&lt;com.tylersuehr.chips.data.Chip&gt;"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tylersuehr.chips.ChipsInputLayout
+            android:id="@+id/chipsInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tag it up"
+            app:chipDeletable="true"
+            app:chipBackgroundColor="@color/colorAccent"
+            app:chipDeleteIconColor="@color/material_black"
+            app:detailedChipsEnabled="false"
+            app:chipHasAvatarIcon="false"
+            app:customChipsEnabled="true"
+            app:filterableChipList="@{filterableTags}"/>
+    </LinearLayout>
+</layout>
