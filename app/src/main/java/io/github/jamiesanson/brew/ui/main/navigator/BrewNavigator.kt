@@ -44,18 +44,21 @@ class BrewNavigator(
 
     override fun applyCommand(command: Command?) {
         if (command is Forward && command.screenKey == Screens.ADD_DRINK_SCREEN) {
-            val fragment = createFragment(command.screenKey, command.transitionData)
+            if (fragmentManager.findFragmentByTag(Screens.ADD_DRINK_SCREEN) == null) {
+                val fragment = createFragment(command.screenKey, command.transitionData)
 
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction
-                    .add(containerId, fragment, command.screenKey)
-                    .commit()
-
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction
+                        .add(containerId, fragment, command.screenKey)
+                        .commitNow()
+            }
         } else if (command is BackFromDrinkScreen) {
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction
-                    .remove(fragmentManager.findFragmentByTag(Screens.ADD_DRINK_SCREEN))
-                    .commit()
+            if (fragmentManager.findFragmentByTag(Screens.ADD_DRINK_SCREEN) != null) {
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction
+                        .remove(fragmentManager.findFragmentByTag(Screens.ADD_DRINK_SCREEN))
+                        .commitNow()
+            }
         } else {
             super.applyCommand(command)
         }

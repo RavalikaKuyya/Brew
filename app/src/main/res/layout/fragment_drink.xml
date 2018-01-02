@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/material_white">
+    android:background="@color/material_white"
+    android:clickable="true">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/drinkToolbar"
@@ -45,6 +46,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/addImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:cropToPadding="false"
+            android:padding="0dp"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
     </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

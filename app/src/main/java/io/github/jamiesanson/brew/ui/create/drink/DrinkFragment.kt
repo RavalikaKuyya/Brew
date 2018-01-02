@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,8 +39,11 @@ class DrinkFragment : BackButtonListener, Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_drink, container, false)
 
-        if (!viewModel.isViewRevealed) {
+        if (!viewModel.isViewRevealed && arguments?.containsKey(ARG_REVEAL_SETTINGS) == true) {
             showCircularReveal(view)
+        } else {
+            activity?.window?.statusBarColor = ContextCompat.getColor(context!!, R.color.colorAccentDark)
+            view.addImageView.visibility = View.GONE
         }
 
         return view
@@ -75,6 +79,19 @@ class DrinkFragment : BackButtonListener, Fragment() {
                 )
         )
 
+        // Move add icon to appropriate location
+        val drawableWidth = ContextCompat.getDrawable(context!!, R.drawable.ic_add_black_24dp)?.intrinsicWidth ?: 0
+        view.addImageView.x = (revealSettings.centerX - drawableWidth / 2).toFloat()
+        view.addImageView.y = (revealSettings.centerY - drawableWidth / 2).toFloat()
+        view.addImageView.visibility = View.VISIBLE
+
+        // Start fade-out of ImageView
+        view.addImageView.animate()
+                .alpha(0f)
+                .setInterpolator(FastOutSlowInInterpolator())
+                .setDuration(500L)
+                .start()
+
         CircularRevealUtil.startCircularRevealEnterAnimation(revealSettings) {
             viewModel.isViewRevealed = true
         }
@@ -94,6 +111,14 @@ class DrinkFragment : BackButtonListener, Fragment() {
                         window = activity?.window
                 )
         )
+
+        // Start fade-in of icon ImageView
+        with(view) {
+            addImageView.animate()
+                    .alpha(1f)
+                    .setDuration(300L)
+                    .start()
+        }
 
         CircularRevealUtil.startCircularRevealExitAnimation(revealSettings, onFinish)
     }

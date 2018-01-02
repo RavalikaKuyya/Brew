@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -85,8 +84,10 @@ class HomeFragment : Fragment() {
 
             false
         }
+
         toolbar.alpha = 0f
 
+        // This is such that the toolbar is animated in when the AppBarLayout is collapsed
         appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
                 toolbar.animate().alpha(1f)
