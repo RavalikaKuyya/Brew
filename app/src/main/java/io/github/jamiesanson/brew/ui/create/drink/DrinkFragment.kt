@@ -37,8 +37,8 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.appcompat.v7.coroutines.onMenuItemClick
 import javax.inject.Inject
-import com.zhihu.matisse.engine.impl.GlideEngine
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import io.github.jamiesanson.brew.ui.main.MainActivity
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
@@ -46,7 +46,9 @@ import io.github.jamiesanson.brew.ui.create.drink.photo.Camera
 import io.github.jamiesanson.brew.ui.create.drink.photo.Gallery
 import io.github.jamiesanson.brew.ui.create.drink.photo.PhotoSourceChooser
 import io.github.jamiesanson.brew.util.GlideImageEngine
-
+import org.jetbrains.anko.design.snackbar
+import android.provider.Settings
+import org.jetbrains.anko.design.longSnackbar
 
 class DrinkFragment : BackButtonListener, Fragment() {
 
@@ -164,8 +166,20 @@ class DrinkFragment : BackButtonListener, Fragment() {
                         .thumbnailScale(0.85f)
                         .imageEngine(GlideImageEngine())
                         .forResult(REQUEST_CODE_CHOOSE)
+            } else {
+                showPermissionsSnackbar()
             }
         }
+    }
+
+    private fun showPermissionsSnackbar() {
+        longSnackbar(view!!, "Permissions needed to use gallery", "Settings", {
+                    with (Intent()) {
+                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                        data = Uri.fromParts("package", activity?.packageName, null)
+                        startActivity(this)
+                    }
+                }).show()
     }
 
     private fun setupChipSelectionObserver(layout: ChipsInputLayout) {

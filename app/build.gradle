@@ -44,6 +44,7 @@ dependencies {
     implementation deps.anko.coroutines.sdk25
     implementation deps.anko.appcompat
     implementation deps.anko.commons
+    implementation deps.anko.design
 
     implementation deps.android.support.appcompat
     implementation deps.android.support.compat

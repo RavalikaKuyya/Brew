@@ -63,7 +63,8 @@ buildscript {
                         sdk25: "org.jetbrains.anko:anko-sdk25-coroutines:${versions.anko}"
                 ],
                 appcompat: "org.jetbrains.anko:anko-appcompat-v7-coroutines:${versions.anko}",
-                commons: "org.jetbrains.anko:anko-commons:${versions.anko}"
+                commons: "org.jetbrains.anko:anko-commons:${versions.anko}",
+                design: "org.jetbrains.anko:anko-design:${versions.anko}"
         ],
         dagger: [
                 core: "com.google.dagger:dagger:${versions.dagger}",
