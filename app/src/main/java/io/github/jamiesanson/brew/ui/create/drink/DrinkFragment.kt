@@ -42,6 +42,9 @@ import android.content.pm.ActivityInfo
 import io.github.jamiesanson.brew.ui.main.MainActivity
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
+import io.github.jamiesanson.brew.ui.create.drink.photo.Camera
+import io.github.jamiesanson.brew.ui.create.drink.photo.Gallery
+import io.github.jamiesanson.brew.ui.create.drink.photo.PhotoSourceChooser
 import io.github.jamiesanson.brew.util.GlideImageEngine
 
 
@@ -133,6 +136,19 @@ class DrinkFragment : BackButtonListener, Fragment() {
     }
 
     private fun showImageChooser() {
+        PhotoSourceChooser()
+                .sources(Camera(), Gallery())
+                .onSourceChosen {
+                    when (it) {
+                        is Camera -> TODO()
+                        is Gallery -> startMatisse()
+                    }
+                }
+                .show(fragmentManager, TAG_PHOTO_SOURCE_CHOOSER)
+
+    }
+
+    private fun startMatisse() {
         async(UI) {
             val permissionsGranted = PermissionDelegate().checkPermissions(
                     activity!!,
@@ -141,19 +157,15 @@ class DrinkFragment : BackButtonListener, Fragment() {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
             if (permissionsGranted) {
-                beginMatisse()
+                Matisse.from(this@DrinkFragment)
+                        .choose(MimeType.of(MimeType.PNG, MimeType.JPEG))
+                        .maxSelectable(1)
+                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                        .thumbnailScale(0.85f)
+                        .imageEngine(GlideImageEngine())
+                        .forResult(REQUEST_CODE_CHOOSE)
             }
         }
-    }
-
-    private fun beginMatisse() {
-        Matisse.from(this)
-                .choose(MimeType.of(MimeType.PNG, MimeType.JPEG))
-                .maxSelectable(1)
-                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                .thumbnailScale(0.85f)
-                .imageEngine(GlideImageEngine())
-                .forResult(REQUEST_CODE_CHOOSE)
     }
 
     private fun setupChipSelectionObserver(layout: ChipsInputLayout) {
@@ -232,5 +244,6 @@ class DrinkFragment : BackButtonListener, Fragment() {
     companion object {
         const val ARG_REVEAL_SETTINGS = "reveal_settings"
         const val REQUEST_CODE_CHOOSE = 110
+        const val TAG_PHOTO_SOURCE_CHOOSER = "tag_photo_chooser"
     }
 }

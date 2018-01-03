@@ -9,4 +9,7 @@
     <string name="add_some_tags">Add some tags:</string>
     <string name="add_a_name">Add a name:</string>
     <string name="done">Done</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="choose_image">Choose Image From:</string>
 </resources>
