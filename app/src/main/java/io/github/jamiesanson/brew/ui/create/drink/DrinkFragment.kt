@@ -1,6 +1,9 @@
 package io.github.jamiesanson.brew.ui.create.drink
 
+import android.Manifest
+import android.app.Activity.RESULT_OK
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -16,7 +19,7 @@ import io.github.jamiesanson.brew.R
 import io.github.jamiesanson.brew.addPhotoHeader
 import io.github.jamiesanson.brew.drinkTagInput
 import io.github.jamiesanson.brew.drinkTitleInput
-import io.github.jamiesanson.brew.ui.main.MainActivity
+import io.github.jamiesanson.brew.util.PermissionDelegate
 import io.github.jamiesanson.brew.util.anim.CircularRevealUtil
 import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
 import io.github.jamiesanson.brew.util.anim.StatusBarAnimationSettings
@@ -30,8 +33,17 @@ import io.github.jamiesanson.brew.util.nav.BackButtonListener
 import kotlinx.android.synthetic.main.fragment_drink.*
 import kotlinx.android.synthetic.main.fragment_drink.view.*
 import kotlinx.android.synthetic.main.view_holder_drink_tag_input.view.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.appcompat.v7.coroutines.onMenuItemClick
 import javax.inject.Inject
+import com.zhihu.matisse.engine.impl.GlideEngine
+import android.content.pm.ActivityInfo
+import io.github.jamiesanson.brew.ui.main.MainActivity
+import com.zhihu.matisse.Matisse
+import com.zhihu.matisse.MimeType
+import io.github.jamiesanson.brew.util.GlideImageEngine
+
 
 class DrinkFragment : BackButtonListener, Fragment() {
 
@@ -75,7 +87,7 @@ class DrinkFragment : BackButtonListener, Fragment() {
             addPhotoHeader {
                 id("photo header")
                 clickListener { _: View ->
-                    Log.d("DrinkFragment", "Clicked")
+                    showImageChooser()
                 }
             }
 
@@ -107,9 +119,41 @@ class DrinkFragment : BackButtonListener, Fragment() {
         return true
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+            val selected = Matisse.obtainResult(data)
+            Log.d("Matisse", "selected: $selected")
+        }
+    }
+
     private fun onDonePressed() {
         // TODO - Implement saving logic
         onBackPressed()
+    }
+
+    private fun showImageChooser() {
+        async(UI) {
+            val permissionsGranted = PermissionDelegate().checkPermissions(
+                    activity!!,
+                    "We need to ask you for some permissions before adding photos",
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+            if (permissionsGranted) {
+                beginMatisse()
+            }
+        }
+    }
+
+    private fun beginMatisse() {
+        Matisse.from(this)
+                .choose(MimeType.of(MimeType.PNG, MimeType.JPEG))
+                .maxSelectable(1)
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                .thumbnailScale(0.85f)
+                .imageEngine(GlideImageEngine())
+                .forResult(REQUEST_CODE_CHOOSE)
     }
 
     private fun setupChipSelectionObserver(layout: ChipsInputLayout) {
@@ -187,5 +231,6 @@ class DrinkFragment : BackButtonListener, Fragment() {
 
     companion object {
         const val ARG_REVEAL_SETTINGS = "reveal_settings"
+        const val REQUEST_CODE_CHOOSE = 110
     }
 }

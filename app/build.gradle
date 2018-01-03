@@ -43,6 +43,7 @@ dependencies {
     implementation deps.anko.coroutines.core
     implementation deps.anko.coroutines.sdk25
     implementation deps.anko.appcompat
+    implementation deps.anko.commons
 
     implementation deps.android.support.appcompat
     implementation deps.android.support.compat
@@ -75,6 +76,13 @@ dependencies {
     implementation deps.caligraphy
 
     implementation deps.chipinput
+
+    implementation deps.matisse
+
+    implementation deps.dexter
+
+    implementation deps.glide.glide
+    kapt deps.glide.compiler
 
     testImplementation deps.junit
     androidTestImplementation deps.android.support.test.runner
