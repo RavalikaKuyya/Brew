@@ -30,6 +30,7 @@ import io.github.jamiesanson.brew.util.nav.BackButtonListener
 import kotlinx.android.synthetic.main.fragment_drink.*
 import kotlinx.android.synthetic.main.fragment_drink.view.*
 import kotlinx.android.synthetic.main.view_holder_drink_tag_input.view.*
+import org.jetbrains.anko.appcompat.v7.coroutines.onMenuItemClick
 import javax.inject.Inject
 
 class DrinkFragment : BackButtonListener, Fragment() {
@@ -62,6 +63,12 @@ class DrinkFragment : BackButtonListener, Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         drinkToolbar.setNavigationOnClickListener {
             onBackPressed()
+        }
+
+        drinkToolbar.inflateMenu(R.menu.add_drink_item)
+        drinkToolbar.onMenuItemClick {
+            // There's only one menu item, so assume that means the user's done
+            onDonePressed()
         }
 
         recyclerView.withModels {
@@ -98,6 +105,11 @@ class DrinkFragment : BackButtonListener, Fragment() {
         }
 
         return true
+    }
+
+    private fun onDonePressed() {
+        // TODO - Implement saving logic
+        onBackPressed()
     }
 
     private fun setupChipSelectionObserver(layout: ChipsInputLayout) {
