@@ -11,13 +11,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_some_tags"/>
 
         <com.tylersuehr.chips.ChipsInputLayout
             android:id="@+id/chipsInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tag it up"
             app:chipDeletable="true"
             app:chipBackgroundColor="@color/colorAccent"
             app:chipDeleteIconColor="@color/material_black"
@@ -25,5 +31,11 @@
             app:chipHasAvatarIcon="false"
             app:customChipsEnabled="true"
             app:filterableChipList="@{filterableTags}"/>
+
+        <View
+            android:id="@+id/inputUnderline"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/material_black"/>
     </LinearLayout>
 </layout>
