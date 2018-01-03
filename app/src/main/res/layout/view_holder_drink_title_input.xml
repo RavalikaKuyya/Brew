@@ -35,7 +35,7 @@
             android:maxLines="1"
             android:inputType="textCapWords"
             android:imeOptions="actionDone"
-            android:onTextChanged="@{textWatcher.onTextChanged}"
+            android:onTextChanged="@{textWatcher::onTextChanged}"
             android:text="@{text}"
             tools:ignore="LabelFor" />
 

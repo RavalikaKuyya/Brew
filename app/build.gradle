@@ -82,6 +82,8 @@ dependencies {
 
     implementation deps.dexter
 
+    implementation deps.fotoapparat
+
     implementation deps.glide.glide
     kapt deps.glide.compiler
 

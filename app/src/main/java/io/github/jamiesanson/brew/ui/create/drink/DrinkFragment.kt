@@ -46,9 +46,10 @@ import io.github.jamiesanson.brew.ui.create.drink.photo.Camera
 import io.github.jamiesanson.brew.ui.create.drink.photo.Gallery
 import io.github.jamiesanson.brew.ui.create.drink.photo.PhotoSourceChooser
 import io.github.jamiesanson.brew.util.GlideImageEngine
-import org.jetbrains.anko.design.snackbar
 import android.provider.Settings
+import io.github.jamiesanson.brew.ui.camera.CameraActivity
 import org.jetbrains.anko.design.longSnackbar
+import org.jetbrains.anko.support.v4.startActivityForResult
 
 class DrinkFragment : BackButtonListener, Fragment() {
 
@@ -128,7 +129,6 @@ class DrinkFragment : BackButtonListener, Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             val selected = Matisse.obtainResult(data)
-            Log.d("Matisse", "selected: $selected")
         }
     }
 
@@ -142,12 +142,15 @@ class DrinkFragment : BackButtonListener, Fragment() {
                 .sources(Camera(), Gallery())
                 .onSourceChosen {
                     when (it) {
-                        is Camera -> TODO()
+                        is Camera -> startCamera()
                         is Gallery -> startMatisse()
                     }
                 }
                 .show(fragmentManager, TAG_PHOTO_SOURCE_CHOOSER)
+    }
 
+    private fun startCamera() {
+        startActivityForResult<CameraActivity>(REQUEST_CODE_TAKE_PHOTO)
     }
 
     private fun startMatisse() {
@@ -258,6 +261,7 @@ class DrinkFragment : BackButtonListener, Fragment() {
     companion object {
         const val ARG_REVEAL_SETTINGS = "reveal_settings"
         const val REQUEST_CODE_CHOOSE = 110
+        const val REQUEST_CODE_TAKE_PHOTO = 111
         const val TAG_PHOTO_SOURCE_CHOOSER = "tag_photo_chooser"
     }
 }
