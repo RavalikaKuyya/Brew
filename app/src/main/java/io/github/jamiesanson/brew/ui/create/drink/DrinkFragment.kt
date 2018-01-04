@@ -48,6 +48,7 @@ import io.github.jamiesanson.brew.ui.create.drink.photo.PhotoSourceChooser
 import io.github.jamiesanson.brew.util.GlideImageEngine
 import android.provider.Settings
 import io.github.jamiesanson.brew.ui.camera.CameraActivity
+import io.github.jamiesanson.brew.ui.camera.CameraActivity.Companion.RESULT_PHOTO_URI
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.support.v4.startActivityForResult
 
@@ -129,6 +130,8 @@ class DrinkFragment : BackButtonListener, Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             val selected = Matisse.obtainResult(data)
+        } else if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == RESULT_OK) {
+            Log.d("DrinkFragment", "Got data: ${data?.getSerializableExtra(RESULT_PHOTO_URI)}")
         }
     }
 
