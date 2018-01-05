@@ -27,7 +27,11 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".ui.camera.CameraActivity" />
+
+        <!-- TODO: The orientation of this screen should be unlocked post design considerations -->
+        <activity
+            android:name=".ui.camera.CameraActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

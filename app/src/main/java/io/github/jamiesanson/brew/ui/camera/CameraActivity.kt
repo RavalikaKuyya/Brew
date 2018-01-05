@@ -1,15 +1,18 @@
 package io.github.jamiesanson.brew.ui.camera
 
 import android.Manifest
-import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintSet
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.animation.FastOutSlowInInterpolator
+import android.support.v7.app.AppCompatActivity
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.View
@@ -20,13 +23,13 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.configuration.CameraConfiguration
-import io.fotoapparat.configuration.Configuration
 import io.fotoapparat.parameter.ScaleType
-import io.fotoapparat.result.Photo
 import io.fotoapparat.result.WhenDoneListener
 import io.fotoapparat.selector.*
 import io.github.jamiesanson.brew.R
 import io.github.jamiesanson.brew.util.PermissionDelegate
+import io.github.jamiesanson.brew.util.arch.BrewViewModelFactory
+import io.github.jamiesanson.brew.util.extension.component
 import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -34,24 +37,30 @@ import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.io.File
-import java.net.URI
+import javax.inject.Inject
 
 /**
  * Activity for taking a single photo. Returns a URI
  * of the photo taken with RESULT_PHOTO_URI as the key
  */
-class CameraActivity: Activity() {
+class CameraActivity: AppCompatActivity() {
 
     private lateinit var fotoapparat: Fotoapparat
-
-    private var fileUri: URI? = null
+    private lateinit var viewModel: CameraViewModel
+    @Inject lateinit var viewModelFactory: BrewViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
+        component.inject(this)
+        viewModel = ViewModelProviders
+                .of(this, viewModelFactory)
+                .get(CameraViewModel::class.java)
+
         window.statusBarColor = ContextCompat.getColor(this, R.color.material_black)
 
-        async(UI) {
+        // Check permissions
+        launch(UI) {
             val permissionAccepted = PermissionDelegate()
                     .checkPermissions(
                             activity = this@CameraActivity,
@@ -72,6 +81,27 @@ class CameraActivity: Activity() {
                 finish()
             }
         }
+
+        viewModel.state.observe(this, Observer {
+            when (it) {
+                is CameraViewModel.State.PreviewShowing -> {
+                    imagePreviewView.visibility = View.GONE
+                }
+                is CameraViewModel.State.PhotoTaken -> {
+                    onPhotoTaken(it.photoUri)
+                }
+                is CameraViewModel.State.PhotoAccepted -> {
+                    setResult(RESULT_OK, Intent().putExtra(RESULT_PHOTO_URI, it.photoUri))
+                    finish()
+                }
+                is CameraViewModel.State.PhotoDeclined -> {
+                    animateButtonChange(true)
+                    imagePreviewView.setImageBitmap(null)
+                    takePictureButton.isEnabled = true
+                }
+                null -> {}
+            }
+        })
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -81,14 +111,11 @@ class CameraActivity: Activity() {
         }
 
         acceptButton.onClick {
-            setResult(RESULT_OK, Intent().putExtra(RESULT_PHOTO_URI, fileUri))
-            finish()
+            viewModel.photoAccepted()
         }
 
         declineButton.onClick {
-            imagePreviewView.visibility = View.GONE
-            animateButtonChange(true)
-            fileUri = null
+            viewModel.photoDeclined()
         }
     }
 
@@ -106,7 +133,7 @@ class CameraActivity: Activity() {
         }
     }
 
-    private fun onPhotoTaken(uri: URI) {
+    private fun onPhotoTaken(uri: Uri) {
         async(UI) {
             imagePreviewView.visibility = View.VISIBLE
             Glide.with(this@CameraActivity)
@@ -143,18 +170,18 @@ class CameraActivity: Activity() {
             visibility = View.VISIBLE
             animate()
                     .alpha(1f)
-                    .setDuration(30L)
+                    .setDuration(150L)
                     .start()
         }
 
-        animateButtonChange()
+        takePictureButton.isEnabled = false
 
         photoResult
                 .saveToFile(file)
                 .whenDone( object: WhenDoneListener<Unit> {
                     override fun whenDone(it: Unit?) {
-                        onPhotoTaken(file.toURI())
-                        fileUri = file.toURI()
+                        viewModel.photoTaken(Uri.fromFile(file))
+                        animateButtonChange()
                     }
                 })
     }
@@ -182,7 +209,7 @@ class CameraActivity: Activity() {
                     .alpha(0f)
                     .setDuration(200L)
                     .withEndAction {
-                        takePictureButton.visibility = View.GONE
+                        takePictureButton.visibility = View.INVISIBLE
                         switchConstraints(R.layout.activity_camera_pic_taken)
                     }.start()
         } else {
@@ -198,8 +225,8 @@ class CameraActivity: Activity() {
                             takePictureButton.alpha = 0f
                         }
                         .withEndAction {
-                            acceptButton.visibility = View.GONE
-                            declineButton.visibility = View.GONE
+                            acceptButton.visibility = View.INVISIBLE
+                            declineButton.visibility = View.INVISIBLE
                         }
                         .start()
             }
@@ -230,7 +257,7 @@ class CameraActivity: Activity() {
                 focusMode = continuousFocusPicture(),
                 flashMode = off(),
                 antiBandingMode = auto(),
-                jpegQuality = manualJpegQuality(70),
+                jpegQuality = manualJpegQuality(50),
                 sensorSensitivity = lowestSensorSensitivity()
         )
     }

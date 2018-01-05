@@ -131,7 +131,7 @@ class DrinkFragment : BackButtonListener, Fragment() {
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             val selected = Matisse.obtainResult(data)
         } else if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == RESULT_OK) {
-            Log.d("DrinkFragment", "Got data: ${data?.getSerializableExtra(RESULT_PHOTO_URI)}")
+            Log.d("DrinkFragment", "Got data: ${data?.getParcelableExtra<Uri>(RESULT_PHOTO_URI)}")
         }
     }
 
