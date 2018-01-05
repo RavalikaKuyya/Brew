@@ -130,8 +130,10 @@ class DrinkFragment : BackButtonListener, Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             val selected = Matisse.obtainResult(data)
+            viewModel.onPhotoAdded(selected.first())
         } else if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == RESULT_OK) {
-            Log.d("DrinkFragment", "Got data: ${data?.getParcelableExtra<Uri>(RESULT_PHOTO_URI)}")
+            val photoUri = data?.getParcelableExtra<Uri>(RESULT_PHOTO_URI) ?: return
+            viewModel.onPhotoAdded(photoUri)
         }
     }
 

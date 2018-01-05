@@ -31,7 +31,7 @@ class CameraViewModel @Inject constructor(): ViewModel() {
     }
 
     fun photoDeclined() {
-        updateState(State.PhotoDeclined())
+        updateState(State.PhotoDeclined(uri))
     }
 
     private fun updateState(state: State) {
@@ -45,6 +45,6 @@ class CameraViewModel @Inject constructor(): ViewModel() {
         class PreviewShowing: State()
         class PhotoTaken(val photoUri: Uri): State()
         class PhotoAccepted(val photoUri: Uri): State()
-        class PhotoDeclined: State()
+        class PhotoDeclined(val declinedUri: Uri): State()
     }
 }

@@ -15,6 +15,7 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.support.v7.app.AppCompatActivity
 import android.transition.AutoTransition
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -37,6 +38,7 @@ import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.io.File
+import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -95,6 +97,11 @@ class CameraActivity: AppCompatActivity() {
                     finish()
                 }
                 is CameraViewModel.State.PhotoDeclined -> {
+                    try {
+                        File(it.declinedUri.path).delete()
+                    } catch (e: IOException) {
+                        Log.e("CameraActivity", "Failed to delete previous image", e)
+                    }
                     animateButtonChange(true)
                     imagePreviewView.setImageBitmap(null)
                     takePictureButton.isEnabled = true
