@@ -15,10 +15,6 @@ import android.view.ViewGroup
 import com.tylersuehr.chips.ChipsInputLayout
 import com.tylersuehr.chips.data.Chip
 import com.tylersuehr.chips.data.ChipSelectionObserver
-import io.github.jamiesanson.brew.R
-import io.github.jamiesanson.brew.addPhotoHeader
-import io.github.jamiesanson.brew.drinkTagInput
-import io.github.jamiesanson.brew.drinkTitleInput
 import io.github.jamiesanson.brew.util.PermissionDelegate
 import io.github.jamiesanson.brew.util.anim.CircularRevealUtil
 import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
@@ -47,8 +43,15 @@ import io.github.jamiesanson.brew.ui.create.drink.photo.Gallery
 import io.github.jamiesanson.brew.ui.create.drink.photo.PhotoSourceChooser
 import io.github.jamiesanson.brew.util.GlideImageEngine
 import android.provider.Settings
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions.*
+import com.bumptech.glide.request.target.BitmapImageViewTarget
+import io.github.jamiesanson.brew.*
 import io.github.jamiesanson.brew.ui.camera.CameraActivity
 import io.github.jamiesanson.brew.ui.camera.CameraActivity.Companion.RESULT_PHOTO_URI
+import io.github.jamiesanson.brew.util.extension.observe
+import kotlinx.android.synthetic.main.view_holder_photo_header.view.*
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.support.v4.startActivityForResult
 
@@ -91,17 +94,27 @@ class DrinkFragment : BackButtonListener, Fragment() {
         }
 
         recyclerView.withModels {
-            addPhotoHeader {
-                id("photo header")
-                clickListener { _: View ->
-                    showImageChooser()
+            if (viewModel.hasPhoto) {
+                photoHeader {
+                    id("photo header")
+                    photo(viewModel.photo!!)
+                    clickListener { _: View ->
+                        // No-op: Add another photo when supported
+                    }
+                }
+            } else {
+                addPhotoHeader {
+                    id("add photo header")
+                    clickListener { _: View ->
+                        showImageChooser()
+                    }
                 }
             }
 
             drinkTitleInput {
                 id("title input")
                 textWatcher( OnTextChanged {
-                    Log.d("DrinkFragment", "Title: $it")
+                    viewModel.postAction(TitleChanged(it.toString()))
                 })
             }
 
@@ -113,8 +126,10 @@ class DrinkFragment : BackButtonListener, Fragment() {
                     setupChipSelectionObserver(view.dataBinding.root.chipsInputLayout)
                 }
             }
-
         }
+
+        // Ensure RecyclerView is built before observing changes
+        viewModel.state.observe(this, this::onStateChanged)
     }
 
     override fun onBackPressed(): Boolean {
@@ -137,9 +152,15 @@ class DrinkFragment : BackButtonListener, Fragment() {
         }
     }
 
+    private fun onStateChanged(state: DrinkState?) {
+        state ?: return
+        if (recyclerView != null) {
+            recyclerView.requestModelBuild()
+        }
+    }
+
     private fun onDonePressed() {
         viewModel.postAction(DrinkSubmitted())
-        onBackPressed()
     }
 
     private fun showImageChooser() {
@@ -192,18 +213,29 @@ class DrinkFragment : BackButtonListener, Fragment() {
 
     private fun setupChipSelectionObserver(layout: ChipsInputLayout) {
         layout.addChipSelectionObserver( object: ChipSelectionObserver {
-            override fun onChipSelected(p0: Chip?) {
-                Log.d("DrinkFragment", "Selected: ${p0?.title}")
-
+            override fun onChipSelected(chip: Chip?) {
+                chip ?: return
+                viewModel.postAction(TagAdded(chip.title))
             }
 
-            override fun onChipDeselected(p0: Chip?) {
-                Log.d("DrinkFragment", "Deselected: ${p0?.title}")
+            override fun onChipDeselected(chip: Chip?) {
+                chip ?: return
+                viewModel.postAction(TagRemoved(chip.title))
             }
-
         })
     }
 
+    private fun PhotoHeaderBindingModelBuilder.photo(uri: Uri) {
+        this.onBind { _, view, _ ->
+            Glide.with(context!!)
+                    .asBitmap()
+                    .load(uri)
+                    .apply(diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
+                    .apply(centerCropTransform())
+                    .apply(downsampleOf(com.bumptech.glide.load.resource.bitmap.DownsampleStrategy.AT_MOST))
+                    .into(BitmapImageViewTarget(view.dataBinding.root.photoImageView))
+        }
+    }
     private fun showCircularReveal(view: View) {
         var revealSettings = arguments?.getParcelable(ARG_REVEAL_SETTINGS) as RevealAnimationSettings
 
@@ -211,7 +243,6 @@ class DrinkFragment : BackButtonListener, Fragment() {
         revealSettings = revealSettings.copy(
                 duration = 500L,
                 targetView = view,
-                backgroundView = view.revealScrim,
                 statusBarAnimationSettings = StatusBarAnimationSettings(
                         startColor = activity?.window?.statusBarColor ?: 0,
                         endColor = ContextCompat.getColor(context!!, R.color.colorAccentDark),
@@ -244,7 +275,6 @@ class DrinkFragment : BackButtonListener, Fragment() {
         revealSettings = revealSettings.copy(
                 duration = 300L,
                 targetView = view,
-                backgroundView = revealScrim,
                 statusBarAnimationSettings = StatusBarAnimationSettings(
                         startColor = activity?.window?.statusBarColor ?: 0,
                         endColor = ContextCompat.getColor(context!!, R.color.colorPrimaryDark),

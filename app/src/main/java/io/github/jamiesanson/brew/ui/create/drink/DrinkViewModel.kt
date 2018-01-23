@@ -16,7 +16,19 @@ class DrinkViewModel @Inject constructor(
 
     private var model = Drink()
 
-    val actions: LiveData<DrinkAction> = MutableLiveData()
+    val hasPhoto: Boolean
+        get() = model.photoUri != null
+
+    val photo: Uri?
+        get() = model.photoUri
+
+    val title: String
+        get() = model.name
+
+    val tags: List<String>
+        get() = model.tags
+
+    private val actions: LiveData<DrinkAction> = MutableLiveData()
     val state: LiveData<DrinkState> = MutableLiveData()
 
     init {
@@ -40,6 +52,10 @@ class DrinkViewModel @Inject constructor(
             is TitleChanged -> model.copy(name = action.title)
             null -> model
         }
+    }
+
+    private fun onStateChange(state: DrinkState) {
+
     }
 
     fun postAction(action: DrinkAction) {

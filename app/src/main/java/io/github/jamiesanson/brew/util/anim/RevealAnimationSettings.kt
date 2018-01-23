@@ -19,7 +19,6 @@ data class RevealAnimationSettings(
         @ColorInt val endColor: Int = 0,
         val duration: Long = 500,
         var targetView: @RawValue View? = null,
-        var backgroundView: @RawValue View? = null,
         var statusBarAnimationSettings: @RawValue StatusBarAnimationSettings? = null
 ): Parcelable
 

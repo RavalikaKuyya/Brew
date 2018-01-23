@@ -7,9 +7,6 @@ import android.os.Build
 import android.annotation.TargetApi
 
 import android.view.View
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
 
 /**
  * Utility object for circularly revealing views easily. To be used on fragments when opened from a
@@ -31,12 +28,6 @@ object CircularRevealUtil {
                         interpolator = FastOutSlowInInterpolator()
                         addListener(object : AnimatorListenerAdapter() {
                             override fun onAnimationStart(animation: Animator?) {
-                                backgroundView?.setBackgroundColor(startColor)
-                                async(UI) {
-                                    delay((anim.duration * 0.4f).toLong())
-                                    startBackgroundColorAnimation(backgroundView, startColor, endColor, 300)
-                                }
-
                                 if (statusBarAnimationSettings != null) {
                                     startStatusBarColorAnimation(statusBarAnimationSettings!!, revealSettings.duration)
                                 }
@@ -60,12 +51,8 @@ object CircularRevealUtil {
             anim.interpolator = FastOutSlowInInterpolator()
             anim.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationStart(animation: Animator?) {
-                    if (backgroundView != null) {
-                        startBackgroundColorAnimation(backgroundView, endColor, startColor, revealSettings.duration)
-
-                        if (statusBarAnimationSettings != null) {
-                            startStatusBarColorAnimation(statusBarAnimationSettings!!, revealSettings.duration)
-                        }
+                    if (statusBarAnimationSettings != null) {
+                        startStatusBarColorAnimation(statusBarAnimationSettings!!, revealSettings.duration)
                     }
                 }
 
@@ -78,16 +65,6 @@ object CircularRevealUtil {
             )
             anim.start()
         }
-    }
-
-    private fun startBackgroundColorAnimation(view: View?, startColor: Int, endColor: Int, duration: Long) {
-        val anim = ValueAnimator()
-        anim.setIntValues(startColor, endColor)
-        anim.setEvaluator(ArgbEvaluator())
-        anim.duration = duration
-        anim.interpolator = FastOutSlowInInterpolator()
-        anim.addUpdateListener { valueAnimator -> view?.setBackgroundColor(valueAnimator.animatedValue as Int) }
-        anim.start()
     }
 
     private fun startStatusBarColorAnimation(statusBarAnimationSettings: StatusBarAnimationSettings, dur: Long) {

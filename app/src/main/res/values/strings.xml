@@ -12,4 +12,5 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="choose_image">Choose Image From:</string>
+    <string name="add_a_photo">Add a photo</string>
 </resources>
