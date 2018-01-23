@@ -90,6 +90,8 @@ dependencies {
 
     implementation deps.gson
 
+    implementation deps.glideTransformations
+
     implementation deps.glide.glide
     kapt deps.glide.compiler
 

@@ -2,14 +2,23 @@ package io.github.jamiesanson.brew.ui.home
 
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
+import android.support.annotation.Px
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.github.jamiesanson.brew.R
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
+import com.bumptech.glide.request.target.BitmapImageViewTarget
+import io.github.jamiesanson.brew.*
 import io.github.jamiesanson.brew.ui.main.MainActivity
 import io.github.jamiesanson.brew.ui.main.fragment.NestedScrollListener
 import io.github.jamiesanson.brew.util.RobotoMonoRegular
@@ -18,7 +27,13 @@ import io.github.jamiesanson.brew.util.arch.BrewViewModelFactory
 import io.github.jamiesanson.brew.util.event.MoveToDrinkScreen
 import io.github.jamiesanson.brew.util.event.UiEventBus
 import io.github.jamiesanson.brew.util.extension.component
+import io.github.jamiesanson.brew.util.extension.observe
+import io.github.jamiesanson.brew.util.extension.withModels
+import jp.wasabeef.glide.transformations.BlurTransformation
+import jp.wasabeef.glide.transformations.CropTransformation
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.view_holder_drink_item.view.*
+import kotlinx.android.synthetic.main.view_holder_photo_header.view.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import javax.inject.Inject
 import kotlin.math.abs
@@ -45,6 +60,36 @@ class HomeFragment : Fragment() {
         initialiseToolbar()
         applyTypeface()
         floatingActionButton.onClick { onAddClicked(true) }
+        setupRecyclerView()
+        viewModel.drinkList.observe(this) {
+            if (recyclerView != null) {
+                recyclerView.requestModelBuild()
+            }
+        }
+    }
+
+    private fun setupRecyclerView() {
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView.withModels {
+            val drinks = viewModel.drinkList.value ?: emptyList()
+            if (drinks.isNotEmpty()) {
+                carouselTitle {
+                    id("drinks title")
+                    title("Your drinks")
+                }
+
+                for (drink in drinks) {
+                    drinkItem {
+                        id(drink.id)
+                        title(drink.name)
+                        tagsDisplay(drink.tags.take(3).joinToString(","))
+                        if (drink.photoUri != null) {
+                            photo(drink.photoUri!!)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun onAddClicked(fromFab: Boolean = false) {
@@ -101,6 +146,24 @@ class HomeFragment : Fragment() {
                         .start()
             }
         }
+    }
+
+    private fun DrinkItemBindingModelBuilder.photo(uri: Uri) {
+        this.onBind { _, view, _ ->
+            Glide.with(context!!)
+                    .asBitmap()
+                    .load(uri)
+                    .apply(bitmapTransform(MultiTransformation(
+                            BlurTransformation(),
+                            CropTransformation(196.toPx(), 124.toPx(), CropTransformation.CropType.CENTER))))
+                    .into(BitmapImageViewTarget(view.dataBinding.root.backgroundImageView))
+        }
+    }
+
+    @Px
+    private fun Int.toPx(): Int {
+        val scale = resources.displayMetrics.density
+        return (this * scale + 0.5f).toInt()
     }
 
     /**

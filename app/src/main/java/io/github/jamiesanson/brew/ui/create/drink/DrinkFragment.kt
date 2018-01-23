@@ -52,7 +52,6 @@ import io.github.jamiesanson.brew.ui.camera.CameraActivity.Companion.RESULT_PHOT
 import io.github.jamiesanson.brew.util.extension.observe
 import kotlinx.android.synthetic.main.view_holder_photo_header.view.*
 import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.support.v4.startActivityForResult
 
 class DrinkFragment : BackButtonListener, Fragment() {
@@ -244,6 +243,7 @@ class DrinkFragment : BackButtonListener, Fragment() {
                     .into(BitmapImageViewTarget(view.dataBinding.root.photoImageView))
         }
     }
+
     private fun showCircularReveal(view: View) {
         var revealSettings = arguments?.getParcelable(ARG_REVEAL_SETTINGS) as RevealAnimationSettings
 

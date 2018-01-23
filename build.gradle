@@ -21,7 +21,8 @@ buildscript {
         dexter: '4.2.0',
         glide: '4.4.0',
         fotoapparat: '2.0.2',
-        gson: '2.8.2'
+        gson: '2.8.2',
+        glideTransformations: '3.0.1'
     ]
 
     ext.deps = [
@@ -89,7 +90,8 @@ buildscript {
         matisse: "com.zhihu.android:matisse:${versions.matisse}",
         dexter: "com.karumi:dexter:${versions.dexter}",
         fotoapparat: "io.fotoapparat.fotoapparat:library:${versions.fotoapparat}",
-        gson: "com.google.code.gson:gson:${versions.gson}"
+        gson: "com.google.code.gson:gson:${versions.gson}",
+        glideTransformations: "jp.wasabeef:glide-transformations:${versions.glideTransformations}"
     ]
 
     repositories {

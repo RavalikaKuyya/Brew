@@ -67,7 +67,8 @@ class CameraActivity: AppCompatActivity() {
                     .checkPermissions(
                             activity = this@CameraActivity,
                             justification = "Some permissions are needed to use the camera",
-                            permission = Manifest.permission.CAMERA)
+                            permission = Manifest.permission.CAMERA,
+                            permissions = *arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE))
 
             if (permissionAccepted) {
                 fotoapparat = Fotoapparat(
