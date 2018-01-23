@@ -44,7 +44,6 @@ import io.github.jamiesanson.brew.ui.create.drink.photo.PhotoSourceChooser
 import io.github.jamiesanson.brew.util.GlideImageEngine
 import android.provider.Settings
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions.*
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import io.github.jamiesanson.brew.*
@@ -53,6 +52,7 @@ import io.github.jamiesanson.brew.ui.camera.CameraActivity.Companion.RESULT_PHOT
 import io.github.jamiesanson.brew.util.extension.observe
 import kotlinx.android.synthetic.main.view_holder_photo_header.view.*
 import org.jetbrains.anko.design.longSnackbar
+import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.support.v4.startActivityForResult
 
 class DrinkFragment : BackButtonListener, Fragment() {
@@ -135,7 +135,7 @@ class DrinkFragment : BackButtonListener, Fragment() {
     override fun onBackPressed(): Boolean {
         showCircularExit {
             eventBus.postEvent(ExitDrinkScreen())
-            viewModel.isViewRevealed = false
+            viewModel.clear()
         }
 
         return true
@@ -161,6 +161,16 @@ class DrinkFragment : BackButtonListener, Fragment() {
 
     private fun onDonePressed() {
         viewModel.postAction(DrinkSubmitted())
+
+        if (viewModel.modelNotEmpty) {
+            showCircularExit {
+                eventBus.postEvent(ExitDrinkScreen())
+                viewModel.isViewRevealed = false
+                viewModel.clear()
+            }
+        } else {
+            longSnackbar(coordinator, getString(R.string.drink_form_empty_error))
+        }
     }
 
     private fun showImageChooser() {
@@ -230,9 +240,7 @@ class DrinkFragment : BackButtonListener, Fragment() {
             Glide.with(context!!)
                     .asBitmap()
                     .load(uri)
-                    .apply(diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
                     .apply(centerCropTransform())
-                    .apply(downsampleOf(com.bumptech.glide.load.resource.bitmap.DownsampleStrategy.AT_MOST))
                     .into(BitmapImageViewTarget(view.dataBinding.root.photoImageView))
         }
     }

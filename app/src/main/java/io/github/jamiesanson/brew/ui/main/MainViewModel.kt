@@ -7,7 +7,6 @@ import io.github.jamiesanson.brew.util.event.ExitDrinkScreen
 import io.github.jamiesanson.brew.util.event.MoveToDrinkScreen
 import io.github.jamiesanson.brew.util.event.UiEvent
 import io.github.jamiesanson.brew.util.event.UiEventBus
-import ru.terrakok.cicerone.Router
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(

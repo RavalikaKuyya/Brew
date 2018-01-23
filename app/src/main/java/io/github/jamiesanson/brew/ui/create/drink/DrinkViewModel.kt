@@ -28,6 +28,9 @@ class DrinkViewModel @Inject constructor(
     val tags: List<String>
         get() = model.tags
 
+    val modelNotEmpty: Boolean
+        get() = photo != null || title.isNotEmpty() || tags.isNotEmpty()
+
     private val actions: LiveData<DrinkAction> = MutableLiveData()
     val state: LiveData<DrinkState> = MutableLiveData()
 
@@ -39,7 +42,9 @@ class DrinkViewModel @Inject constructor(
     private fun onAction(action: DrinkAction?) {
         model = when (action) {
             is DrinkSubmitted -> {
-                drinkRepository.addNewDrink(model)
+                if (modelNotEmpty) {
+                    drinkRepository.addNewDrink(model)
+                }
                 model
             }
             is PhotoChosen -> {
@@ -54,11 +59,17 @@ class DrinkViewModel @Inject constructor(
         }
     }
 
-    private fun onStateChange(state: DrinkState) {
-
-    }
-
     fun postAction(action: DrinkAction) {
         (actions as MutableLiveData).postValue(action)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        clear()
+    }
+
+    fun clear() {
+        model = Drink()
+        isViewRevealed = false
     }
 }

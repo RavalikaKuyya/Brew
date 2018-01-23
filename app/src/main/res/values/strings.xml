@@ -13,4 +13,5 @@
     <string name="gallery">Gallery</string>
     <string name="choose_image">Choose Image From:</string>
     <string name="add_a_photo">Add a photo</string>
+    <string name="drink_form_empty_error">The glass may not be half empty, but this form sure is. Fill out at least one field</string>
 </resources>
