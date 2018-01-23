@@ -130,15 +130,15 @@ class DrinkFragment : BackButtonListener, Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             val selected = Matisse.obtainResult(data)
-            viewModel.onPhotoAdded(selected.first())
+            viewModel.postAction(PhotoChosen(selected.first()))
         } else if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == RESULT_OK) {
             val photoUri = data?.getParcelableExtra<Uri>(RESULT_PHOTO_URI) ?: return
-            viewModel.onPhotoAdded(photoUri)
+            viewModel.postAction(PhotoChosen(photoUri))
         }
     }
 
     private fun onDonePressed() {
-        // TODO - Implement saving logic
+        viewModel.postAction(DrinkSubmitted())
         onBackPressed()
     }
 

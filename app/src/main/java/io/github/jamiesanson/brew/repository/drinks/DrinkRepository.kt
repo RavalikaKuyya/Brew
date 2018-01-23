@@ -13,15 +13,9 @@ class DrinkRepository(
 
     fun getDrinks(): LiveData<List<Drink>> = drinkDao.loadAllDrinks()
 
-    fun insertRandomDrink() {
+    fun addNewDrink(drink: Drink) {
         launch {
-            drinkDao.insertDrink(Drink(
-                    name = "test ${Random().nextInt()}",
-                    rating = Rating(
-                            score = 5.0,
-                            review = "Was alright thanks"
-                    )
-            ))
+            drinkDao.insertDrink(drink)
         }
     }
 }

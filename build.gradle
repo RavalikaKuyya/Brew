@@ -5,7 +5,7 @@ buildscript {
         supportLibrary: '27.0.2',
         androidPlugin: '3.0.1',
         androidTools: '26.0.0',
-        kotlin: '1.2.10',
+        kotlin: '1.2.20',
         coroutines: '0.20',
         anko: '0.10.2',
         arch: '1.0.0',
@@ -20,7 +20,8 @@ buildscript {
         matisse: '0.4.3',
         dexter: '4.2.0',
         glide: '4.4.0',
-        fotoapparat: '2.0.2'
+        fotoapparat: '2.0.2',
+        gson: '2.8.2'
     ]
 
     ext.deps = [
@@ -87,7 +88,8 @@ buildscript {
         chipinput: "com.github.tylersuehr7:chips-input-layout:${versions.chipinput}",
         matisse: "com.zhihu.android:matisse:${versions.matisse}",
         dexter: "com.karumi:dexter:${versions.dexter}",
-        fotoapparat: "io.fotoapparat.fotoapparat:library:${versions.fotoapparat}"
+        fotoapparat: "io.fotoapparat.fotoapparat:library:${versions.fotoapparat}",
+        gson: "com.google.code.gson:gson:${versions.gson}"
     ]
 
     repositories {

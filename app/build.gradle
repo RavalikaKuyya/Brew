@@ -84,6 +84,8 @@ dependencies {
 
     implementation deps.fotoapparat
 
+    implementation deps.gson
+
     implementation deps.glide.glide
     kapt deps.glide.compiler
 

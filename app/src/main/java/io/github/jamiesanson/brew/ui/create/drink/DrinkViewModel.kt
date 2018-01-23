@@ -4,15 +4,45 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.net.Uri
+import io.github.jamiesanson.brew.data.model.Drink
+import io.github.jamiesanson.brew.repository.drinks.DrinkRepository
 import javax.inject.Inject
 
-class DrinkViewModel @Inject constructor(): ViewModel() {
+class DrinkViewModel @Inject constructor(
+        private val drinkRepository: DrinkRepository
+): ViewModel() {
 
     var isViewRevealed = false
 
-    var photoUri: LiveData<Uri> = MutableLiveData()
+    private var model = Drink()
 
-    fun onPhotoAdded(uri: Uri) {
-        (photoUri as MutableLiveData).postValue(uri)
+    val actions: LiveData<DrinkAction> = MutableLiveData()
+    val state: LiveData<DrinkState> = MutableLiveData()
+
+    init {
+        (state as MutableLiveData).value = Empty()
+        actions.observeForever(this::onAction)
+    }
+
+    private fun onAction(action: DrinkAction?) {
+        model = when (action) {
+            is DrinkSubmitted -> {
+                drinkRepository.addNewDrink(model)
+                model
+            }
+            is PhotoChosen -> {
+                model.copy(photoUri = action.photo).apply {
+                    (state as MutableLiveData).postValue(PhotoPresent(this))
+                }
+            }
+            is TagAdded -> model.copy(tags = ArrayList(model.tags).apply { add(action.newTag) })
+            is TagRemoved -> model.copy(tags = ArrayList(model.tags).apply { remove(action.toRemove) })
+            is TitleChanged -> model.copy(name = action.title)
+            null -> model
+        }
+    }
+
+    fun postAction(action: DrinkAction) {
+        (actions as MutableLiveData).postValue(action)
     }
 }
