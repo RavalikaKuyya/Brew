@@ -5,8 +5,8 @@ package io.github.jamiesanson.brew.util
  */
 sealed class Font(val path: String)
 
-class QuicksandRegular: Font("fonts/Quicksand-Regular.ttf")
+object QuicksandRegular: Font("fonts/Quicksand-Regular.ttf")
 
-class QuicksandMedium: Font("fonts/Quicksand-Medium.ttf")
+object QuicksandMedium: Font("fonts/Quicksand-Medium.ttf")
 
-class RalewayRegular: Font("fonts/Raleway-Regular.ttf")
+object RalewayRegular: Font("fonts/Raleway-Regular.ttf")

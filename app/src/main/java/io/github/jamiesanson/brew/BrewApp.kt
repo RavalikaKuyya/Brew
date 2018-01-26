@@ -20,7 +20,7 @@ class BrewApp: Application() {
                 .build()
 
         CalligraphyConfig.initDefault(CalligraphyConfig.Builder()
-                .setDefaultFontPath(QuicksandRegular().path)
+                .setDefaultFontPath(QuicksandRegular.path)
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         )

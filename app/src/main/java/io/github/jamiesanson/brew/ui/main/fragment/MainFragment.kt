@@ -29,7 +29,7 @@ import javax.inject.Inject
  * This class is responsible for maintaining the main screens of the application,
  * those being the three screens accessible through bottom navigation
  */
-class MainFragment: NestedScrollListener, Fragment() {
+class MainFragment: Fragment() {
 
     @Inject
     lateinit var viewModelFactory: BrewViewModelFactory
@@ -45,7 +45,6 @@ class MainFragment: NestedScrollListener, Fragment() {
     private lateinit var profileTab: BottomTab
 
     private var lastSelected = ""
-    private var isAnimating = false
 
     private val bottomNavTabs
         get() = arrayOf(homeTab, discoverTab, profileTab)
@@ -83,23 +82,6 @@ class MainFragment: NestedScrollListener, Fragment() {
                 lastSelected = screenName ?: ""
             }
         })
-    }
-
-    override fun onScroll(direction: Direction) {
-        if (!isAnimating) {
-            val finalTranslation = when (direction) {
-                Direction.UP -> 0f
-                Direction.DOWN -> bottomNavigationView.height.toFloat()
-            }
-
-            bottomNavigationView
-                    .animate()
-                    .translationY(finalTranslation)
-                    .setDuration(200L)
-                    .withStartAction { isAnimating = true }
-                    .withEndAction { isAnimating = false }
-                    .start()
-        }
     }
 
     private fun initialiseFragments() {
