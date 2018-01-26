@@ -15,4 +15,5 @@
     <string name="add_a_photo">Add a photo</string>
     <string name="drink_form_empty_error">The glass may not be half empty, but this form sure is. Fill out at least one field</string>
     <string name="your_recent_drinks">Your recent drinks</string>
+    <string name="view_all">View all</string>
 </resources>

@@ -5,12 +5,14 @@ import android.content.Context
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.support.annotation.DimenRes
 import android.support.annotation.Px
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SnapHelper
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,9 +20,10 @@ import android.view.ViewGroup
 import com.airbnb.epoxy.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
-import com.bumptech.glide.request.target.BitmapImageViewTarget
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
+import com.bumptech.glide.request.RequestOptions.*
 import io.github.jamiesanson.brew.*
+import io.github.jamiesanson.brew.data.model.Drink
 import io.github.jamiesanson.brew.ui.main.MainActivity
 import io.github.jamiesanson.brew.ui.main.fragment.NestedScrollListener
 import io.github.jamiesanson.brew.util.RalewayRegular
@@ -67,17 +70,20 @@ class HomeFragment : Fragment() {
         applyTypeface()
         floatingActionButton.onClick { onAddClicked(true) }
         setupRecyclerView()
-        viewModel.drinkList.observe(this) {
-            if (recyclerView != null) {
-                recyclerView.requestModelBuild()
-            }
+        viewModel.recentDrinks.observe(this) {
+            rebuildRecyclerView(it ?: emptyList())
         }
     }
 
     private fun setupRecyclerView() {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.withModels {
-            val drinks = viewModel.drinkList.value ?: emptyList()
+        val drinks = viewModel.recentDrinks.value ?: emptyList()
+        rebuildRecyclerView(drinks)
+    }
+
+    private fun rebuildRecyclerView(drinks: List<Drink>) {
+        recyclerView?.withModels {
+
             if (drinks.isNotEmpty()) {
                 carouselTitle {
                     id("drinks title")
@@ -87,16 +93,22 @@ class HomeFragment : Fragment() {
                 carousel {
                     id("carousel")
                     models(
-                            drinks.map { DrinkItemBindingModel_().apply {
+                            ArrayList<DataBindingEpoxyModel>(drinks.map { DrinkItemBindingModel_().apply {
                                 id(it.id)
                                 title(it.name)
                                 tagsDisplay(it.tags.take(3).joinToString(","))
                                 if (it.photoUri != null) {
                                     photo(it.photoUri!!)
                                 }
-                            }}
+                            }}).apply {
+                                val added = add(ViewAllCarouselButtonBindingModel_().apply {
+                                    id("view all")
+                                    onClick { _ ->
+                                        Log.d("HomeFragment", "View all clicked")
+                                    }
+                                })
+                            }
                     )
-
                 }
             }
         }
@@ -161,20 +173,18 @@ class HomeFragment : Fragment() {
     private fun DrinkItemBindingModelBuilder.photo(uri: Uri) {
         this.onBind { _, view, _ ->
             Glide.with(context!!)
-                    .asBitmap()
                     .load(uri)
+                    .apply(placeholderOf(R.drawable.glide_placeholder))
+                    .transition(withCrossFade())
                     .apply(bitmapTransform(MultiTransformation(
                             BlurTransformation(),
-                            CropTransformation(196.toPx(), 124.toPx(), CropTransformation.CropType.CENTER))))
-                    .into(BitmapImageViewTarget(view.dataBinding.root.backgroundImageView))
+                            CropTransformation(R.dimen.drink_item_width.resolve(), R.dimen.drink_item_height.resolve(), CropTransformation.CropType.CENTER))))
+                    .into(view.dataBinding.root.backgroundImageView)
         }
     }
 
-    @Px
-    private fun Int.toPx(): Int {
-        val scale = resources.displayMetrics.density
-        return (this * scale + 0.5f).toInt()
-    }
+    @DimenRes
+    private fun Int.resolve(): Int = resources.getDimensionPixelSize(this)
 
     /**
      * Custom epoxy carousel DSL

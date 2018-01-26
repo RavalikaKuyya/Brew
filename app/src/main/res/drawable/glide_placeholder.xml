@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@color/material_grey100" />
+
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:tint="@color/material_grey300"
+            android:tintMode="src_in"
+            android:src="@drawable/ic_photo_black_24dp"/>
+    </item>
+</layer-list>
