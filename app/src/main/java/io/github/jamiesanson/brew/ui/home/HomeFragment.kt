@@ -1,6 +1,7 @@
 package io.github.jamiesanson.brew.ui.home
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -9,19 +10,21 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
+import android.support.v7.widget.SnapHelper
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.airbnb.epoxy.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import io.github.jamiesanson.brew.*
 import io.github.jamiesanson.brew.ui.main.MainActivity
 import io.github.jamiesanson.brew.ui.main.fragment.NestedScrollListener
-import io.github.jamiesanson.brew.util.RobotoMonoRegular
+import io.github.jamiesanson.brew.util.RalewayRegular
+import io.github.jamiesanson.brew.util.anim.GravitySnapHelper
 import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
 import io.github.jamiesanson.brew.util.arch.BrewViewModelFactory
 import io.github.jamiesanson.brew.util.event.MoveToDrinkScreen
@@ -33,7 +36,6 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.CropTransformation
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.view_holder_drink_item.view.*
-import kotlinx.android.synthetic.main.view_holder_photo_header.view.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import javax.inject.Inject
 import kotlin.math.abs
@@ -50,6 +52,10 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProviders
                 .of(activity as MainActivity, viewModelFactory)
                 .get(HomeViewModel::class.java)
+
+        Carousel.setDefaultGlobalSnapHelperFactory(object: Carousel.SnapHelperFactory() {
+            override fun buildSnapHelper(context: Context?): SnapHelper = GravitySnapHelper(Gravity.START)
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -75,18 +81,22 @@ class HomeFragment : Fragment() {
             if (drinks.isNotEmpty()) {
                 carouselTitle {
                     id("drinks title")
-                    title("Your drinks")
+                    title(getString(R.string.your_recent_drinks))
                 }
 
-                for (drink in drinks) {
-                    drinkItem {
-                        id(drink.id)
-                        title(drink.name)
-                        tagsDisplay(drink.tags.take(3).joinToString(","))
-                        if (drink.photoUri != null) {
-                            photo(drink.photoUri!!)
-                        }
-                    }
+                carousel {
+                    id("carousel")
+                    models(
+                            drinks.map { DrinkItemBindingModel_().apply {
+                                id(it.id)
+                                title(it.name)
+                                tagsDisplay(it.tags.take(3).joinToString(","))
+                                if (it.photoUri != null) {
+                                    photo(it.photoUri!!)
+                                }
+                            }}
+                    )
+
                 }
             }
         }
@@ -110,7 +120,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun applyTypeface() {
-        val typeface = Typeface.createFromAsset(context?.assets, RobotoMonoRegular().path)
+        val typeface = Typeface.createFromAsset(context?.assets, RalewayRegular().path)
         with (collapsingLayout) {
             setCollapsedTitleTypeface(typeface)
             setExpandedTitleTypeface(typeface)
@@ -164,6 +174,15 @@ class HomeFragment : Fragment() {
     private fun Int.toPx(): Int {
         val scale = resources.displayMetrics.density
         return (this * scale + 0.5f).toInt()
+    }
+
+    /**
+     * Custom epoxy carousel DSL
+     */
+    private inline fun EpoxyController.carousel(modelInitializer: CarouselModelBuilder.() -> Unit) {
+        CarouselModel_().apply {
+            modelInitializer()
+        }.addTo(this)
     }
 
     /**

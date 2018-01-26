@@ -5,7 +5,6 @@ import io.github.jamiesanson.brew.di.component.ApplicationComponent
 import io.github.jamiesanson.brew.di.component.DaggerApplicationComponent
 import io.github.jamiesanson.brew.di.module.ApplicationModule
 import io.github.jamiesanson.brew.util.QuicksandRegular
-import io.github.jamiesanson.brew.util.RobotoMonoRegular
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 
 class BrewApp: Application() {
@@ -26,5 +25,4 @@ class BrewApp: Application() {
                 .build()
         )
     }
-
 }
