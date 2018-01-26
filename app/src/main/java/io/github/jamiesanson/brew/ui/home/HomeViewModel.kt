@@ -11,7 +11,7 @@ class HomeViewModel @Inject constructor(
         private val drinksRepository: DrinkRepository
 ): ViewModel() {
 
-    val drinkList: LiveData<List<Drink>> = drinksRepository.getDrinks()
+    private val drinkList: LiveData<List<Drink>> = drinksRepository.getDrinks()
 
     // Take the last RECENT_COUNT recent drinks and reverse for display
     val recentDrinks: LiveData<List<Drink>> = Transformations.map(drinkList) {

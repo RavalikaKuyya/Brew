@@ -101,7 +101,7 @@ class HomeFragment : Fragment() {
                             ArrayList<DataBindingEpoxyModel>(drinks.map { drink -> DrinkItemBindingModel_().apply {
                                 id(drink.id)
                                 title(drink.name)
-                                tagsDisplay(drink.tags.take(3).joinToString(","))
+                                tagsDisplay(drink.tags.take(3).joinToString(", ") { it.capitalize() })
                                 if (drink.photoUri != null) {
                                     photo(drink.photoUri!!)
                                 }
