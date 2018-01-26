@@ -39,7 +39,10 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.CropTransformation
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.view_holder_drink_item.view.*
+import org.jetbrains.anko.cancelButton
+import org.jetbrains.anko.okButton
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.support.v4.alert
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -71,18 +74,20 @@ class HomeFragment : Fragment() {
         floatingActionButton.onClick { onAddClicked(true) }
         setupRecyclerView()
         viewModel.recentDrinks.observe(this) {
-            rebuildRecyclerView(it ?: emptyList())
+            if (recyclerView != null) {
+                recyclerView.requestModelBuild()
+            }
         }
     }
 
     private fun setupRecyclerView() {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val drinks = viewModel.recentDrinks.value ?: emptyList()
-        rebuildRecyclerView(drinks)
+        rebuildRecyclerView()
     }
 
-    private fun rebuildRecyclerView(drinks: List<Drink>) {
+    private fun rebuildRecyclerView() {
         recyclerView?.withModels {
+            val drinks = viewModel.recentDrinks.value ?: emptyList()
 
             if (drinks.isNotEmpty()) {
                 carouselTitle {
@@ -93,12 +98,23 @@ class HomeFragment : Fragment() {
                 carousel {
                     id("carousel")
                     models(
-                            ArrayList<DataBindingEpoxyModel>(drinks.map { DrinkItemBindingModel_().apply {
-                                id(it.id)
-                                title(it.name)
-                                tagsDisplay(it.tags.take(3).joinToString(","))
-                                if (it.photoUri != null) {
-                                    photo(it.photoUri!!)
+                            ArrayList<DataBindingEpoxyModel>(drinks.map { drink -> DrinkItemBindingModel_().apply {
+                                id(drink.id)
+                                title(drink.name)
+                                tagsDisplay(drink.tags.take(3).joinToString(","))
+                                if (drink.photoUri != null) {
+                                    photo(drink.photoUri!!)
+                                }
+                                onLongClick { _ ->
+                                    alert {
+                                        message = "Delete ${drink.name}?"
+                                        okButton {
+                                            viewModel.removeDrink(drink)
+                                        }
+                                        cancelButton {  }
+                                        show()
+                                    }
+                                    true
                                 }
                             }}).apply {
                                 val added = add(ViewAllCarouselButtonBindingModel_().apply {

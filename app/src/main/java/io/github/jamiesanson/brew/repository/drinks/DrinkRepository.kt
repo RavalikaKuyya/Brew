@@ -18,4 +18,10 @@ class DrinkRepository(
             drinkDao.insertDrink(drink)
         }
     }
+
+    fun removeDrink(drink: Drink) {
+        launch {
+            drinkDao.deleteDrink(drink)
+        }
+    }
 }

@@ -8,7 +8,7 @@ import io.github.jamiesanson.brew.repository.drinks.DrinkRepository
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
-        drinksRepository: DrinkRepository
+        private val drinksRepository: DrinkRepository
 ): ViewModel() {
 
     val drinkList: LiveData<List<Drink>> = drinksRepository.getDrinks()
@@ -16,6 +16,10 @@ class HomeViewModel @Inject constructor(
     // Take the last RECENT_COUNT recent drinks and reverse for display
     val recentDrinks: LiveData<List<Drink>> = Transformations.map(drinkList) {
         it.takeLast(RECENT_COUNT).reversed()
+    }
+
+    fun removeDrink(drink: Drink) {
+        drinksRepository.removeDrink(drink)
     }
 
     companion object {
