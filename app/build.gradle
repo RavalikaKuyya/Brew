@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 27
@@ -9,8 +10,9 @@ android {
         applicationId "io.github.jamiesanson.brew"
         minSdkVersion 21
         targetSdkVersion 27
+        multiDexEnabled true
         versionCode 1
-        versionName "1.0"
+        versionName "0.0-dev"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -92,6 +94,12 @@ dependencies {
 
     implementation deps.glideTransformations
 
+    implementation(deps.firebase.core)
+
+    implementation(deps.crashlytics) {
+        transitive = true
+    }
+
     implementation deps.glide.glide
     kapt deps.glide.compiler
 
@@ -108,3 +116,5 @@ kotlin {
 androidExtensions {
     experimental = true
 }
+
+apply plugin: 'com.google.gms.google-services'

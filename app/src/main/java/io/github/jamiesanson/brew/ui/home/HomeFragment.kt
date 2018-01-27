@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions.*
+import com.crashlytics.android.Crashlytics
 import io.github.jamiesanson.brew.*
 import io.github.jamiesanson.brew.ui.main.MainActivity
 import io.github.jamiesanson.brew.util.RalewayRegular
