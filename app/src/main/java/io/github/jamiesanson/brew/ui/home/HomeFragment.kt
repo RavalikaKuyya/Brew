@@ -3,11 +3,12 @@ package io.github.jamiesanson.brew.ui.home
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.Typeface
-import android.net.Uri
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.annotation.DimenRes
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SnapHelper
 import android.util.Log
@@ -15,18 +16,26 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.airbnb.epoxy.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions.*
-import com.crashlytics.android.Crashlytics
+import com.bumptech.glide.request.target.Target
 import io.github.jamiesanson.brew.*
+import io.github.jamiesanson.brew.data.model.Drink
 import io.github.jamiesanson.brew.ui.main.MainActivity
+import io.github.jamiesanson.brew.ui.main.navigator.ForwardToDrinkScreen
 import io.github.jamiesanson.brew.util.RalewayRegular
 import io.github.jamiesanson.brew.util.anim.GravitySnapHelper
 import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
 import io.github.jamiesanson.brew.util.arch.BrewViewModelFactory
+import io.github.jamiesanson.brew.util.event.MoveToAddDrinkScreen
 import io.github.jamiesanson.brew.util.event.MoveToDrinkScreen
 import io.github.jamiesanson.brew.util.event.UiEventBus
 import io.github.jamiesanson.brew.util.extension.component
@@ -98,9 +107,7 @@ class HomeFragment : Fragment() {
                                 id(drink.id)
                                 title(drink.name)
                                 tagsDisplay(drink.tags.take(3).joinToString(", ") { it.capitalize() })
-                                if (drink.photoUri != null) {
-                                    photo(drink.photoUri!!)
-                                }
+                                photo(drink)
                                 onLongClick { _ ->
                                     alert {
                                         message = "Delete ${drink.name}?"
@@ -131,7 +138,13 @@ class HomeFragment : Fragment() {
                 ContextCompat.getColor(context!!, if (fromFab) R.color.colorAccent else R.color.colorPrimary)
         )
 
-        eventBus.postEvent(MoveToDrinkScreen(revealSettings))
+        eventBus.postEvent(MoveToAddDrinkScreen(revealSettings))
+    }
+
+    private fun onDrinkClicked(sharedImageView: ImageView, drink: Drink) {
+        eventBus.postEvent(MoveToDrinkScreen(
+                command = ForwardToDrinkScreen(sharedImageView, drink)
+        ))
     }
 
     private fun getRevealSettings(startColor: Int): RevealAnimationSettings {
@@ -182,11 +195,18 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun DrinkItemBindingModelBuilder.photo(uri: Uri) {
+    private fun DrinkItemBindingModelBuilder.photo(drink: Drink) {
         this.onBind { _, view, _ ->
+            view.dataBinding.root.onClick {
+                it ?: return@onClick
+                onDrinkClicked(it.backgroundImageView, drink)
+            }
+
+            ViewCompat.setTransitionName(view.dataBinding.root.backgroundImageView, drink.id.toString())
+
             Glide.with(context!!)
-                    .load(uri)
-                    .apply(placeholderOf(R.drawable.glide_placeholder))
+                    .load(drink.photoUri)
+                    .apply(diskCacheStrategyOf(DiskCacheStrategy.ALL))
                     .transition(withCrossFade())
                     .apply(bitmapTransform(MultiTransformation(
                             BlurTransformation(),

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.animation.FastOutSlowInInterpolator
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,8 +25,8 @@ import io.github.jamiesanson.brew.util.extension.OnTextChanged
 import io.github.jamiesanson.brew.util.extension.component
 import io.github.jamiesanson.brew.util.extension.withModels
 import io.github.jamiesanson.brew.util.nav.BackButtonListener
-import kotlinx.android.synthetic.main.fragment_drink.*
-import kotlinx.android.synthetic.main.fragment_drink.view.*
+import kotlinx.android.synthetic.main.fragment_create_drink.*
+import kotlinx.android.synthetic.main.fragment_create_drink.view.*
 import kotlinx.android.synthetic.main.view_holder_drink_tag_input.view.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -54,7 +53,7 @@ import kotlinx.android.synthetic.main.view_holder_photo_header.view.*
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.support.v4.startActivityForResult
 
-class DrinkFragment : BackButtonListener, Fragment() {
+class AddDrinkFragment : BackButtonListener, Fragment() {
 
     @Inject lateinit var eventBus: UiEventBus
     @Inject lateinit var viewModelFactory: BrewViewModelFactory
@@ -69,7 +68,7 @@ class DrinkFragment : BackButtonListener, Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_drink, container, false)
+        val view = inflater.inflate(R.layout.fragment_create_drink, container, false)
 
         if (!viewModel.isViewRevealed && arguments?.containsKey(ARG_REVEAL_SETTINGS) == true) {
             showCircularReveal(view)
@@ -197,7 +196,7 @@ class DrinkFragment : BackButtonListener, Fragment() {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
             if (permissionsGranted) {
-                Matisse.from(this@DrinkFragment)
+                Matisse.from(this@AddDrinkFragment)
                         .choose(MimeType.of(MimeType.PNG, MimeType.JPEG))
                         .maxSelectable(1)
                         .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)

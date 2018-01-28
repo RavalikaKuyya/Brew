@@ -3,10 +3,7 @@ package io.github.jamiesanson.brew.ui.main
 import android.arch.lifecycle.ViewModel
 import io.github.jamiesanson.brew.ui.main.navigator.BrewRouter
 import io.github.jamiesanson.brew.ui.main.navigator.Screens
-import io.github.jamiesanson.brew.util.event.ExitDrinkScreen
-import io.github.jamiesanson.brew.util.event.MoveToDrinkScreen
-import io.github.jamiesanson.brew.util.event.UiEvent
-import io.github.jamiesanson.brew.util.event.UiEventBus
+import io.github.jamiesanson.brew.util.event.*
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -30,10 +27,11 @@ class MainViewModel @Inject constructor(
 
     private fun onUiEvent(event: UiEvent?) {
         when (event) {
-            is MoveToDrinkScreen -> router?.navigateTo(
+            is MoveToAddDrinkScreen -> router?.navigateTo(
                     Screens.ADD_DRINK_SCREEN,
                     event.settings)
             is ExitDrinkScreen -> router?.backFromDrinkScreen()
+            is MoveToDrinkScreen -> router?.executeCommand(event.command)
             null -> {}
         }
     }

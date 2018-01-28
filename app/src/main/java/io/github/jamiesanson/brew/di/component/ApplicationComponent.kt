@@ -8,7 +8,7 @@ import io.github.jamiesanson.brew.di.module.NavigationModule
 import io.github.jamiesanson.brew.di.module.RepositoryModule
 import io.github.jamiesanson.brew.di.scope.ApplicationScope
 import io.github.jamiesanson.brew.ui.camera.CameraActivity
-import io.github.jamiesanson.brew.ui.create.drink.DrinkFragment
+import io.github.jamiesanson.brew.ui.create.drink.AddDrinkFragment
 import io.github.jamiesanson.brew.ui.home.HomeFragment
 import io.github.jamiesanson.brew.ui.main.MainActivityComponent
 import io.github.jamiesanson.brew.ui.main.MainActivityModule
@@ -32,7 +32,7 @@ interface ApplicationComponent {
 
     fun inject(fragment: MainFragment)
 
-    fun inject(fragment: DrinkFragment)
+    fun inject(fragment: AddDrinkFragment)
 
     fun plus(module: MainActivityModule): MainActivityComponent
 }

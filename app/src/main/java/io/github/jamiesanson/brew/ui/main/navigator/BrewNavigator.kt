@@ -4,11 +4,18 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import io.github.jamiesanson.brew.ui.create.drink.DrinkFragment
-import io.github.jamiesanson.brew.ui.create.drink.DrinkFragment.Companion.ARG_REVEAL_SETTINGS
+import android.support.v4.app.FragmentTransaction
+import android.support.v4.view.ViewCompat
+import io.github.jamiesanson.brew.data.model.Drink
+import io.github.jamiesanson.brew.ui.create.drink.AddDrinkFragment
+import io.github.jamiesanson.brew.ui.create.drink.AddDrinkFragment.Companion.ARG_REVEAL_SETTINGS
+import io.github.jamiesanson.brew.ui.drink.DrinkFragment
+import io.github.jamiesanson.brew.ui.drink.DrinkFragment.Companion.ARG_DRINK
 import io.github.jamiesanson.brew.ui.main.fragment.MainFragment
 import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
+import org.jetbrains.anko.bundleOf
 import ru.terrakok.cicerone.android.SupportFragmentNavigator
+import ru.terrakok.cicerone.commands.Back
 import ru.terrakok.cicerone.commands.Command
 import ru.terrakok.cicerone.commands.Forward
 
@@ -20,12 +27,17 @@ class BrewNavigator(
     override fun createFragment(screenKey: String?, data: Any?): Fragment = when (screenKey) {
         Screens.MAIN_SCREEN -> MainFragment()
         Screens.ADD_DRINK_SCREEN -> {
-            val fragment = DrinkFragment()
+            val fragment = AddDrinkFragment()
             if (data != null) {
                 val args = Bundle()
                 args.putParcelable(ARG_REVEAL_SETTINGS, data as RevealAnimationSettings)
                 fragment.arguments = args
             }
+            fragment
+        }
+        Screens.DRINK_SCREEN -> {
+            val fragment = DrinkFragment()
+            fragment.arguments = bundleOf(ARG_DRINK to data as Drink)
             fragment
         }
         else -> throw IllegalArgumentException("Screen key doesn't map to fragment ($screenKey)")
@@ -42,6 +54,16 @@ class BrewNavigator(
         }
     }
 
+    override fun setupFragmentTransactionAnimation(command: Command?, currentFragment: Fragment?, nextFragment: Fragment?, fragmentTransaction: FragmentTransaction?) {
+        if (command is ForwardToDrinkScreen && nextFragment is DrinkFragment) {
+            fragmentTransaction?.addSharedElement(command.imageView, ViewCompat.getTransitionName(command.imageView))
+        } else if (command is Back && currentFragment is DrinkFragment) {
+            // TODO: Setup shared element
+        } else {
+            super.setupFragmentTransactionAnimation(command, currentFragment, nextFragment, fragmentTransaction)
+        }
+    }
+
     override fun applyCommand(command: Command?) {
         if (command is Forward && command.screenKey == Screens.ADD_DRINK_SCREEN) {
             if (fragmentManager.findFragmentByTag(Screens.ADD_DRINK_SCREEN) == null) {
@@ -52,7 +74,7 @@ class BrewNavigator(
                         .add(containerId, fragment, command.screenKey)
                         .commitNow()
             }
-        } else if (command is BackFromDrinkScreen) {
+        } else if (command is BackFromAddDrinkScreen) {
             if (fragmentManager.findFragmentByTag(Screens.ADD_DRINK_SCREEN) != null) {
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentTransaction
