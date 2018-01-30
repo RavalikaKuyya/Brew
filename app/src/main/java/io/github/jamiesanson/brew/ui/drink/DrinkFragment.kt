@@ -23,7 +23,6 @@ import com.bumptech.glide.request.target.Target
 import io.github.jamiesanson.brew.R
 import io.github.jamiesanson.brew.data.model.Drink
 import io.github.jamiesanson.brew.util.RalewayRegular
-import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.CropTransformation
 import kotlinx.android.synthetic.main.fragment_drink.*
 

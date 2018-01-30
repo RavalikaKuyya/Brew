@@ -1,6 +1,7 @@
 package io.github.jamiesanson.brew
 
 import android.app.Application
+import android.content.Context
 import io.github.jamiesanson.brew.di.component.ApplicationComponent
 import io.github.jamiesanson.brew.di.component.DaggerApplicationComponent
 import io.github.jamiesanson.brew.di.module.ApplicationModule
@@ -13,6 +14,7 @@ class BrewApp: Application() {
 
     override fun onCreate() {
         super.onCreate()
+        INSTANCE = this
 
         applicationComponent = DaggerApplicationComponent
                 .builder()
@@ -24,5 +26,9 @@ class BrewApp: Application() {
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         )
+    }
+
+    companion object {
+        lateinit var INSTANCE: BrewApp
     }
 }

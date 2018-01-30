@@ -1,28 +1,23 @@
 package io.github.jamiesanson.brew.ui.home
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Transformations
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import io.github.jamiesanson.brew.data.model.Drink
-import io.github.jamiesanson.brew.repository.drinks.DrinkRepository
+import io.github.jamiesanson.brew.util.event.RebuildHomescreen
+import io.github.jamiesanson.brew.util.event.UiEventBus
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
-        private val drinksRepository: DrinkRepository
+        uiEventBus: UiEventBus
 ): ViewModel() {
 
-    private val drinkList: LiveData<List<Drink>> = drinksRepository.getDrinks()
+    val rebuildTrigger: LiveData<Unit> = MutableLiveData()
 
-    // Take the last RECENT_COUNT recent drinks and reverse for display
-    val recentDrinks: LiveData<List<Drink>> = Transformations.map(drinkList) {
-        it.takeLast(RECENT_COUNT).reversed()
-    }
-
-    fun removeDrink(drink: Drink) {
-        drinksRepository.removeDrink(drink)
-    }
-
-    companion object {
-        const val RECENT_COUNT = 5
+    init {
+        uiEventBus.events.observeForever {
+            if (it is RebuildHomescreen) {
+                (rebuildTrigger as MutableLiveData).postValue(null)
+            }
+        }
     }
 }

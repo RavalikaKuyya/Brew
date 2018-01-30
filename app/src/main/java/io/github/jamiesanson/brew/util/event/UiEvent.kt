@@ -13,3 +13,5 @@ class MoveToAddDrinkScreen(val settings: RevealAnimationSettings?): UiEvent()
 class MoveToDrinkScreen(val command: Command): UiEvent()
 
 class ExitDrinkScreen: UiEvent()
+
+class RebuildHomescreen: UiEvent()
