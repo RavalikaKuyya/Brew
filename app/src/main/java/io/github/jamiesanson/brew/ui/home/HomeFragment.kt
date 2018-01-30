@@ -20,7 +20,6 @@ import io.github.jamiesanson.brew.util.RalewayRegular
 import io.github.jamiesanson.brew.util.anim.GravitySnapHelper
 import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
 import io.github.jamiesanson.brew.util.arch.BrewViewModelFactory
-import io.github.jamiesanson.brew.util.epoxy.EpoxyContentFactory
 import io.github.jamiesanson.brew.util.event.MoveToAddDrinkScreen
 import io.github.jamiesanson.brew.util.event.UiEventBus
 import io.github.jamiesanson.brew.util.extension.component
@@ -71,12 +70,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun rebuildRecyclerView() {
-        val factory = EpoxyContentFactory(
-                ViewModelProviders
-                .of(activity as MainActivity, viewModelFactory))
+        val provider = ViewModelProviders.of(activity!!, viewModelFactory)
 
         recyclerView?.withModels {
-            val callback = factory.instantiate(context!!, HomeContent())
+            val callback = HomeContent().buildCallbackWith(context!!, provider)
             callback()
         }
     }
