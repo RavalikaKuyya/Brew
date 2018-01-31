@@ -8,7 +8,10 @@ import io.github.jamiesanson.brew.di.scope.ApplicationScope
 import io.github.jamiesanson.brew.util.event.UiEventBus
 import io.github.jamiesanson.brew.util.nav.LocalCiceroneCache
 
-@Module(includes = [ViewModelModule::class])
+@Module(includes = [
+    ViewModelModule::class,
+    ContentModule::class
+])
 class ApplicationModule(private val application: Application) {
 
     @Provides

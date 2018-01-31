@@ -24,7 +24,7 @@ import io.github.jamiesanson.brew.util.event.MoveToAddDrinkScreen
 import io.github.jamiesanson.brew.util.event.UiEventBus
 import io.github.jamiesanson.brew.util.extension.component
 import io.github.jamiesanson.brew.util.extension.observe
-import io.github.jamiesanson.brew.util.extension.withModels
+import io.github.jamiesanson.brew.util.extension.withContent
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import javax.inject.Inject
@@ -34,6 +34,7 @@ class HomeFragment : Fragment() {
 
     @Inject lateinit var eventBus: UiEventBus
     @Inject lateinit var viewModelFactory: BrewViewModelFactory
+    @Inject lateinit var content: HomeContent
     private lateinit var viewModel: HomeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,12 +71,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun rebuildRecyclerView() {
-        val provider = ViewModelProviders.of(activity!!, viewModelFactory)
-
-        recyclerView?.withModels {
-            val callback = HomeContent().buildCallbackWith(context!!, provider)
-            callback()
-        }
+        recyclerView?.withContent(content)
     }
 
     private fun onAddClicked(fromFab: Boolean = false) {

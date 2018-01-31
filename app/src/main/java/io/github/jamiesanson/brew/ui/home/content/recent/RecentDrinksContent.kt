@@ -37,12 +37,12 @@ class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
 
         if (drinks.isNotEmpty()) {
             carouselTitle {
-                id("drinks title")
+                id(TITLE_ID)
                 title(context.getString(R.string.your_recent_drinks))
             }
 
             carousel {
-                id("carousel")
+                id(CAROUSEL_ID)
                 models(
                         ArrayList<DataBindingEpoxyModel>(drinks.map { drink -> DrinkItemBindingModel_().apply {
                             id(drink.id)
@@ -61,10 +61,10 @@ class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
                                 true
                             }
                         }}).apply {
-                            val added = add(ViewAllCarouselButtonBindingModel_().apply {
-                                id("view all")
+                            add(ViewAllCarouselButtonBindingModel_().apply {
+                                id(VIEW_ALL_ID)
                                 onClick { _ ->
-                                    Log.d("HomeFragment", "View all clicked")
+                                    Log.d(TAG, "View all clicked")
                                 }
                             })
                         }
@@ -102,7 +102,6 @@ class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
         }
     }
 
-
     /**
      * Custom epoxy carousel DSL
      */
@@ -110,5 +109,12 @@ class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
         CarouselModel_().apply {
             modelInitializer()
         }.addTo(this)
+    }
+
+    companion object {
+        private const val TAG = "RecentDrinksContent"
+        const val TITLE_ID = TAG + "_title"
+        const val CAROUSEL_ID = TAG + "_carousel"
+        const val VIEW_ALL_ID = TAG + "_view_all"
     }
 }
