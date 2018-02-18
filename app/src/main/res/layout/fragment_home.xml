@@ -22,14 +22,15 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways|snap">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsingLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways|snap"
             app:title="@string/app_name">
 
             <android.support.v4.widget.Space

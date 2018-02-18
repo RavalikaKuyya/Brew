@@ -8,7 +8,9 @@ import io.github.jamiesanson.brew.util.epoxy.EpoxyContentProvider
 
 class HomeContent(viewModelFactory: BrewViewModelFactory) : EpoxyContentProvider(viewModelFactory) {
     override val content: List<EpoxyContent<out ViewModel>>
-        get() = listOf(
-            RecentDrinksContent()
-        )
+        get() = contentList
+
+    var contentList: List<EpoxyContent<out ViewModel>> = arrayListOf(
+            RecentDrinksContent(asCarousel = true)
+    )
 }

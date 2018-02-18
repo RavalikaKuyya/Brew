@@ -17,3 +17,5 @@ class ExitAddDrinkScreen : UiEvent()
 class ExitDrinkScreen: UiEvent()
 
 class RebuildHomescreen: UiEvent()
+
+class ViewAllClicked: UiEvent()

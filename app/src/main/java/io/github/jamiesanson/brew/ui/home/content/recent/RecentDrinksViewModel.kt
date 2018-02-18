@@ -15,9 +15,8 @@ class RecentDrinksViewModel @Inject constructor(
         private val eventBus: UiEventBus
 ): ViewModel() {
 
-    // Take the last RECENT_COUNT recent drinks and reverse for display
     val recentDrinks: LiveData<List<Drink>> = Transformations.map(drinksRepository.getDrinks()) {
-        it.takeLast(RECENT_COUNT).reversed()
+        it.reversed()
     }
 
     init {

@@ -57,9 +57,13 @@ class HomeFragment : Fragment() {
         floatingActionButton.onClick { onAddClicked(true) }
         setupRecyclerView()
 
-        viewModel.rebuildTrigger.observe(this) {
-            if (recyclerView != null) {
-                recyclerView.requestModelBuild()
+        viewModel.rebuildTrigger.observe(this) { force ->
+            recyclerView?.let {
+                if (force == true) {
+                    rebuildRecyclerView()
+                } else {
+                    recyclerView.requestModelBuild()
+                }
             }
         }
     }

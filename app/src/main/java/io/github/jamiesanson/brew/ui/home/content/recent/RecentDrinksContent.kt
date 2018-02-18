@@ -21,6 +21,7 @@ import io.github.jamiesanson.brew.ui.main.navigator.ForwardToDrinkScreen
 import io.github.jamiesanson.brew.util.epoxy.BuildCallback
 import io.github.jamiesanson.brew.util.epoxy.EpoxyContent
 import io.github.jamiesanson.brew.util.event.MoveToDrinkScreen
+import io.github.jamiesanson.brew.util.event.ViewAllClicked
 import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.CropTransformation
 import kotlinx.android.synthetic.main.view_holder_drink_item.view.*
@@ -28,8 +29,11 @@ import org.jetbrains.anko.alert
 import org.jetbrains.anko.cancelButton
 import org.jetbrains.anko.okButton
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import android.app.Activity
 
-class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
+
+
+class RecentDrinksContent(val asCarousel: Boolean): EpoxyContent<RecentDrinksViewModel>() {
 
     override val viewModelClass = RecentDrinksViewModel::class.java
 
@@ -37,40 +41,69 @@ class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
         val drinks = viewModel.recentDrinks.value ?: emptyList()
 
         if (drinks.isNotEmpty()) {
-            carouselTitle {
-                id(TITLE_ID)
-                title(context.getString(R.string.your_recent_drinks))
-            }
+            if (asCarousel) {
+                carouselTitle {
+                    id(TITLE_ID)
+                    title(context.getString(R.string.your_recent_drinks))
+                }
 
-            carousel {
-                id(CAROUSEL_ID)
-                hasFixedSize(true)
-                models(
-                        ArrayList<DataBindingEpoxyModel>(drinks.map { drink -> DrinkItem().apply {
-                            id(drink.id)
-                            title(drink.name)
-                            tagsDisplay(drink.tags.take(3).joinToString(", ") { it.capitalize() })
-                            photo(context, drink)
-                            onLongClick { _ ->
-                                context.alert {
-                                    message = "Delete ${drink.name}?"
-                                    okButton {
-                                        viewModel.removeDrink(drink)
+                carousel {
+                    id(CAROUSEL_ID)
+                    hasFixedSize(true)
+                    models(
+                            ArrayList<DataBindingEpoxyModel>(drinks.take(RecentDrinksViewModel.RECENT_COUNT).map { drink ->
+                                DrinkItem().apply {
+                                    id(drink.id)
+                                    title(drink.name)
+                                    tagsDisplay(drink.tags.take(3).joinToString(", ") { it.capitalize() })
+                                    photo(context, drink)
+                                    onLongClick { _ ->
+                                        context.alert {
+                                            message = "Delete ${drink.name}?"
+                                            okButton {
+                                                viewModel.removeDrink(drink)
+                                            }
+                                            cancelButton { }
+                                            show()
+                                        }
+                                        true
                                     }
-                                    cancelButton {  }
-                                    show()
                                 }
-                                true
+                            }).apply {
+                                add(ViewAllCarouselButtonBindingModel_().apply {
+                                    id(VIEW_ALL_ID)
+                                    onClick { _ ->
+                                        viewModel.postEvent(ViewAllClicked())
+                                    }
+                                })
                             }
-                        }}).apply {
-                            add(ViewAllCarouselButtonBindingModel_().apply {
-                                id(VIEW_ALL_ID)
-                                onClick { _ ->
-                                    Log.d(TAG, "View all clicked")
+                    )
+                }
+            } else {
+                carouselTitle {
+                    id(TITLE_ID)
+                    title(context.getString(R.string.your_recent_drinks))
+                }
+
+                for (drink in drinks) {
+                    fullWidthDrinkItem {
+                        id(drink.id)
+                        title(drink.name)
+                        tagsDisplay(drink.tags.take(3).joinToString(", ") { it.capitalize() })
+                        photo(context, drink)
+                        onLongClick { _ ->
+                            context.alert {
+                                message = "Delete ${drink.name}?"
+                                okButton {
+                                    viewModel.removeDrink(drink)
                                 }
-                            })
+                                cancelButton { }
+                                show()
+                            }
+                            true
                         }
-                )
+                    }
+                }
             }
         }
     }
@@ -102,8 +135,6 @@ class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
                 onDrinkClicked(it.backgroundImageView, drink)
             }
 
-            ViewCompat.setTransitionName(view.dataBinding.root.backgroundImageView, drink.id.toString())
-
             Glide.with(context)
                     .load(drink.photoUri)
                     .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
@@ -112,6 +143,35 @@ class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
                             BlurTransformation(),
                             CropTransformation(R.dimen.drink_item_width.resolve(), R.dimen.drink_item_height.resolve(), CropTransformation.CropType.CENTER))))
                     .into(view.dataBinding.root.backgroundImageView)
+        }
+    }
+
+    private fun FullWidthDrinkItemBindingModelBuilder.photo(context: Context, drink: Drink) {
+        @DimenRes
+        fun Int.resolve(): Int = context.resources.getDimensionPixelSize(this)
+
+        this.onBind { _, view, _ ->
+            view.dataBinding.root.onClick {
+                it ?: return@onClick
+                onDrinkClicked(it.backgroundImageView, drink)
+            }
+
+            val imageView = view.dataBinding.root.backgroundImageView
+            val metrics = android.util.DisplayMetrics()
+            (context as Activity).windowManager
+                    .defaultDisplay
+                    .getMetrics(metrics)
+
+            val margin = context.resources.getDimensionPixelSize(R.dimen.full_width_drink_margin) * 2
+
+            Glide.with(context)
+                    .load(drink.photoUri)
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .apply(RequestOptions.bitmapTransform(MultiTransformation(
+                            BlurTransformation(),
+                            CropTransformation(metrics.widthPixels - margin, R.dimen.drink_item_height.resolve(), CropTransformation.CropType.CENTER))))
+                    .into(imageView)
         }
     }
 
