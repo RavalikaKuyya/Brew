@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SnapHelper
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -84,7 +83,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun rebuildRecyclerView() {
-        Log.d("HomeFragment", "Rebuilding with adapter: ${recyclerView.adapter}")
         recyclerView?.withContent(viewModel.content)
     }
 

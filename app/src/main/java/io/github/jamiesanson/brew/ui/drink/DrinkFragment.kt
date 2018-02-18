@@ -20,12 +20,14 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import io.github.jamiesanson.brew.R
+import io.github.jamiesanson.brew.clickableTextAttribute
 import io.github.jamiesanson.brew.ui.main.MainActivity
 import io.github.jamiesanson.brew.util.RalewayRegular
 import io.github.jamiesanson.brew.util.arch.BrewViewModelFactory
 import io.github.jamiesanson.brew.util.event.ExitDrinkScreen
 import io.github.jamiesanson.brew.util.event.UiEventBus
 import io.github.jamiesanson.brew.util.extension.component
+import io.github.jamiesanson.brew.util.extension.withModels
 import io.github.jamiesanson.brew.util.nav.BackButtonListener
 import jp.wasabeef.glide.transformations.CropTransformation
 import kotlinx.android.synthetic.main.fragment_drink.*
@@ -75,6 +77,14 @@ class DrinkFragment: Fragment(), BackButtonListener {
 
                 })
                 .into(drinkImageView)
+
+        recyclerView.withModels {
+            clickableTextAttribute {
+                id(TAG_TAGS)
+                title(getString(R.string.tags))
+                value(drink.tags.joinToString(separator = ", "))
+            }
+        }
     }
 
     override fun onBackPressed(): Boolean {
@@ -142,5 +152,6 @@ class DrinkFragment: Fragment(), BackButtonListener {
 
     companion object {
         const val ARG_DRINK_REVEAL_SETTINGS = "arg_drink_reveal_settings"
+        const val TAG_TAGS = "tags"
     }
 }

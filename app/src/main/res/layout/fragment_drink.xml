@@ -39,6 +39,8 @@
 
     <com.airbnb.epoxy.EpoxyRecyclerView
         android:id="@+id/recyclerView"
+        android:paddingTop="16dp"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>

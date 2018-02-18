@@ -133,6 +133,7 @@ class MainFragment: Fragment() {
 
     private fun FragmentManager.switchTo(tag: String) {
         val transaction = beginTransaction()
+        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 
         bottomNavTabs
                 .forEach {
