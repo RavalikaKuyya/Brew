@@ -8,7 +8,7 @@ import io.github.jamiesanson.brew.data.model.Drink
 import io.github.jamiesanson.brew.repository.drinks.DrinkRepository
 import javax.inject.Inject
 
-class DrinkViewModel @Inject constructor(
+class AddDrinkViewModel @Inject constructor(
         private val drinkRepository: DrinkRepository
 ): ViewModel() {
 

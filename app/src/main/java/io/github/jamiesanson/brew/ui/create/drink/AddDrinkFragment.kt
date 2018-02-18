@@ -19,7 +19,7 @@ import io.github.jamiesanson.brew.util.anim.CircularRevealUtil
 import io.github.jamiesanson.brew.util.anim.RevealAnimationSettings
 import io.github.jamiesanson.brew.util.anim.StatusBarAnimationSettings
 import io.github.jamiesanson.brew.util.arch.BrewViewModelFactory
-import io.github.jamiesanson.brew.util.event.ExitDrinkScreen
+import io.github.jamiesanson.brew.util.event.ExitAddDrinkScreen
 import io.github.jamiesanson.brew.util.event.UiEventBus
 import io.github.jamiesanson.brew.util.extension.OnTextChanged
 import io.github.jamiesanson.brew.util.extension.component
@@ -57,14 +57,14 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
 
     @Inject lateinit var eventBus: UiEventBus
     @Inject lateinit var viewModelFactory: BrewViewModelFactory
-    private lateinit var viewModel: DrinkViewModel
+    private lateinit var viewModel: AddDrinkViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as MainActivity).component.inject(this)
         viewModel = ViewModelProviders
                 .of(activity as MainActivity, viewModelFactory)
-                .get(DrinkViewModel::class.java)
+                .get(AddDrinkViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -132,7 +132,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
 
     override fun onBackPressed(): Boolean {
         showCircularExit {
-            eventBus.postEvent(ExitDrinkScreen())
+            eventBus.postEvent(ExitAddDrinkScreen())
             viewModel.clear()
         }
 
@@ -162,7 +162,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
 
         if (viewModel.modelNotEmpty) {
             showCircularExit {
-                eventBus.postEvent(ExitDrinkScreen())
+                eventBus.postEvent(ExitAddDrinkScreen())
                 viewModel.isViewRevealed = false
                 viewModel.clear()
             }

@@ -3,12 +3,14 @@ package io.github.jamiesanson.brew.ui.home
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import io.github.jamiesanson.brew.ui.home.content.HomeContent
 import io.github.jamiesanson.brew.util.event.RebuildHomescreen
 import io.github.jamiesanson.brew.util.event.UiEventBus
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
-        uiEventBus: UiEventBus
+        uiEventBus: UiEventBus,
+        val content: HomeContent
 ): ViewModel() {
 
     val rebuildTrigger: LiveData<Unit> = MutableLiveData()

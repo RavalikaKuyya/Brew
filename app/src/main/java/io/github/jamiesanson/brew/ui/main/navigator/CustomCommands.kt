@@ -2,6 +2,7 @@ package io.github.jamiesanson.brew.ui.main.navigator
 
 import android.widget.ImageView
 import io.github.jamiesanson.brew.data.model.Drink
+import io.github.jamiesanson.brew.ui.drink.DrinkRevealSettings
 import ru.terrakok.cicerone.commands.Command
 import ru.terrakok.cicerone.commands.Forward
 
@@ -10,8 +11,10 @@ import ru.terrakok.cicerone.commands.Forward
  */
 sealed class CustomCommand: Command
 
-class BackFromAddDrinkScreen : CustomCommand()
+open class Add(val screenkey: String, val transitionData: Any? = null): CustomCommand()
+
+open class Remove(val screenkey: String, val transitionData: Any? = null): CustomCommand()
 
 class ForwardToDrinkScreen(
         val imageView: ImageView,
-        val drink: Drink): Forward(Screens.DRINK_SCREEN, drink)
+        drinkRevealSettings: DrinkRevealSettings): Add(Screens.DRINK_SCREEN, drinkRevealSettings)

@@ -41,6 +41,10 @@ android {
     }
 }
 
+repositories {
+    google()
+}
+
 dependencies {
     implementation deps.kotlin.std
     implementation deps.kotlin.reflect

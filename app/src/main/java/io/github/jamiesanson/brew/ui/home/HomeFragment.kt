@@ -8,13 +8,13 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SnapHelper
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.airbnb.epoxy.*
 import io.github.jamiesanson.brew.*
-import io.github.jamiesanson.brew.ui.home.content.HomeContent
 import io.github.jamiesanson.brew.ui.main.MainActivity
 import io.github.jamiesanson.brew.util.RalewayRegular
 import io.github.jamiesanson.brew.util.anim.GravitySnapHelper
@@ -34,8 +34,8 @@ class HomeFragment : Fragment() {
 
     @Inject lateinit var eventBus: UiEventBus
     @Inject lateinit var viewModelFactory: BrewViewModelFactory
-    @Inject lateinit var content: HomeContent
     private lateinit var viewModel: HomeViewModel
+    private var recyclerViewSavedState: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,13 +65,27 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        (recyclerView?.adapter as? EpoxyControllerAdapter)?.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        recyclerViewSavedState = savedInstanceState
+    }
+
     private fun setupRecyclerView() {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rebuildRecyclerView()
+        if (recyclerView?.adapter == null) {
+            rebuildRecyclerView()
+        }
+        (recyclerView?.adapter as? EpoxyControllerAdapter)?.onRestoreInstanceState(recyclerViewSavedState)
     }
 
     private fun rebuildRecyclerView() {
-        recyclerView?.withContent(content)
+        Log.d("HomeFragment", "Rebuilding with adapter: ${recyclerView.adapter}")
+        recyclerView?.withContent(viewModel.content)
     }
 
     private fun onAddClicked(fromFab: Boolean = false) {

@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import io.github.jamiesanson.brew.*
 import io.github.jamiesanson.brew.data.model.Drink
+import io.github.jamiesanson.brew.ui.drink.DrinkRevealSettings
 import io.github.jamiesanson.brew.ui.main.navigator.ForwardToDrinkScreen
 import io.github.jamiesanson.brew.util.epoxy.BuildCallback
 import io.github.jamiesanson.brew.util.epoxy.EpoxyContent
@@ -43,8 +44,9 @@ class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
 
             carousel {
                 id(CAROUSEL_ID)
+                hasFixedSize(true)
                 models(
-                        ArrayList<DataBindingEpoxyModel>(drinks.map { drink -> DrinkItemBindingModel_().apply {
+                        ArrayList<DataBindingEpoxyModel>(drinks.map { drink -> DrinkItem().apply {
                             id(drink.id)
                             title(drink.name)
                             tagsDisplay(drink.tags.take(3).joinToString(", ") { it.capitalize() })
@@ -74,8 +76,19 @@ class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
     }
 
     private fun onDrinkClicked(sharedImageView: ImageView, drink: Drink) {
+        val location = IntArray(2)
+        sharedImageView.getLocationOnScreen(location)
+
+        val revealSettings = DrinkRevealSettings(
+                drink = drink,
+                width = sharedImageView.width,
+                height = sharedImageView.height,
+                x = location[0],
+                y = location[1]
+        )
+
         viewModel.postEvent(MoveToDrinkScreen(
-                command = ForwardToDrinkScreen(sharedImageView, drink)
+                command = ForwardToDrinkScreen(sharedImageView, revealSettings)
         ))
     }
 
@@ -109,6 +122,13 @@ class RecentDrinksContent: EpoxyContent<RecentDrinksViewModel>() {
         CarouselModel_().apply {
             modelInitializer()
         }.addTo(this)
+    }
+
+    /**
+     * Override of drink item model to enable state saving
+     */
+    internal class DrinkItem: DrinkItemBindingModel_() {
+        override fun shouldSaveViewState(): Boolean = true
     }
 
     companion object {

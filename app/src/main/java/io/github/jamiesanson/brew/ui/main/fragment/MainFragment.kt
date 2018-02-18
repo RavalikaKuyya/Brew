@@ -5,10 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import io.github.jamiesanson.brew.R
 import ru.terrakok.cicerone.Navigator
 import android.widget.Toast
@@ -141,11 +138,20 @@ class MainFragment: Fragment() {
                 .forEach {
                     if (it.tag == tag) {
                         if (!it.fragment.isDetached) {
+                            val bundle = viewModel.childState[it.tag] ?: Bundle()
+                            it.fragment.onSaveInstanceState(bundle)
+                            viewModel.childState[it.tag] = bundle
+
                             transaction.detach(it.fragment)
                         }
 
                         transaction.attach(it.fragment)
+                        it.fragment.onViewStateRestored(viewModel.childState[it.tag])
                     } else {
+                        val bundle = viewModel.childState[it.tag] ?: Bundle()
+                        it.fragment.onSaveInstanceState(bundle)
+                        viewModel.childState[it.tag] = bundle
+
                         transaction.detach(it.fragment)
                     }
                 }
