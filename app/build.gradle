@@ -2,15 +2,17 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "io.github.jamiesanson.brew"
+        applicationId "io.github.koss.brew"
         minSdkVersion 21
         targetSdkVersion 27
+        multiDexEnabled true
         versionCode 1
-        versionName "1.0"
+        versionName "0.1-alpha1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -29,6 +31,18 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dataBinding {
+        enabled = true
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+repositories {
+    google()
 }
 
 dependencies {
@@ -39,6 +53,8 @@ dependencies {
     implementation deps.anko.coroutines.core
     implementation deps.anko.coroutines.sdk25
     implementation deps.anko.appcompat
+    implementation deps.anko.commons
+    implementation deps.anko.design
 
     implementation deps.android.support.appcompat
     implementation deps.android.support.compat
@@ -56,7 +72,40 @@ dependencies {
     implementation deps.android.arch.persistence.room.runtime
     kapt deps.android.arch.persistence.room.compiler
 
+    kapt deps.android.databinding.compiler
+
+    // Kapt appears to have an issue due to not having an explicit annotation processor declaration
+    // on the classpath of the epoxy processor dependency. The fix for this is to use annotationProcessor for now
+    annotationProcessor deps.epoxy.processor
+    implementation deps.epoxy.base
+    implementation deps.epoxy.databinding
+
     implementation deps.cicerone
+
+    implementation deps.colours
+
+    implementation deps.caligraphy
+
+    implementation deps.chipinput
+
+    implementation deps.matisse
+
+    implementation deps.dexter
+
+    implementation deps.fotoapparat
+
+    implementation deps.gson
+
+    implementation deps.glideTransformations
+
+    implementation(deps.firebase.core)
+
+    implementation(deps.crashlytics) {
+        transitive = true
+    }
+
+    implementation deps.glide.glide
+    kapt deps.glide.compiler
 
     testImplementation deps.junit
     androidTestImplementation deps.android.support.test.runner
@@ -71,3 +120,5 @@ kotlin {
 androidExtensions {
     experimental = true
 }
+
+apply plugin: 'com.google.gms.google-services'
