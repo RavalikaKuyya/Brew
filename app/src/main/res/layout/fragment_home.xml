@@ -8,21 +8,21 @@
     <com.airbnb.epoxy.EpoxyRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways|snap">
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsingLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways|snap"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:title="@string/app_name">
 
             <android.support.v4.widget.Space

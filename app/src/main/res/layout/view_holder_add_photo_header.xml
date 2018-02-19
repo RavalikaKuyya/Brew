@@ -20,6 +20,7 @@
         android:focusable="true"
         android:foreground="?selectableItemBackground"
         android:onClick="@{clickListener}"
+        android:stateListAnimator="@animator/cardview_animator"
         app:cardBackgroundColor="@color/colorPrimary"
         app:cardCornerRadius="4dp">
 
