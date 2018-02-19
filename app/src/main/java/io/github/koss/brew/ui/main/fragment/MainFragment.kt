@@ -26,7 +26,7 @@ import javax.inject.Inject
  * This class is responsible for maintaining the main screens of the application,
  * those being the three screens accessible through bottom navigation
  */
-class MainFragment: Fragment() {
+class MainFragment : Fragment(), NestedScrollListener {
 
     @Inject
     lateinit var viewModelFactory: BrewViewModelFactory
@@ -42,6 +42,7 @@ class MainFragment: Fragment() {
     private lateinit var profileTab: BottomTab
 
     private var lastSelected = ""
+    private var isAnimating = false
 
     private val bottomNavTabs
         get() = arrayOf(homeTab, discoverTab, profileTab)
@@ -63,8 +64,7 @@ class MainFragment: Fragment() {
 
         initialiseFragments()
 
-        bottomNavigationView.setOnNavigationItemSelectedListener {
-            item: MenuItem ->
+        bottomNavigationView.setOnNavigationItemSelectedListener { item: MenuItem ->
 
             val tabSelected = bottomNavTabs.first { it.menuId == item.itemId }
             viewModel.updateCurrentScreen(tabSelected.tag)
@@ -114,10 +114,26 @@ class MainFragment: Fragment() {
         cicerone.navigatorHolder.removeNavigator()
     }
 
+    override fun onScroll(direction: Direction) {
+        if (!isAnimating) {
+            val finalTranslation = when (direction) {
+                Direction.UP -> 0f
+                Direction.DOWN -> bottomNavigationView.height.toFloat()
+            }
+            bottomNavigationView
+                    .animate()
+                    .translationY(finalTranslation)
+                    .setDuration(200L)
+                    .withStartAction { isAnimating = true }
+                    .withEndAction { isAnimating = false }
+                    .start()
+        }
+    }
+
     /**
      * Navigator specific to the main fragment. Handles changing of screens via bottom nav interactions
      */
-    inner class MainFragmentNavigator: Navigator {
+    inner class MainFragmentNavigator : Navigator {
         override fun applyCommand(command: Command?) {
             when (command) {
                 is Back -> activity?.finish()
