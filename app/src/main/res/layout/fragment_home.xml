@@ -56,4 +56,9 @@
         app:layout_anchorGravity="bottom|right|end"
         app:rippleColor="@color/colorAccentDark" />
 
+    <View
+        android:id="@+id/scrollInterceptorView"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+
 </android.support.design.widget.CoordinatorLayout>
