@@ -1,6 +1,9 @@
 # Brew
 An app for sharing tastes and recipes. 
 
+#### Alpha Opt-in
+Click this link to opt in. https://play.google.com/apps/testing/io.github.koss.brew
+
 ### Initial Thoughts
 The initial goal of the app is to allow for users to note down things that they taste quickly and easily, and then add functionality to allow the user to share these tastes with their friends.
 
