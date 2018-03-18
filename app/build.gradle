@@ -100,6 +100,10 @@ dependencies {
 
     implementation(deps.firebase.core)
 
+    // Authentication
+    implementation deps.firebase.UI
+    implementation deps.facebook
+
     implementation(deps.crashlytics) {
         transitive = true
     }
