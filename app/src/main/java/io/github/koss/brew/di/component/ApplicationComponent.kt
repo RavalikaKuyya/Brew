@@ -14,6 +14,7 @@ import io.github.koss.brew.ui.home.HomeFragment
 import io.github.koss.brew.ui.main.MainActivityComponent
 import io.github.koss.brew.ui.main.MainActivityModule
 import io.github.koss.brew.ui.main.fragment.MainFragment
+import io.github.koss.brew.ui.profile.ProfileFragment
 
 @ApplicationScope
 @Component(modules = [
@@ -36,6 +37,8 @@ interface ApplicationComponent {
     fun inject(fragment: AddDrinkFragment)
 
     fun inject(fragment: DrinkFragment)
+
+    fun inject(fragment: ProfileFragment)
 
     fun plus(module: MainActivityModule): MainActivityComponent
 }

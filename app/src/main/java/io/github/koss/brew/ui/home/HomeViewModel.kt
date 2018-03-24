@@ -23,7 +23,6 @@ class HomeViewModel @Inject constructor(
 
     init {
         uiEventBus.events.observeForever {
-
             when (it) {
                 is RebuildHomescreen -> (rebuildTrigger as MutableLiveData).postValue(false)
                 is ViewAllClicked -> {
