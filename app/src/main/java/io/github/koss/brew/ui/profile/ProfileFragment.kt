@@ -18,6 +18,11 @@ import io.github.koss.brew.util.arch.BrewViewModelFactory
 import io.github.koss.brew.util.event.UiEventBus
 import io.github.koss.brew.util.extension.component
 import javax.inject.Inject
+import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.FacebookAuthProvider
+import java.util.Arrays.asList
+
+
 
 class ProfileFragment: Fragment() {
 
@@ -42,9 +47,11 @@ class ProfileFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         logInButton.onClick {
+            launchFirebaseAuth()
         }
 
         signUpButton.onClick {
+            launchFirebaseAuth()
         }
     }
 
@@ -63,6 +70,21 @@ class ProfileFragment: Fragment() {
                 // ...
             }
         }
+    }
+
+    private fun launchFirebaseAuth() {
+        val providers = listOf(
+                AuthUI.IdpConfig.EmailBuilder(),
+                AuthUI.IdpConfig.GoogleBuilder(),
+                AuthUI.IdpConfig.FacebookBuilder()).map { it.build() }
+
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .build(),
+                RC_SIGN_IN)
+
     }
 
     companion object {
