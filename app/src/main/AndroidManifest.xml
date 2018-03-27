@@ -34,6 +34,11 @@
         <activity
             android:name="io.github.koss.brew.ui.camera.CameraActivity"
             android:screenOrientation="portrait"/>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="ce4f5a2f9fd20365388fb0c06764af3fb6984930" />
+
     </application>
 
 </manifest>

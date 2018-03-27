@@ -24,6 +24,6 @@
     <string name="button_login">Login</string>
 
     <!-- The following are acceptable in source control as the Facebook SDK usage is dependent on key-hashes -->
-    <string name="facebook_app_id">160664014644023</string>
+    <string name="facebook_application_id">160664014644023</string>
     <string name="fb_login_protocol_scheme">fb160664014644023</string>
 </resources>
