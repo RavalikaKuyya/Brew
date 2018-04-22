@@ -98,11 +98,9 @@ dependencies {
 
     implementation deps.glideTransformations
 
-    implementation(deps.firebase.core)
+    implementation deps.firebase.core
 
-    // Authentication
     implementation deps.firebase.UI
-    implementation deps.facebook
 
     implementation(deps.crashlytics) {
         transitive = true

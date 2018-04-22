@@ -5,7 +5,7 @@ buildscript {
         supportLibrary: '27.0.2',
         androidPlugin: '3.0.1',
         androidTools: '26.0.0',
-        kotlin: '1.2.20',
+        kotlin: '1.2.40',
         coroutines: '0.21.2',
         anko: '0.10.4',
         arch: '1.0.0',
@@ -27,8 +27,7 @@ buildscript {
         fabricTools: '1.24.4',
         crashlytics: '2.7.1',
         firebase: '11.8.0',
-        firebaseUI: '3.2.2',
-        facebook: '4.27.0'
+        firebaseUI: '3.2.2'
     ]
 
     ext.deps = [
@@ -102,8 +101,7 @@ buildscript {
         fotoapparat: "io.fotoapparat.fotoapparat:library:${versions.fotoapparat}",
         gson: "com.google.code.gson:gson:${versions.gson}",
         glideTransformations: "jp.wasabeef:glide-transformations:${versions.glideTransformations}",
-        crashlytics: "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}@aar",
-        facebook: "com.facebook.android:facebook-android-sdk:${versions.facebook}"
+        crashlytics: "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}@aar"
     ]
 
     repositories {
