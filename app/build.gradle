@@ -63,8 +63,6 @@ dependencies {
     implementation deps.android.support.design
     implementation deps.android.support.constraintlayout
 
-    implementation deps.randux
-
     implementation deps.dagger.core
     kapt deps.dagger.compiler
 
