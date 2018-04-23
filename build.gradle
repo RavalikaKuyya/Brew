@@ -27,7 +27,7 @@ buildscript {
         fabricTools: '1.24.4',
         crashlytics: '2.7.1',
         firebase: '11.8.0',
-        randux: '1.0.0'
+        firebaseUI: '3.2.2'
     ]
 
     ext.deps = [
@@ -88,7 +88,8 @@ buildscript {
                 compiler: "com.github.bumptech.glide:compiler:${versions.glide}"
         ],
         firebase: [
-                core: "com.google.firebase:firebase-core:${versions.firebase}"
+                core: "com.google.firebase:firebase-core:${versions.firebase}",
+                UI: "com.firebaseui:firebase-ui-auth:${versions.firebaseUI}"
         ],
         junit: "junit:junit:${versions.junit}",
         cicerone: "ru.terrakok.cicerone:cicerone:${versions.cicerone}",
@@ -100,8 +101,7 @@ buildscript {
         fotoapparat: "io.fotoapparat.fotoapparat:library:${versions.fotoapparat}",
         gson: "com.google.code.gson:gson:${versions.gson}",
         glideTransformations: "jp.wasabeef:glide-transformations:${versions.glideTransformations}",
-        crashlytics: "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}@aar",
-        randux: "com.github.k-oss:Randux:${versions.randux}"
+        crashlytics: "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}@aar"
     ]
 
     repositories {
@@ -109,9 +109,6 @@ buildscript {
         jcenter()
         maven {
             url 'https://maven.fabric.io/public'
-        }
-        maven {
-            url 'https://jitpack.io'
         }
     }
     dependencies {

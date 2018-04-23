@@ -1,6 +1,5 @@
 package io.github.koss.brew.ui.profile
 
-import android.app.Activity.RESULT_OK
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,24 +9,14 @@ import android.view.ViewGroup
 import io.github.koss.brew.R
 import kotlinx.android.synthetic.main.layout_logged_out.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import com.google.firebase.auth.FirebaseAuth
-import com.firebase.ui.auth.IdpResponse
 import android.content.Intent
 import io.github.koss.brew.ui.main.MainActivity
 import io.github.koss.brew.util.arch.BrewViewModelFactory
-import io.github.koss.brew.util.event.UiEventBus
 import io.github.koss.brew.util.extension.component
 import javax.inject.Inject
 import com.firebase.ui.auth.AuthUI
-import com.google.firebase.auth.FacebookAuthProvider
-import java.util.Arrays.asList
-
-
 
 class ProfileFragment: Fragment() {
-
-    @Inject
-    lateinit var eventBus: UiEventBus
 
     @Inject
     lateinit var viewModelFactory: BrewViewModelFactory
@@ -59,24 +48,14 @@ class ProfileFragment: Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RC_SIGN_IN) {
-            val response = IdpResponse.fromResultIntent(data)
-
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                val user = FirebaseAuth.getInstance().currentUser
-                // ...
-            } else {
-                // Sign in failed, check response for error code
-                // ...
-            }
+           viewModel.handleLogin(data, resultCode)
         }
     }
 
     private fun launchFirebaseAuth() {
         val providers = listOf(
                 AuthUI.IdpConfig.EmailBuilder(),
-                AuthUI.IdpConfig.GoogleBuilder(),
-                AuthUI.IdpConfig.FacebookBuilder()).map { it.build() }
+                AuthUI.IdpConfig.GoogleBuilder()).map { it.build() }
 
         startActivityForResult(
                 AuthUI.getInstance()
