@@ -15,7 +15,7 @@ class YouFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewPager.adapter = YouFragmentPagerAdapter(fragmentManager!!)
+        viewPager.adapter = YouFragmentPagerAdapter(childFragmentManager)
         tabLayout.setupWithViewPager(viewPager)
     }
 }
