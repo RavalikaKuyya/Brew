@@ -14,7 +14,7 @@ import io.github.koss.brew.ui.home.HomeFragment
 import io.github.koss.brew.ui.main.MainActivityComponent
 import io.github.koss.brew.ui.main.MainActivityModule
 import io.github.koss.brew.ui.main.fragment.MainFragment
-import io.github.koss.brew.ui.profile.ProfileFragment
+import io.github.koss.brew.ui.you.profile.ProfileFragment
 
 @ApplicationScope
 @Component(modules = [

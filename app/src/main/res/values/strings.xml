@@ -3,7 +3,7 @@
     <string name="add">Add</string>
     <string name="home">Home</string>
     <string name="discover">Discover</string>
-    <string name="profile">Profile</string>
+    <string name="you">You</string>
     <string name="add_drink">Add Drink</string>
     <string name="drink_name">Name</string>
     <string name="add_some_tags">Add some tags:</string>
@@ -26,4 +26,6 @@
     <!-- The following are acceptable in source control as the Facebook SDK usage is dependent on key-hashes -->
     <string name="facebook_application_id">160664014644023</string>
     <string name="fb_login_protocol_scheme">fb160664014644023</string>
+    <string name="profile">Profile</string>
+    <string name="settings">Settings</string>
 </resources>

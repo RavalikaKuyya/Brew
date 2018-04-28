@@ -1,8 +1,7 @@
-package io.github.koss.brew.ui.profile
+package io.github.koss.brew.ui.you.profile
 
 import android.arch.lifecycle.ViewModel
 import android.content.Intent
-import android.os.Bundle
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(

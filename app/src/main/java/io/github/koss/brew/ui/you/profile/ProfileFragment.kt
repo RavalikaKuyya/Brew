@@ -1,4 +1,4 @@
-package io.github.koss.brew.ui.profile
+package io.github.koss.brew.ui.you.profile
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -15,8 +15,9 @@ import io.github.koss.brew.util.arch.BrewViewModelFactory
 import io.github.koss.brew.util.extension.component
 import javax.inject.Inject
 import com.firebase.ui.auth.AuthUI
+import io.github.koss.brew.ui.you.TitleProvider
 
-class ProfileFragment: Fragment() {
+class ProfileFragment: Fragment(), TitleProvider {
 
     @Inject
     lateinit var viewModelFactory: BrewViewModelFactory
@@ -51,6 +52,8 @@ class ProfileFragment: Fragment() {
            viewModel.handleLogin(data, resultCode)
         }
     }
+
+    override fun getTitle(): String = "Profile"
 
     private fun launchFirebaseAuth() {
         val providers = listOf(

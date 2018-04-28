@@ -252,7 +252,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
                 targetView = view,
                 statusBarAnimationSettings = StatusBarAnimationSettings(
                         startColor = activity?.window?.statusBarColor ?: 0,
-                        endColor = ContextCompat.getColor(context!!, R.color.colorAccentDark),
+                        endColor = ContextCompat.getColor(context!!, R.color.material_white),
                         window = activity?.window
                 )
         )
@@ -284,7 +284,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
                 targetView = view,
                 statusBarAnimationSettings = StatusBarAnimationSettings(
                         startColor = activity?.window?.statusBarColor ?: 0,
-                        endColor = ContextCompat.getColor(context!!, R.color.colorPrimaryDark),
+                        endColor = ContextCompat.getColor(context!!, R.color.material_white),
                         window = activity?.window
                 )
         )

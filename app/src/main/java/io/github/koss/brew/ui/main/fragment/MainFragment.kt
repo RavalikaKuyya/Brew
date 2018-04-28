@@ -12,7 +12,8 @@ import android.widget.Toast
 import io.github.koss.brew.ui.discover.DiscoverFragment
 import io.github.koss.brew.ui.home.HomeFragment
 import io.github.koss.brew.ui.main.MainActivity
-import io.github.koss.brew.ui.profile.ProfileFragment
+import io.github.koss.brew.ui.you.YouFragment
+import io.github.koss.brew.ui.you.profile.ProfileFragment
 import io.github.koss.brew.util.arch.BrewViewModelFactory
 import io.github.koss.brew.util.extension.component
 import io.github.koss.brew.util.nav.LocalCiceroneCache
@@ -39,13 +40,13 @@ class MainFragment : Fragment(), NestedScrollListener {
 
     private lateinit var homeTab: BottomTab
     private lateinit var discoverTab: BottomTab
-    private lateinit var profileTab: BottomTab
+    private lateinit var youTab: BottomTab
 
     private var lastSelected = ""
     private var isAnimating = false
 
     private val bottomNavTabs
-        get() = arrayOf(homeTab, discoverTab, profileTab)
+        get() = arrayOf(homeTab, discoverTab, youTab)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,9 +95,9 @@ class MainFragment : Fragment(), NestedScrollListener {
                 tag = DISCOVER,
                 menuId = R.id.action_discover)
 
-        profileTab = BottomTab(
-                fragment = manager.findFragmentByTag(PROFILE) ?: ProfileFragment(),
-                tag = PROFILE,
+        youTab = BottomTab(
+                fragment = manager.findFragmentByTag(YOU) ?: YouFragment(),
+                tag = YOU,
                 menuId = R.id.action_profile)
 
         bottomNavTabs.map {
@@ -179,7 +180,7 @@ class MainFragment : Fragment(), NestedScrollListener {
     companion object BottomNavigationScreens {
         const val HOME = "bottom_nav_home_screen"
         const val DISCOVER = "bottom_nav_discover_screen"
-        const val PROFILE = "bottom_nav_profile_screen"
+        const val YOU = "bottom_nav_you_screen"
 
         const val MAIN_FRAGMENT_TAG = "main_frag_tag"
     }
