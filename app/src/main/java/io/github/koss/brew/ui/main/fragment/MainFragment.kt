@@ -142,6 +142,11 @@ class MainFragment : Fragment(), NestedScrollListener {
                     .translationY(finalTranslation)
                     .setDuration(200L)
                     .start()
+
+            when (direction) {
+                Direction.DOWN -> floatingActionButton.collapse(duration = 200L)
+                Direction.UP -> floatingActionButton.expand(duration = 200L)
+            }
         }
     }
 
