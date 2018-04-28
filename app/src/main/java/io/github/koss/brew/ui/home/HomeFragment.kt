@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
         interceptScrollAndDispatchToParent()
         initialiseToolbar()
         applyTypeface()
-        floatingActionButton.onClick { onAddClicked(true) }
+        //floatingActionButton.onClick { onAddClicked(true) }
         setupRecyclerView()
 
         viewModel.rebuildTrigger.observe(this) { force ->
@@ -103,13 +103,14 @@ class HomeFragment : Fragment() {
         eventBus.postEvent(MoveToAddDrinkScreen(revealSettings))
     }
 
-    private fun getRevealSettings(startColor: Int): RevealAnimationSettings {
-        return RevealAnimationSettings(
-                (floatingActionButton.x + floatingActionButton.width / 2).toInt(),
-                (floatingActionButton.y + floatingActionButton.height / 2).toInt(),
-                parentLayout.width,
-                parentLayout.height,
-                startColor)
+    private fun getRevealSettings(startColor: Int): RevealAnimationSettings? {
+//        return RevealAnimationSettings(
+//                (floatingActionButton.x + floatingActionButton.width / 2).toInt(),
+//                (floatingActionButton.y + floatingActionButton.height / 2).toInt(),
+//                parentLayout.width,
+//                parentLayout.height,
+//                startColor)
+        return null
     }
 
     private fun applyTypeface() {
@@ -121,34 +122,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initialiseToolbar() {
-        toolbar.inflateMenu(R.menu.home_toolbar_items)
-        toolbar.setOnMenuItemClickListener {
-            if (it.itemId == R.id.add_drink_item) {
-                // Only fire the listener if the toolbar is actually visible
-                if (toolbar.alpha > 0f) {
-                    onAddClicked()
-                }
-            }
-
-            false
-        }
-
-        toolbar.alpha = 0f
-
-        // This is such that the toolbar is animated in when the AppBarLayout is collapsed
-        appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
-                toolbar.animate().alpha(1f)
-                        .withStartAction { toolbar.alpha = 0f }
-                        .setDuration(200L)
-                        .start()
-            } else {
-                toolbar.animate().alpha(0f)
-                        .withStartAction { toolbar.alpha = 1f }
-                        .setDuration(10L)
-                        .start()
-            }
-        }
+        toolbar.hideOverflowMenu()
     }
 
     /**

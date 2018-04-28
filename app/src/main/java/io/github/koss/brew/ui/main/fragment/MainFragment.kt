@@ -3,6 +3,7 @@ package io.github.koss.brew.ui.main.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.transition.TransitionManager
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.view.*
@@ -75,9 +76,13 @@ class MainFragment : Fragment(), NestedScrollListener {
 
         viewModel.currentScreen.observe(this, Observer { screenName ->
             if (lastSelected != screenName) {
-                bottomNavigationView.selectedItemId = bottomNavTabs.first { screenName == it.tag }.menuId
+                val tab =  bottomNavTabs.first { screenName == it.tag }
+                bottomNavigationView.selectedItemId = tab.menuId
                 cicerone.router.replaceScreen(screenName)
                 lastSelected = screenName ?: ""
+
+                TransitionManager.beginDelayedTransition(parent)
+                floatingActionButton.visibility = if (tab.supportsAddDrinkAction) View.VISIBLE else View.GONE
             }
         })
     }
@@ -88,17 +93,20 @@ class MainFragment : Fragment(), NestedScrollListener {
         homeTab = BottomTab(
                 fragment = manager.findFragmentByTag(HOME) ?: HomeFragment(),
                 tag = HOME,
-                menuId = R.id.action_home)
+                menuId = R.id.action_home,
+                supportsAddDrinkAction = true)
 
         discoverTab = BottomTab(
                 fragment = manager.findFragmentByTag(DISCOVER) ?: DiscoverFragment(),
                 tag = DISCOVER,
-                menuId = R.id.action_discover)
+                menuId = R.id.action_discover,
+                supportsAddDrinkAction = true)
 
         youTab = BottomTab(
                 fragment = manager.findFragmentByTag(YOU) ?: YouFragment(),
                 tag = YOU,
-                menuId = R.id.action_profile)
+                menuId = R.id.action_profile,
+                supportsAddDrinkAction = false)
 
         bottomNavTabs.map {
             it.addToContainer(R.id.fragmentContainer, manager)
@@ -127,6 +135,12 @@ class MainFragment : Fragment(), NestedScrollListener {
                     .setDuration(200L)
                     .withStartAction { isAnimating = true }
                     .withEndAction { isAnimating = false }
+                    .start()
+
+            floatingActionButton
+                    .animate()
+                    .translationY(finalTranslation)
+                    .setDuration(200L)
                     .start()
         }
     }
