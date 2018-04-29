@@ -84,8 +84,6 @@ dependencies {
     implementation deps.android.arch.persistence.room.rx
     kapt deps.android.arch.persistence.room.compiler
 
-    kapt deps.android.databinding.compiler
-
     // Kapt appears to have an issue due to not having an explicit annotation processor declaration
     // on the classpath of the epoxy processor dependency. The fix for this is to use annotationProcessor for now
     annotationProcessor deps.epoxy.processor

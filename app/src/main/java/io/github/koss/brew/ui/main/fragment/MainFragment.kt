@@ -14,7 +14,6 @@ import io.github.koss.brew.ui.discover.DiscoverFragment
 import io.github.koss.brew.ui.home.HomeFragment
 import io.github.koss.brew.ui.main.MainActivity
 import io.github.koss.brew.ui.you.YouFragment
-import io.github.koss.brew.ui.you.profile.ProfileFragment
 import io.github.koss.brew.util.arch.BrewViewModelFactory
 import io.github.koss.brew.util.extension.component
 import io.github.koss.brew.util.nav.LocalCiceroneCache
@@ -67,7 +66,6 @@ class MainFragment : Fragment(), NestedScrollListener {
         initialiseFragments()
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item: MenuItem ->
-
             val tabSelected = bottomNavTabs.first { it.menuId == item.itemId }
             viewModel.updateCurrentScreen(tabSelected.tag)
 
