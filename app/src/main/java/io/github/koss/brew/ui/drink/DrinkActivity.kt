@@ -2,6 +2,7 @@ package io.github.koss.brew.ui.drink
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_drink.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.okButton
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 import uk.co.chrisjenx.calligraphy.CalligraphyUtils
 import javax.inject.Inject
 
@@ -51,6 +53,10 @@ class DrinkActivity: AppCompatActivity() {
         }
     }
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
+    }
+
     private fun onStateChanged(state: DrinkState) {
         when (state) {
             DrinkState.Loading -> showLoading()
@@ -77,6 +83,11 @@ class DrinkActivity: AppCompatActivity() {
 
         recyclerView.withModels {
             // TODO - Add drink things here
+            drinkDetails {
+                id(ID_DRINK_BODY)
+                location("TODO - Make this part of the Drink Model")
+                description(getString(R.string.lorem))
+            }
         }
     }
 

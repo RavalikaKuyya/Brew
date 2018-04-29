@@ -5,7 +5,7 @@ buildscript {
         supportLibrary: '27.0.2',
         androidPlugin: '3.1.1',
         androidTools: '26.0.0',
-        kotlin: '1.2.40',
+        kotlin: '1.2.41',
         coroutines: '0.21.2',
         anko: '0.10.4',
         arch: '1.0.0',
