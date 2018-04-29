@@ -10,6 +10,7 @@ import android.view.*
 import io.github.koss.brew.R
 import ru.terrakok.cicerone.Navigator
 import android.widget.Toast
+import io.github.koss.brew.ui.create.drink.AddDrinkFragment
 import io.github.koss.brew.ui.discover.DiscoverFragment
 import io.github.koss.brew.ui.home.HomeFragment
 import io.github.koss.brew.ui.main.MainActivity
@@ -18,6 +19,7 @@ import io.github.koss.brew.util.arch.BrewViewModelFactory
 import io.github.koss.brew.util.extension.component
 import io.github.koss.brew.util.nav.LocalCiceroneCache
 import kotlinx.android.synthetic.main.fragment_main.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.commands.*
@@ -83,6 +85,13 @@ class MainFragment : Fragment(), NestedScrollListener {
                 floatingActionButton.visibility = if (tab.supportsAddDrinkAction) View.VISIBLE else View.GONE
             }
         })
+
+        floatingActionButton.onClick {
+            fragmentManager?.beginTransaction()
+                    ?.add(R.id.fragmentContainer, AddDrinkFragment())
+                    ?.addToBackStack(null)
+                    ?.commit()
+        }
     }
 
     private fun initialiseFragments() {

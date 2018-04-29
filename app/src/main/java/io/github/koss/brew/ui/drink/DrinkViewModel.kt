@@ -40,7 +40,7 @@ class DrinkViewModel @Inject constructor(
                     )
                     DrinkEvent.DrinkNonExistent -> DrinkState.UnrecoverableError(
                             title = "Drink not found",
-                            message = "These are not the droids you're looking for."
+                            message = "These aren't the droids you're looking for."
                     )
                     DrinkEvent.DrinkRetrievalFailed -> DrinkState.UnrecoverableError(
                             title = "Oh dear",

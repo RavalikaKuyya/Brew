@@ -244,7 +244,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
     }
 
     private fun showCircularReveal(view: View) {
-        var revealSettings = arguments?.getParcelable(ARG_REVEAL_SETTINGS) as RevealAnimationSettings
+        var revealSettings = arguments?.getParcelable(ARG_REVEAL_SETTINGS) as? RevealAnimationSettings ?: return
 
         // Update RevealSettings to reflect required behavior
         revealSettings = revealSettings.copy(
@@ -276,7 +276,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
     }
 
     private fun showCircularExit(onFinish: () -> Unit) {
-        var revealSettings = arguments?.getParcelable(ARG_REVEAL_SETTINGS) as RevealAnimationSettings
+        var revealSettings = arguments?.getParcelable(ARG_REVEAL_SETTINGS)  as? RevealAnimationSettings ?: return
 
         // Update RevealSettings to reflect required behavior
         revealSettings = revealSettings.copy(

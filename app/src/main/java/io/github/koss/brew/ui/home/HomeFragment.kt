@@ -19,17 +19,12 @@ import io.github.koss.brew.ui.main.MainActivity
 import io.github.koss.brew.ui.main.fragment.NestedScrollListener
 import io.github.koss.brew.util.RalewayRegular
 import io.github.koss.brew.util.anim.GravitySnapHelper
-import io.github.koss.brew.util.anim.RevealAnimationSettings
 import io.github.koss.brew.util.arch.BrewViewModelFactory
-import io.github.koss.brew.util.event.MoveToAddDrinkScreen
-import io.github.koss.brew.util.event.UiEventBus
 import io.github.koss.brew.util.extension.component
 import io.github.koss.brew.util.extension.observe
 import io.github.koss.brew.util.extension.withContent
 import kotlinx.android.synthetic.main.fragment_home.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import javax.inject.Inject
-import kotlin.math.abs
 
 class HomeFragment : Fragment() {
 

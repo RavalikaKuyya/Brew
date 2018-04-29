@@ -2,19 +2,19 @@ package io.github.koss.brew.ui.drink
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
-import com.bumptech.glide.request.target.BitmapImageViewTarget
 import io.github.koss.brew.*
+import io.github.koss.brew.util.RalewayRegular
 import io.github.koss.brew.util.extension.observe
 import io.github.koss.brew.util.extension.withModels
 import kotlinx.android.synthetic.main.activity_drink.*
-import kotlinx.android.synthetic.main.view_holder_drink_title.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.okButton
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import uk.co.chrisjenx.calligraphy.CalligraphyUtils
 import javax.inject.Inject
 
 /**
@@ -42,6 +42,10 @@ class DrinkActivity: AppCompatActivity() {
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
+        backButton.onClick {
+            finish()
+        }
+
         viewModel.state.observe(this) {
             it?.let { onStateChanged(it) }
         }
@@ -61,12 +65,18 @@ class DrinkActivity: AppCompatActivity() {
             return
         }
 
+        // Set up header
+        titleTextView.text = state.drink.name
+        CalligraphyUtils.applyFontToTextView(this, titleTextView, RalewayRegular.path)
+
+        // Set up drink image
+        Glide.with(this)
+                .load(state.drink.photoUri)
+                .apply(centerCropTransform())
+                .into(drinkImageView)
+
         recyclerView.withModels {
-            drinkTitle {
-                id(ID_DRINK_TITLE)
-                title(state.drink.name)
-                photo(state.drink.photoUri)
-            }
+            // TODO - Add drink things here
         }
     }
 
@@ -87,17 +97,6 @@ class DrinkActivity: AppCompatActivity() {
         }
 
         finish()
-    }
-
-    // REGION EPOXY HELPERS
-    private fun DrinkTitleBindingModelBuilder.photo(uri: Uri?) {
-        this.onBind { _, view, _ ->
-            Glide.with(this@DrinkActivity)
-                    .asBitmap()
-                    .load(uri)
-                    .apply(centerCropTransform())
-                    .into(BitmapImageViewTarget(view.dataBinding.root.drinkImageView))
-        }
     }
 
     companion object {
