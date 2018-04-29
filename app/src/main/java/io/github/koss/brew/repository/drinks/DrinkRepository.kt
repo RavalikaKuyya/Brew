@@ -3,6 +3,7 @@ package io.github.koss.brew.repository.drinks
 import android.arch.lifecycle.LiveData
 import io.github.koss.brew.data.local.dao.DrinkDao
 import io.github.koss.brew.data.model.Drink
+import io.reactivex.Maybe
 import kotlinx.coroutines.experimental.launch
 
 class DrinkRepository(
@@ -21,5 +22,9 @@ class DrinkRepository(
         launch {
             drinkDao.deleteDrink(drink)
         }
+    }
+
+    fun getDrinkById(drinkId: String): Maybe<Drink> {
+        return drinkDao.getDrinkById(drinkId.toInt())
     }
 }

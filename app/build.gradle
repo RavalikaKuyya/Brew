@@ -45,6 +45,17 @@ repositories {
     google()
 }
 
+// Workaround for Room/Kotlin 1.2.40 issue
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.name == "kotlin-compiler-embeddable") {
+                useVersion("1.2.30")
+            }
+        }
+    }
+}
+
 dependencies {
     implementation deps.kotlin.std
     implementation deps.kotlin.reflect
@@ -70,6 +81,7 @@ dependencies {
     kapt deps.android.arch.lifecycle.compiler
 
     implementation deps.android.arch.persistence.room.runtime
+    implementation deps.android.arch.persistence.room.rx
     kapt deps.android.arch.persistence.room.compiler
 
     kapt deps.android.databinding.compiler
@@ -105,6 +117,11 @@ dependencies {
     implementation(deps.crashlytics) {
         transitive = true
     }
+
+    // RxJava
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
 
     implementation deps.glide.glide
     kapt deps.glide.compiler

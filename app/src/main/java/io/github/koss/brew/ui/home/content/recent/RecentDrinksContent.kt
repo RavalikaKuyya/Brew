@@ -2,7 +2,6 @@ package io.github.koss.brew.ui.home.content.recent
 
 import android.content.Context
 import android.support.annotation.DimenRes
-import android.widget.ImageView
 import com.airbnb.epoxy.CarouselModelBuilder
 import com.airbnb.epoxy.CarouselModel_
 import com.airbnb.epoxy.DataBindingEpoxyModel
@@ -14,11 +13,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import io.github.koss.brew.*
 import io.github.koss.brew.data.model.Drink
-import io.github.koss.brew.ui.drink.DrinkRevealSettings
-import io.github.koss.brew.ui.main.navigator.ForwardToDrinkScreen
 import io.github.koss.brew.util.epoxy.BuildCallback
 import io.github.koss.brew.util.epoxy.EpoxyContent
-import io.github.koss.brew.util.event.MoveToDrinkScreen
 import io.github.koss.brew.util.event.ViewAllClicked
 import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.CropTransformation
@@ -28,7 +24,8 @@ import org.jetbrains.anko.cancelButton
 import org.jetbrains.anko.okButton
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import android.app.Activity
-
+import io.github.koss.brew.ui.drink.DrinkActivity
+import org.jetbrains.anko.startActivity
 
 
 class RecentDrinksContent(val asCarousel: Boolean): EpoxyContent<RecentDrinksViewModel>() {
@@ -106,23 +103,6 @@ class RecentDrinksContent(val asCarousel: Boolean): EpoxyContent<RecentDrinksVie
         }
     }
 
-    private fun onDrinkClicked(sharedImageView: ImageView, drink: Drink) {
-        val location = IntArray(2)
-        sharedImageView.getLocationOnScreen(location)
-
-        val revealSettings = DrinkRevealSettings(
-                drink = drink,
-                width = sharedImageView.width,
-                height = sharedImageView.height,
-                x = location[0],
-                y = location[1]
-        )
-
-        viewModel.postEvent(MoveToDrinkScreen(
-                command = ForwardToDrinkScreen(sharedImageView, revealSettings)
-        ))
-    }
-
     private fun DrinkItemBindingModelBuilder.photo(context: Context, drink: Drink) {
         @DimenRes
         fun Int.resolve(): Int = context.resources.getDimensionPixelSize(this)
@@ -130,7 +110,9 @@ class RecentDrinksContent(val asCarousel: Boolean): EpoxyContent<RecentDrinksVie
         this.onBind { _, view, _ ->
             view.dataBinding.root.onClick {
                 it ?: return@onClick
-                onDrinkClicked(it.backgroundImageView, drink)
+                context.startActivity<DrinkActivity>(
+                        DrinkActivity.ARG_DRINK_ID to drink.id.toString()
+                )
             }
 
             Glide.with(context)
@@ -151,7 +133,9 @@ class RecentDrinksContent(val asCarousel: Boolean): EpoxyContent<RecentDrinksVie
         this.onBind { _, view, _ ->
             view.dataBinding.root.onClick {
                 it ?: return@onClick
-                onDrinkClicked(it.backgroundImageView, drink)
+                context.startActivity<DrinkActivity>(
+                        DrinkActivity.ARG_DRINK_ID to drink.id.toString()
+                )
             }
 
             val imageView = view.dataBinding.root.backgroundImageView

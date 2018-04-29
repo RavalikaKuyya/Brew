@@ -33,8 +33,6 @@ class MainViewModel @Inject constructor(
                     Screens.ADD_DRINK_SCREEN,
                     event.settings))
             is ExitAddDrinkScreen -> router?.executeCommand(Remove(Screens.ADD_DRINK_SCREEN))
-            is MoveToDrinkScreen -> router?.executeCommand(event.command)
-            is ExitDrinkScreen -> router?.executeCommand(Remove(Screens.DRINK_SCREEN))
             null -> {}
         }
     }

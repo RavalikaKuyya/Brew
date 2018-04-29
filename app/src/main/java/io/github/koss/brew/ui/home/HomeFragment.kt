@@ -34,10 +34,10 @@ import kotlin.math.abs
 class HomeFragment : Fragment() {
 
     @Inject
-    lateinit var eventBus: UiEventBus
-    @Inject
     lateinit var viewModelFactory: BrewViewModelFactory
+
     private lateinit var viewModel: HomeViewModel
+
     private var recyclerViewSavedState: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +59,6 @@ class HomeFragment : Fragment() {
         interceptScrollAndDispatchToParent()
         initialiseToolbar()
         applyTypeface()
-        //floatingActionButton.onClick { onAddClicked(true) }
         setupRecyclerView()
 
         viewModel.rebuildTrigger.observe(this) { force ->
@@ -93,24 +92,6 @@ class HomeFragment : Fragment() {
 
     private fun rebuildRecyclerView() {
         recyclerView?.withContent(viewModel.content)
-    }
-
-    private fun onAddClicked(fromFab: Boolean = false) {
-        val revealSettings = getRevealSettings(
-                ContextCompat.getColor(context!!, if (fromFab) R.color.colorAccent else R.color.colorPrimary)
-        )
-
-        eventBus.postEvent(MoveToAddDrinkScreen(revealSettings))
-    }
-
-    private fun getRevealSettings(startColor: Int): RevealAnimationSettings? {
-//        return RevealAnimationSettings(
-//                (floatingActionButton.x + floatingActionButton.width / 2).toInt(),
-//                (floatingActionButton.y + floatingActionButton.height / 2).toInt(),
-//                parentLayout.width,
-//                parentLayout.height,
-//                startColor)
-        return null
     }
 
     private fun applyTypeface() {

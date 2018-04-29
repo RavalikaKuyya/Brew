@@ -3,6 +3,7 @@ package io.github.koss.brew.data.local.dao
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 import io.github.koss.brew.data.model.Drink
+import io.reactivex.Maybe
 
 @Dao
 interface DrinkDao {
@@ -18,4 +19,7 @@ interface DrinkDao {
 
     @Delete
     fun deleteDrink(drink: Drink)
+
+    @Query("SELECT * FROM drink WHERE id = :drinkId")
+    fun getDrinkById(drinkId: Int): Maybe<Drink>
 }

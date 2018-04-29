@@ -34,6 +34,7 @@
         <activity
             android:name="io.github.koss.brew.ui.camera.CameraActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ui.drink.DrinkActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

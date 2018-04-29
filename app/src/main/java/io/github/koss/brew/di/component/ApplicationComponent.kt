@@ -9,7 +9,7 @@ import io.github.koss.brew.di.module.RepositoryModule
 import io.github.koss.brew.di.scope.ApplicationScope
 import io.github.koss.brew.ui.camera.CameraActivity
 import io.github.koss.brew.ui.create.drink.AddDrinkFragment
-import io.github.koss.brew.ui.drink.DrinkFragment
+import io.github.koss.brew.ui.drink.DrinkActivity
 import io.github.koss.brew.ui.home.HomeFragment
 import io.github.koss.brew.ui.main.MainActivityComponent
 import io.github.koss.brew.ui.main.MainActivityModule
@@ -30,13 +30,13 @@ interface ApplicationComponent {
 
     fun inject(cameraActivity: CameraActivity)
 
+    fun inject(drinkActivity: DrinkActivity)
+
     fun inject(fragment: HomeFragment)
 
     fun inject(fragment: MainFragment)
 
     fun inject(fragment: AddDrinkFragment)
-
-    fun inject(fragment: DrinkFragment)
 
     fun inject(fragment: ProfileFragment)
 
