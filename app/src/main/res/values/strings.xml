@@ -6,12 +6,12 @@
     <string name="you">You</string>
     <string name="add_drink">Add Drink</string>
     <string name="drink_name">Name</string>
-    <string name="add_some_tags">Add some tags:</string>
-    <string name="add_a_name">Add a name:</string>
+    <string name="add_some_tags">Add some tags</string>
+    <string name="add_a_name">Add a name</string>
     <string name="done">Done</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
-    <string name="choose_image">Choose Image From:</string>
+    <string name="choose_image">Choose Image From</string>
     <string name="add_a_photo">Add a photo</string>
     <string name="drink_form_empty_error">The glass may not be half empty, but this form sure is. Fill out at least one field</string>
     <string name="your_recent_drinks">Your recent drinks</string>
@@ -32,4 +32,8 @@
     <string name="description_title">DESCRIPTION</string>
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="tags_title">TAGS</string>
+    <string name="add_a_picture">Add a picture</string>
+    <string name="what_are_you_drinking">What are you drinking?</string>
+    <string name="add_a_description">Add a description</string>
+    <string name="add_more">ADD MORE</string>
 </resources>

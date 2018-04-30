@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.bumptech.glide.Glide
@@ -84,6 +86,7 @@ class DrinkActivity: AppCompatActivity() {
                 .apply(centerCropTransform())
                 .into(drinkImageView)
 
+        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.withModels {
             // TODO - Add drink things here
             drinkDetails {
