@@ -28,7 +28,8 @@ buildscript {
         fabricTools: '1.24.4',
         crashlytics: '2.7.1',
         firebase: '11.8.0',
-        firebaseUI: '3.2.2'
+        firebaseUI: '3.2.2',
+        chipManager: '0.3.7'
     ]
 
     ext.deps = [
@@ -103,7 +104,8 @@ buildscript {
         fotoapparat: "io.fotoapparat.fotoapparat:library:${versions.fotoapparat}",
         gson: "com.google.code.gson:gson:${versions.gson}",
         glideTransformations: "jp.wasabeef:glide-transformations:${versions.glideTransformations}",
-        crashlytics: "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}@aar"
+        crashlytics: "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}@aar",
+        chipManager: "com.beloo.widget:ChipsLayoutManager:${versions.chipManager}@aar"
     ]
 
     repositories {

@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
 import io.github.koss.brew.*
@@ -12,6 +14,7 @@ import io.github.koss.brew.util.RalewayRegular
 import io.github.koss.brew.util.extension.observe
 import io.github.koss.brew.util.extension.withModels
 import kotlinx.android.synthetic.main.activity_drink.*
+import kotlinx.android.synthetic.main.view_holder_drink_tags.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.okButton
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -88,6 +91,13 @@ class DrinkActivity: AppCompatActivity() {
                 location("TODO - Make this part of the Drink Model")
                 description(getString(R.string.lorem))
             }
+
+            if (state.drink.tags.isNotEmpty()) {
+                drinkTags {
+                    id(ID_DRINK_TAGS)
+                    tags(state.drink.tags)
+                }
+            }
         }
     }
 
@@ -108,6 +118,24 @@ class DrinkActivity: AppCompatActivity() {
         }
 
         finish()
+    }
+
+    private fun DrinkTagsBindingModelBuilder.tags(tags: List<String>) {
+        this.onBind { _, view, _ ->
+            val recyclerView = view.dataBinding.root.tagsRecyclerView
+            recyclerView.layoutManager = ChipsLayoutManager.newBuilder(this@DrinkActivity)
+                    .build()
+
+            recyclerView.withModels {
+                tags.mapIndexed { index, tag ->
+                    drinkTag {
+                        id("$index $tag")
+                        tag(tag)
+                    }
+                }
+            }
+
+        }
     }
 
     companion object {
