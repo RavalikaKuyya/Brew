@@ -7,15 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.github.koss.brew.R
-import kotlinx.android.synthetic.main.layout_logged_out.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
-import android.content.Intent
+import io.github.koss.brew.profileEmptyState
+import io.github.koss.brew.sectionHeader
 import io.github.koss.brew.ui.main.MainActivity
 import io.github.koss.brew.util.arch.BrewViewModelFactory
 import io.github.koss.brew.util.extension.component
 import javax.inject.Inject
-import com.firebase.ui.auth.AuthUI
 import io.github.koss.brew.ui.you.TitleProvider
+import io.github.koss.brew.util.extension.withModels
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment: Fragment(), TitleProvider {
 
@@ -36,40 +36,21 @@ class ProfileFragment: Fragment(), TitleProvider {
             inflater.inflate(R.layout.fragment_profile, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        logInButton.onClick {
-            launchFirebaseAuth()
-        }
-
-        signUpButton.onClick {
-            launchFirebaseAuth()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == RC_SIGN_IN) {
-           viewModel.handleLogin(data, resultCode)
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView.withModels {
+            if (viewModel.activity.value?.isNotEmpty() == true) {
+                sectionHeader {
+                    id("recent_activity")
+                    title(getString(R.string.recent_activity))
+                }
+            } else {
+                profileEmptyState {
+                    id("profile_empty_state")
+                }
+            }
         }
     }
 
     override fun getTitle(): String = "Profile"
 
-    private fun launchFirebaseAuth() {
-        val providers = listOf(
-                AuthUI.IdpConfig.EmailBuilder(),
-                AuthUI.IdpConfig.GoogleBuilder()).map { it.build() }
-
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
-                RC_SIGN_IN)
-
-    }
-
-    companion object {
-        const val RC_SIGN_IN = 123
-    }
 }

@@ -36,4 +36,8 @@
     <string name="what_are_you_drinking">What are you drinking?</string>
     <string name="add_a_description">Add a description</string>
     <string name="add_more">ADD MORE</string>
+    <string name="recent_activity">Recent activity</string>
+    <string name="profile_empty_title">This is looking pretty empty</string>
+    <string name="profile_empty_description">You haven\'t been active on Brew yet. Have a look around, drink something nice, and your activity will turn up here</string>
+    <string name="content_description_your_profile_image">Your profile image</string>
 </resources>
