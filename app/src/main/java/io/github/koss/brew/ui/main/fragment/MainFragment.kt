@@ -11,6 +11,7 @@ import io.github.koss.brew.R
 import ru.terrakok.cicerone.Navigator
 import android.widget.Toast
 import io.github.koss.brew.ui.create.drink.AddDrinkFragment
+import io.github.koss.brew.ui.create.drink.simple.SimpleAddDrinkBottomSheetDialogFragment
 import io.github.koss.brew.ui.discover.DiscoverFragment
 import io.github.koss.brew.ui.home.HomeFragment
 import io.github.koss.brew.ui.main.MainActivity
@@ -87,10 +88,7 @@ class MainFragment : Fragment(), NestedScrollListener {
         })
 
         floatingActionButton.onClick {
-            fragmentManager?.beginTransaction()
-                    ?.add(R.id.fragmentContainer, AddDrinkFragment())
-                    ?.addToBackStack(null)
-                    ?.commit()
+            SimpleAddDrinkBottomSheetDialogFragment().show(fragmentManager, SIMPLE_ADD)
         }
     }
 
@@ -207,6 +205,8 @@ class MainFragment : Fragment(), NestedScrollListener {
         const val HOME = "bottom_nav_home_screen"
         const val DISCOVER = "bottom_nav_discover_screen"
         const val YOU = "bottom_nav_you_screen"
+
+        const val SIMPLE_ADD = "simple_add_drink"
 
         const val MAIN_FRAGMENT_TAG = "main_frag_tag"
     }

@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import io.github.koss.brew.ui.camera.CameraViewModel
 import io.github.koss.brew.ui.create.drink.AddDrinkViewModel
+import io.github.koss.brew.ui.create.drink.simple.SimpleAddDrinkViewModel
 import io.github.koss.brew.ui.drink.DrinkViewModel
 import io.github.koss.brew.ui.home.HomeViewModel
 import io.github.koss.brew.ui.home.content.recent.RecentDrinksViewModel
@@ -77,6 +78,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(YouViewModel::class)
     abstract fun bindYouViewModel(viewModel: YouViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SimpleAddDrinkViewModel::class)
+    abstract fun bindSimpleAddDrinkViewModel(viewModel: SimpleAddDrinkViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: BrewViewModelFactory): ViewModelProvider.Factory

@@ -9,6 +9,7 @@ import io.github.koss.brew.di.module.RepositoryModule
 import io.github.koss.brew.di.scope.ApplicationScope
 import io.github.koss.brew.ui.camera.CameraActivity
 import io.github.koss.brew.ui.create.drink.AddDrinkFragment
+import io.github.koss.brew.ui.create.drink.simple.SimpleAddDrinkBottomSheetDialogFragment
 import io.github.koss.brew.ui.drink.DrinkActivity
 import io.github.koss.brew.ui.home.HomeFragment
 import io.github.koss.brew.ui.main.MainActivityComponent
@@ -48,6 +49,8 @@ interface ApplicationComponent {
     fun inject(fragment: SettingsFragment)
 
     fun inject(fragment: YouFragment)
+
+    fun inject(fragment: SimpleAddDrinkBottomSheetDialogFragment)
 
     fun plus(module: MainActivityModule): MainActivityComponent
 }

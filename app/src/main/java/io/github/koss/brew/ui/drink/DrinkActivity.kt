@@ -4,10 +4,12 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
+import android.support.transition.TransitionManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
+import android.view.View
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
@@ -71,6 +73,8 @@ class DrinkActivity: AppCompatActivity() {
     }
 
     private fun showDrinkRetrieved(state: DrinkState.DrinkRetrieved) {
+        TransitionManager.beginDelayedTransition(coordinator)
+
         if (state.drink == null) {
             showLoading()
             return
@@ -81,10 +85,14 @@ class DrinkActivity: AppCompatActivity() {
         CalligraphyUtils.applyFontToTextView(this, titleTextView, RalewayRegular.path)
 
         // Set up drink image
-        Glide.with(this)
-                .load(state.drink.photoUri)
-                .apply(centerCropTransform())
-                .into(drinkImageView)
+        if (state.drink.photoUri == null) {
+            drinkImageView.visibility = View.GONE
+        } else {
+            Glide.with(this)
+                    .load(state.drink.photoUri)
+                    .apply(centerCropTransform())
+                    .into(drinkImageView)
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.withModels {
@@ -92,7 +100,7 @@ class DrinkActivity: AppCompatActivity() {
             drinkDetails {
                 id(ID_DRINK_BODY)
                 location("TODO - Make this part of the Drink Model")
-                description(getString(R.string.lorem))
+                description(state.drink.rating?.review)
             }
 
             if (state.drink.tags.isNotEmpty()) {
@@ -147,7 +155,6 @@ class DrinkActivity: AppCompatActivity() {
 
         // Epoxy IDs
         const val ID_DRINK_LOADING = "loading"
-        const val ID_DRINK_TITLE = "title"
         const val ID_DRINK_BODY = "drink_body"
         const val ID_DRINK_TAGS = "drink_tags"
         const val ID_DRINKS_RELATED = "related_drinks"
