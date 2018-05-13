@@ -23,26 +23,27 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="@dimen/drink_item_width"
-        android:layout_height="@dimen/drink_item_height"
+        android:layout_height="wrap_content"
         android:foreground="?selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:onClick="@{onClick}"
         android:onLongClick="@{onLongClick}"
         android:clipToPadding="false"
-        android:stateListAnimator="@animator/cardview_animator"
+        app:cardElevation="0dp"
         app:cardCornerRadius="6dp">
 
         <ImageView
             android:id="@+id/backgroundImageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/drink_item_height"
             tools:ignore="ContentDescription" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginTop="@dimen/drink_item_height"
+            android:padding="4dp"
             android:layout_gravity="bottom"
             android:orientation="vertical">
 
@@ -50,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{title}"
-                android:textColor="#B0ffffff"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
                 tools:text="Tanqueray No. Ten"/>
 
             <TextView
@@ -58,7 +59,6 @@
                 android:layout_height="wrap_content"
                 android:text="@{tagsDisplay}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textColor="#A4ffffff"
                 tools:text="Dry, Juniper, Dank"/>
         </LinearLayout>
 

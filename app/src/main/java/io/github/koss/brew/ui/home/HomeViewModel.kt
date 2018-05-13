@@ -25,23 +25,8 @@ class HomeViewModel @Inject constructor(
         uiEventBus.events.observeForever {
             when (it) {
                 is RebuildHomescreen -> (rebuildTrigger as MutableLiveData).postValue(false)
-                is ViewAllClicked -> viewAllClicked()
                 else -> {}
             }
         }
-    }
-
-    private fun viewAllClicked() {
-        // Map the event to show the recent drinks in another way
-        content.contentList = content.contentList.map {
-            if (it is RecentDrinksContent) {
-                return@map RecentDrinksContent(!it.asCarousel)
-            }
-
-            return@map it
-        }
-
-        // Force rebuild
-        (rebuildTrigger as MutableLiveData).postValue(true)
     }
 }
