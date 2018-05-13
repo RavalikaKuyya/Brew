@@ -3,7 +3,6 @@ package io.github.koss.brew.ui.create.drink.simple
 import android.arch.lifecycle.ViewModel
 import android.net.Uri
 import io.github.koss.brew.data.model.Drink
-import io.github.koss.brew.data.model.Rating
 import io.github.koss.brew.repository.drinks.DrinkRepository
 import javax.inject.Inject
 
@@ -18,7 +17,7 @@ class SimpleAddDrinkViewModel @Inject constructor(
     fun addDrink(title: String, description: String) {
         drinkRepository.addNewDrink(Drink(
                 name = title,
-                rating = Rating(Rating.SCORE_UNDEFINED, description),
+                description = description,
                 tags = tags,
                 photoUri = photoUri
         ))

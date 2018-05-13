@@ -21,6 +21,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -28,9 +29,9 @@
 
         <activity
             android:name="io.github.koss.brew.ui.main.MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <!-- TODO: The orientation of this screen should be unlocked post design considerations -->
         <activity
             android:name="io.github.koss.brew.ui.camera.CameraActivity"
             android:screenOrientation="portrait"/>

@@ -22,6 +22,8 @@ data class Drink(
 
         var tags: List<String> = emptyList(),
 
+        var description: String? = null,
+
         @Embedded
         var rating: @RawValue Rating? = null
 ) : Parcelable

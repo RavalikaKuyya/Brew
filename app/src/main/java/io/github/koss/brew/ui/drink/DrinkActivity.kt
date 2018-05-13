@@ -12,7 +12,11 @@ import android.view.Gravity
 import android.view.View
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.TransitionOptions
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
+import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import io.github.koss.brew.*
 import io.github.koss.brew.util.RalewayRegular
 import io.github.koss.brew.util.extension.observe
@@ -89,8 +93,10 @@ class DrinkActivity: AppCompatActivity() {
             drinkImageView.visibility = View.GONE
         } else {
             Glide.with(this)
+                    .asBitmap()
                     .load(state.drink.photoUri)
                     .apply(centerCropTransform())
+                    .transition(BitmapTransitionOptions.withCrossFade(300))
                     .into(drinkImageView)
         }
 
@@ -100,7 +106,7 @@ class DrinkActivity: AppCompatActivity() {
             drinkDetails {
                 id(ID_DRINK_BODY)
                 location("TODO - Make this part of the Drink Model")
-                description(state.drink.rating?.review)
+                description(state.drink.description)
             }
 
             if (state.drink.tags.isNotEmpty()) {

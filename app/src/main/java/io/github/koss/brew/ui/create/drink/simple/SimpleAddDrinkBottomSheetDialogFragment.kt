@@ -3,25 +3,19 @@ package io.github.koss.brew.ui.create.drink.simple
 import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.DialogFragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.tylersuehr.chips.ChipsInputLayout
 import com.tylersuehr.chips.data.Chip
 import com.tylersuehr.chips.data.ChipSelectionObserver
@@ -32,6 +26,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import javax.inject.Inject
 import io.github.koss.brew.ui.camera.CameraActivity
 import io.github.koss.brew.ui.create.drink.AddDrinkFragment
+import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.startActivityForResult
 
 
@@ -85,12 +80,16 @@ class SimpleAddDrinkBottomSheetDialogFragment : BottomSheetDialogFragment() {
         addPictureButton.setOnClickListener(null)
         addPictureButton.isClickable = false
 
+        val transform = MultiTransformation(
+                CenterCrop(),
+                RoundedCorners(dip(4))
+        )
+
         // Load photo into imageView
         Glide.with(this)
                 .asBitmap()
                 .load(photoUri)
-                .apply(RequestOptions.centerCropTransform())
-                .apply(RequestOptions.bitmapTransform(RoundedCorners(4)))
+                .apply(RequestOptions.bitmapTransform(transform))
                 .into(pictureImageView)
     }
 
