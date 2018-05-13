@@ -85,7 +85,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
             onBackPressed()
         }
 
-        drinkToolbar.inflateMenu(R.menu.add_drink_item)
+        drinkToolbar.inflateMenu(R.menu.menu_done_button)
         drinkToolbar.onMenuItemClick {
             // There's only one menu item, so assume that means the user's done
             onDonePressed()

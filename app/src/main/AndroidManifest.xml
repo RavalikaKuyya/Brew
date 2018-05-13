@@ -38,6 +38,7 @@
         <activity
             android:name=".ui.drink.DrinkActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.thanks.ThanksActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

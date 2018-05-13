@@ -49,4 +49,14 @@
     <string name="logged_out_local_delete_message">It looks like you\'re not logged in. This will permanently delete your drinks</string>
     <string name="logged_in_local_delete_message">We\'ll keep your drinks safe in the cloud</string>
     <string name="clear_local_drinks">Clear local drinks</string>
+    <string name="about_brew">About Brew</string>
+    <string name="who_helped_out">Who helped out</string>
+    <string name="thanks_header_description">Throughout the development of Brew we\'ve been lucky enough to have contributions from a number of people in different areas. These contributions are greatly appreciated, as without them Brew would not be what it is today. Here\'s everyone</string>
+    <string name="design_contributions">Design Contributors</string>
+    <string name="design_thanks_description">The design found in the Brew app is a key part of what makes Brew feel the way it does. A number of icons have been sources from The Noun Project. The makers of these icons may not be aware they contributed to Brew, but should be recognised anyway</string>
+    <string name="code_contributors">Code contributors</string>
+    <string name="code_thanks_description">Brew needed to be build, and being an open source project garners contributions from anyone who\'s interested. Here\'s to them</string>
+    <string name="test_contributors">Testing contributors</string>
+    <string name="test_thanks_description">Brew wouldn\'t be anywhere near usable without testers. They\'ve helped to find bugs before they\'re released, and help to keep the experience of using Brew as smooth as possible</string>
+    <string name="thanks">Thanks</string>
 </resources>

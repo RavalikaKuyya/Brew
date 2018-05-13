@@ -1,6 +1,7 @@
 package io.github.koss.brew.ui.you.settings.content
 
 import android.arch.lifecycle.ViewModel
+import io.github.koss.brew.ui.you.settings.content.about.AboutBrewContent
 import io.github.koss.brew.ui.you.settings.content.appsettings.AppSettingsContent
 import io.github.koss.brew.ui.you.settings.content.profilesettings.ProfileSettingsContent
 import io.github.koss.brew.util.arch.BrewViewModelFactory
@@ -12,6 +13,7 @@ class SettingsContent(viewModelFactory: BrewViewModelFactory): EpoxyContentProvi
         get() = listOf(
                 AppSettingsContent(),
                 DividerContent(id = "app_settings_divider"),
-                ProfileSettingsContent())
+                ProfileSettingsContent(),
+                AboutBrewContent())
 
 }

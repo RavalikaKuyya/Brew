@@ -1,15 +1,8 @@
 package io.github.koss.brew.ui.you.settings.content.profilesettings
 
 import android.content.Context
-import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
-import io.github.koss.brew.R
-import io.github.koss.brew.clickableSetting
-import io.github.koss.brew.sectionHeader
-import io.github.koss.brew.ui.main.MainActivity
-import io.github.koss.brew.ui.main.fragment.MainFragment
-import io.github.koss.brew.ui.main.navigator.Screens
-import io.github.koss.brew.ui.you.YouFragment
+import io.github.koss.brew.*
 import io.github.koss.brew.util.Session
 import io.github.koss.brew.util.epoxy.BuildCallback
 import io.github.koss.brew.util.epoxy.EpoxyContent
@@ -28,7 +21,7 @@ class ProfileSettingsContent: EpoxyContent<ProfileSettingsViewModel>() {
             }
 
             // Log out
-            clickableSetting {
+            clickableCell {
                 id("log_out_setting")
                 name(context.getString(R.string.log_out))
                 onClick { _ ->
@@ -43,6 +36,11 @@ class ProfileSettingsContent: EpoxyContent<ProfileSettingsViewModel>() {
                         show()
                     }
                 }
+            }
+
+            // Final divider
+            keylineDivider {
+                id("profile_divider")
             }
         }
     }

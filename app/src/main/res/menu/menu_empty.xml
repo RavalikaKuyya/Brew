@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/done_item"
+        android:id="@+id/stub_item"
         app:showAsAction="always"
-        android:title="@string/done"
-        android:icon="@drawable/ic_done_black_24dp"/>
+        android:visible="true"
+        android:title=""/>
 </menu>

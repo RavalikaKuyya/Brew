@@ -2,7 +2,7 @@ package io.github.koss.brew.ui.you.settings.content.appsettings
 
 import android.content.Context
 import io.github.koss.brew.R
-import io.github.koss.brew.clickableSetting
+import io.github.koss.brew.clickableCell
 import io.github.koss.brew.sectionHeader
 import io.github.koss.brew.util.Session
 import io.github.koss.brew.util.epoxy.BuildCallback
@@ -21,7 +21,7 @@ class AppSettingsContent: EpoxyContent<AppSettingsViewModel>() {
         }
 
         // Clear local drinks
-        clickableSetting {
+        clickableCell {
             id("clear_local")
             name(context.getString(R.string.clear_local_drinks))
             onClick { _ ->
