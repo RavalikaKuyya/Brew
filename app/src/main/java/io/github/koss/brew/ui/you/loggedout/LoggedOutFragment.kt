@@ -4,20 +4,28 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
+import io.github.koss.brew.BrewApp
 import io.github.koss.brew.R
+import io.github.koss.brew.ui.you.OnRefreshYouFragmentRequested
 import io.github.koss.brew.ui.you.TitleProvider
+import io.github.koss.brew.util.arch.EventBus
 import kotlinx.android.synthetic.main.layout_logged_out.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import javax.inject.Inject
 
 class LoggedOutFragment: Fragment(), TitleProvider {
+
+    @Inject lateinit var eventBus: EventBus
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity!!.application as BrewApp).applicationComponent.inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
         = inflater.inflate(R.layout.fragment_logged_out, container, false)
@@ -37,8 +45,7 @@ class LoggedOutFragment: Fragment(), TitleProvider {
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == Activity.RESULT_OK) {
-                (parentFragment as? LoggedInCallback)?.onLoggedIn()
-                Log.d("LoggedOutFragment", FirebaseAuth.getInstance().currentUser.toString())
+                eventBus.send(OnRefreshYouFragmentRequested)
                 return
             }
 
@@ -67,11 +74,4 @@ class LoggedOutFragment: Fragment(), TitleProvider {
     companion object {
         const val RC_SIGN_IN = 123
     }
-}
-
-/**
- * Interface to be implemented by parent fragment
- */
-interface LoggedInCallback {
-    fun onLoggedIn()
 }

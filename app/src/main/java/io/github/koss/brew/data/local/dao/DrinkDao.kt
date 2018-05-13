@@ -17,8 +17,14 @@ interface DrinkDao {
     @Query("SELECT * FROM drink")
     fun loadAllDrinks(): LiveData<List<Drink>>
 
+    @Query("SELECT * FROM drink")
+    fun getAllDrinks(): List<Drink>
+
     @Delete
     fun deleteDrink(drink: Drink)
+
+    @Delete
+    fun deleteAllDrinks(list: List<Drink>)
 
     @Query("SELECT * FROM drink WHERE id = :drinkId")
     fun getDrinkById(drinkId: Int): Maybe<Drink>

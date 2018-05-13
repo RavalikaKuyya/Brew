@@ -13,7 +13,10 @@ import io.github.koss.brew.ui.home.HomeViewModel
 import io.github.koss.brew.ui.home.content.recent.RecentDrinksViewModel
 import io.github.koss.brew.ui.main.MainViewModel
 import io.github.koss.brew.ui.main.fragment.MainFragmentViewModel
+import io.github.koss.brew.ui.you.YouViewModel
 import io.github.koss.brew.ui.you.profile.ProfileViewModel
+import io.github.koss.brew.ui.you.settings.content.appsettings.AppSettingsViewModel
+import io.github.koss.brew.ui.you.settings.content.profilesettings.ProfileSettingsViewModel
 import io.github.koss.brew.util.arch.BrewViewModelFactory
 import kotlin.reflect.KClass
 
@@ -59,6 +62,21 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ProfileViewModel::class)
     abstract fun bindProfileViewModel(viewModel: ProfileViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AppSettingsViewModel::class)
+    abstract fun bindAppSettingsViewModel(viewModel: AppSettingsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProfileSettingsViewModel::class)
+    abstract fun bindProfileSettingsViewModel(viewModel: ProfileSettingsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(YouViewModel::class)
+    abstract fun bindYouViewModel(viewModel: YouViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: BrewViewModelFactory): ViewModelProvider.Factory

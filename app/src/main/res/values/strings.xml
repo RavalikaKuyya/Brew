@@ -40,4 +40,13 @@
     <string name="profile_empty_title">This is looking pretty empty</string>
     <string name="profile_empty_description">You haven\'t been active on Brew yet. Have a look around, drink something nice, and your activity will turn up here</string>
     <string name="content_description_your_profile_image">Your profile image</string>
+    <string name="app_settings">App settings</string>
+    <string name="profile_settings">Profile settings</string>
+    <string name="log_out">Log out</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="log_out_dialog_message">We\'ll keep your drinks handy while you\'re gone</string>
+    <string name="button_continue">Continue</string>
+    <string name="logged_out_local_delete_message">It looks like you\'re not logged in. This will permanently delete your drinks</string>
+    <string name="logged_in_local_delete_message">We\'ll keep your drinks safe in the cloud</string>
+    <string name="clear_local_drinks">Clear local drinks</string>
 </resources>

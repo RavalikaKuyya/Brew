@@ -27,4 +27,10 @@ class DrinkRepository(
     fun getDrinkById(drinkId: String): Maybe<Drink> {
         return drinkDao.getDrinkById(drinkId.toInt())
     }
+
+    fun clearLocalDrinks() {
+        launch {
+            drinkDao.deleteAllDrinks(drinkDao.getAllDrinks())
+        }
+    }
 }

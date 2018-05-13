@@ -1,12 +1,14 @@
 package io.github.koss.brew.ui.you
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.github.koss.brew.R
-import io.github.koss.brew.ui.you.loggedout.LoggedInCallback
 import io.github.koss.brew.util.Session
 import kotlinx.android.synthetic.main.fragment_you.*
 import android.graphics.Typeface
@@ -18,9 +20,21 @@ import io.github.koss.brew.util.QuicksandMedium
 import org.jetbrains.anko.childrenRecursiveSequence
 import android.content.ContentResolver
 import android.net.Uri
+import io.github.koss.brew.BrewApp
+import javax.inject.Inject
 
 
-class YouFragment: Fragment(), LoggedInCallback {
+class YouFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var viewModel: YouViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity!!.application as BrewApp).applicationComponent.inject(this)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(YouViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_you, container, false)
@@ -32,12 +46,16 @@ class YouFragment: Fragment(), LoggedInCallback {
         }
 
         tabLayout.setupWithViewPager(viewPager)
-        updateTabFont()
-        updateProfileImage()
+        refresh(refreshAdapter = false)
+
+        viewModel.reloadTrigger.observe(this, Observer<Nothing> { refresh() })
     }
 
-    override fun onLoggedIn() {
-        viewPager.adapter?.notifyDataSetChanged()
+    private fun refresh(refreshAdapter: Boolean = true) {
+        if (refreshAdapter) {
+            viewPager.adapter?.notifyDataSetChanged()
+        }
+
         updateTabFont()
         updateProfileImage()
     }
@@ -48,18 +66,21 @@ class YouFragment: Fragment(), LoggedInCallback {
 
         viewGroup.childrenRecursiveSequence()
                 .filter { it is TextView }
-                .forEach { (it as TextView).typeface = typeface}
+                .forEach { (it as TextView).typeface = typeface }
     }
 
     private fun updateProfileImage() {
-        if (Session.isLoggedIn) {
-            val photoUrl = FirebaseAuth.getInstance().currentUser?.photoUrl
+        val photoUrl = if (Session.isLoggedIn) {
+            FirebaseAuth.getInstance().currentUser?.photoUrl
                     ?: R.drawable.ic_no_profile_picture.toUri()
-            Glide.with(this)
-                    .load(photoUrl)
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(profileImageView)
+        } else {
+            null
         }
+
+        Glide.with(this)
+                .load(photoUrl)
+                .apply(RequestOptions.circleCropTransform())
+                .into(profileImageView)
     }
 
     private fun Int.toUri(): Uri {
