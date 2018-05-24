@@ -9,7 +9,7 @@ buildscript {
         coroutines: '0.21.2',
         anko: '0.10.4',
         arch: '1.0.0',
-        room: '1.1.0-beta3',
+        room: '1.1.1-rc1',
         dagger: '2.11',
         cicerone: '2.1.0',
         constraint: '1.0.2',
