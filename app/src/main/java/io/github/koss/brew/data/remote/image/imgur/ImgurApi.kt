@@ -18,7 +18,7 @@ interface ImgurApi {
      * Creates an album given the request
      */
     @POST("/3/album")
-    fun createAlbum(createAlbumRequest: CreateAlbumRequest): Single<BasicResponse<CreateAlbumResponseData>>
+    fun createAlbum(@Body createAlbumRequest: CreateAlbumRequest): Single<BasicResponse<CreateAlbumResponseData>>
 
     /**
      * Deletes an album given the delete hash
@@ -31,14 +31,14 @@ interface ImgurApi {
      */
     @Multipart
     @POST("/3/image")
-    fun uploadImage(@Part image: MultipartBody.Part, @Query("album") albumDeleteHash: String): Single<BasicResponse<UploadImageResponseData>>
+    fun uploadImage(@Part file: MultipartBody.Part, @Query("album") albumDeleteHash: String): Single<BasicResponse<UploadImageResponseData>>
 
     /**
      * Uploads an image to Imgur
      */
     @Multipart
     @POST("/3/image")
-    fun uploadImage(@Part image: MultipartBody.Part, @QueryMap queryMap: Map<String, String>): Single<BasicResponse<UploadImageResponseData>>
+    fun uploadImage(@Part file: MultipartBody.Part, @QueryMap queryMap: Map<String, String>): Single<BasicResponse<UploadImageResponseData>>
 
     /**
      * Deletes an image given the delete hash

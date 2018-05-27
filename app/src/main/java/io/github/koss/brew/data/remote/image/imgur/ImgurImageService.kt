@@ -1,13 +1,17 @@
 package io.github.koss.brew.data.remote.image.imgur
 
 import android.net.Uri
+import android.util.Log
+import com.google.firebase.auth.FirebaseUser
 import io.github.koss.brew.data.remote.error.NotLoggedInException
 import io.github.koss.brew.data.remote.image.imgur.model.request.CreateAlbumRequest
+import io.github.koss.brew.data.remote.image.imgur.model.response.CreditData
 import io.github.koss.brew.data.remote.image.imgur.model.response.UploadImageResponseData
+import io.github.koss.brew.repository.config.PreferencesManager
 import io.github.koss.brew.util.Session
 import io.github.koss.brew.util.extension.toMultipartImage
-import io.github.koss.brew.util.getAlbumDeleteHash
-import io.github.koss.brew.util.setAlbumDetails
+import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
@@ -17,13 +21,13 @@ import io.reactivex.schedulers.Schedulers
  * the album when they either delete their account, or remove remote storage.
  *
  * Note: When deleting images from Imgur, they have to be deleted one by one. This service doesn't
- * handle scheduling, but provides a [getRemainingQuota] endpoint to retrieve how many more "credits"
+ * handle scheduling, but provides a [getRemainingCreditData] endpoint to retrieve how many more "credits"
  * are allocated to this client. In future, there could potentially be client coordination implemented
  * and some form of remote queuing to fully utilise the quota
  */
 class ImgurImageService(
         private val api: ImgurApi,
-        private val session: Session
+        private val preferencesManager: PreferencesManager
 ) {
 
     /**
@@ -33,7 +37,7 @@ class ImgurImageService(
      * Returns a single which emits the images deletehash
      */
     fun uploadImage(imageUri: Uri): Single<UploadImageResponseData> {
-        val user = session.user ?: return Single.error(NotLoggedInException())
+        val user = Session.user ?: return Single.error(NotLoggedInException())
 
 
         // The following:
@@ -53,7 +57,7 @@ class ImgurImageService(
                 )
                 .flatMap {
                     api.uploadImage(
-                            image = imageUri.toMultipartImage(),
+                            file = imageUri.toMultipartImage(),
                             albumDeleteHash = it)
                 }.map {
                     // Remove BasicResponse as any errors will bubble an exception up to subscribers
@@ -76,8 +80,25 @@ class ImgurImageService(
     /**
      * Function for getting the remaining image quota
      */
-    fun getRemainingQuota(): Single<Int> {
-        return api.getRemainingCredits().map { it.data.userRemaining }
+    fun getRemainingCreditData(): Single<CreditData> {
+        return api.getRemainingCredits().map { it.data }
+    }
+
+    // TODO -- Remove the following
+    private fun FirebaseUser.getAlbumDeleteHash(): Maybe<String> {
+        val hash = preferencesManager.albumHash
+
+        return when {
+            hash.isNullOrEmpty() -> Maybe.empty<String>()
+            else -> Maybe.just(hash)
+        }
+    }
+
+    private fun FirebaseUser.setAlbumDetails(albumId: String, albumDeleteHash: String): Completable {
+        preferencesManager.albumHash = albumDeleteHash
+        preferencesManager.albumId = albumId
+        Log.d("ImgurImageService", albumId)
+        return Completable.complete()
     }
 }
 

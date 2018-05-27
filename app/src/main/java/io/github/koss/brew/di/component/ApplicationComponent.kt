@@ -3,10 +3,10 @@ package io.github.koss.brew.di.component
 import dagger.Component
 import io.github.koss.brew.BrewActivity
 import io.github.koss.brew.BrewApp
-import io.github.koss.brew.di.module.ApplicationModule
-import io.github.koss.brew.di.module.NavigationModule
-import io.github.koss.brew.di.module.RepositoryModule
+import io.github.koss.brew.data.remote.image.imgur.ImgurImageService
+import io.github.koss.brew.di.module.*
 import io.github.koss.brew.di.scope.ApplicationScope
+import io.github.koss.brew.repository.drinks.DrinkRepository
 import io.github.koss.brew.ui.camera.CameraActivity
 import io.github.koss.brew.ui.create.drink.AddDrinkFragment
 import io.github.koss.brew.ui.create.drink.simple.SimpleAddDrinkBottomSheetDialogFragment
@@ -24,7 +24,8 @@ import io.github.koss.brew.ui.you.settings.SettingsFragment
 @Component(modules = [
     ApplicationModule::class,
     RepositoryModule::class,
-    NavigationModule::class
+    NavigationModule::class,
+    NetworkModule::class
 ])
 interface ApplicationComponent {
 
@@ -53,4 +54,8 @@ interface ApplicationComponent {
     fun inject(fragment: SimpleAddDrinkBottomSheetDialogFragment)
 
     fun plus(module: MainActivityModule): MainActivityComponent
+
+    fun imageService(): ImgurImageService
+
+    fun drinkRepository(): DrinkRepository
 }

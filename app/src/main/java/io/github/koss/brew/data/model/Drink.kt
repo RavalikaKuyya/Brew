@@ -20,6 +20,12 @@ data class Drink(
 
         var photoUri: Uri? = null,
 
+        var photoId: String? = null,
+
+        var photoDeleteHash: String? = null,
+
+        var photoLink: String? = null,
+
         var tags: List<String> = emptyList(),
 
         var description: String? = null,

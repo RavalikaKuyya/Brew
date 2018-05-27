@@ -2,6 +2,7 @@ package io.github.koss.brew.data.local.dao
 
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
+import android.net.Uri
 import io.github.koss.brew.data.model.Drink
 import io.reactivex.Maybe
 
@@ -28,4 +29,7 @@ interface DrinkDao {
 
     @Query("SELECT * FROM drink WHERE id = :drinkId")
     fun getDrinkById(drinkId: Int): Maybe<Drink>
+
+    @Query("UPDATE drink SET photoDeleteHash = :imageDeleteHash, photoId = :imageId, photoLink = :imageLink WHERE photoUri = :drinkImageUri")
+    fun updateDrinkUploadStatus(drinkImageUri: Uri, imageId: String, imageDeleteHash: String, imageLink: String)
 }

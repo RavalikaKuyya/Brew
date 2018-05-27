@@ -38,5 +38,15 @@ class AppSettingsContent: EpoxyContent<AppSettingsViewModel>() {
                 }
             }
         }
+
+        if (Session.isLoggedIn) {
+            clickableCell {
+                id("sync_local")
+                name(context.getString(R.string.sync_local))
+                onClick { _ ->
+                    viewModel.onSyncRequested()
+                }
+            }
+        }
     }
 }
