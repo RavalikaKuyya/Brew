@@ -50,6 +50,7 @@ class DrinkRepository(
             val drinks = drinkDao.getAllDrinks()
 
             val inputData = drinks
+                    .filter { it.photoId == null }
                     .mapNotNull { drink -> drink.photoUri?.path }
                     .toTypedArray()
 

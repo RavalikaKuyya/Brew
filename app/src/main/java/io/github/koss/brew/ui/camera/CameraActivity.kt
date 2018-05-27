@@ -68,7 +68,7 @@ class CameraActivity: AppCompatActivity() {
             val permissionAccepted = PermissionDelegate()
                     .checkPermissions(
                             activity = this@CameraActivity,
-                            justification = "Some permissions are needed to use the camera",
+                            justification = "Brew needs permission to use the camera",
                             permission = Manifest.permission.CAMERA,
                             permissions = *arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE))
 
@@ -91,6 +91,7 @@ class CameraActivity: AppCompatActivity() {
             when (it) {
                 is CameraViewModel.State.PreviewShowing -> {
                     imagePreviewView.visibility = View.GONE
+                    Glide.with(this).clear(imagePreviewView)
                 }
                 is CameraViewModel.State.PhotoTaken -> {
                     onPhotoTaken(it.photoUri)

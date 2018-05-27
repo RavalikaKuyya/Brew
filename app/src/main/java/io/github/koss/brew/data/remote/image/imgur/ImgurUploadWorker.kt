@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationManagerCompat
 import androidx.work.Data
 import androidx.work.Worker
 import io.github.koss.brew.R
+import io.github.koss.brew.data.remote.image.imgur.model.response.UploadImageResponseData
 import io.github.koss.brew.di.component.ApplicationComponent
 import io.github.koss.brew.di.component.DaggerApplicationComponent
 import io.github.koss.brew.di.module.ApplicationModule
@@ -26,6 +27,8 @@ class ImgurUploadWorker : Worker() {
 
     private var applicationComponent: ApplicationComponent? = null
 
+    private var notificationBuilder: NotificationCompat.Builder? = null
+
     override fun doWork(): WorkerResult {
         val context = applicationContext
         val imageService = context.initialiseImageService()
@@ -33,36 +36,26 @@ class ImgurUploadWorker : Worker() {
         val imageUris = imageStrings.map { Uri.parse(it) }
         maxProgress = imageUris.size
 
+        context.createNotificationChannel()
         context.updateNotification()
 
-        val results = imageUris.map {
-            context.incrementProgressCount()
-
-            try {
+        val failedUploads = imageUris.mapNotNull {
+            return@mapNotNull try {
                 val result = imageService.uploadImage(it).blockingGet()
-                return@map UploadResult.Success(imageId = result.id, imageDeleteHash = result.deleteHash, link = result.link)
+                uploadCount += 1
+                context.updateNotification()
+                context.persistDrinkResult(it, result)
+                null
             } catch (e: Exception) {
-                e.printStackTrace()
-                return@map UploadResult.Failure(e)
+                uploadCount += 1
+                context.updateNotification()
+                it
             }
         }
 
         context.cancelNotification()
 
-        val failureMap = imageUris.withIndex()
-                .associate { (index, value) ->
-                    value to results[index]
-                }.mapNotNull { (uri, result) ->
-                    return@mapNotNull when (result) {
-                        is UploadResult.Success -> {
-                            context.persistDrinkResult(uri, result)
-                            null
-                        }
-                        else -> uri
-                    }
-                }
-
-        val returnData = failureMap.map(Uri::getPath)
+        val returnData = failedUploads.map(Uri::getPath)
 
         outputData = Data.Builder().apply { putStringArray(KEY_FAILED_PATHS, returnData.toTypedArray()) }.build()
 
@@ -70,16 +63,7 @@ class ImgurUploadWorker : Worker() {
         return WorkerResult.SUCCESS
     }
 
-    private fun Context.incrementProgressCount() {
-        uploadCount = uploadCount++
-        updateNotification()
-    }
-
-    private fun Context.cancelNotification() {
-        NotificationManagerCompat.from(this).cancel(NOTIFICATION_ID)
-    }
-
-    private fun Context.updateNotification() {
+    private fun Context.createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = VERBOSE_NOTIFICATION_CHANNEL_NAME
             val description = VERBOSE_NOTIFICATION_CHANNEL_DESCRIPTION
@@ -91,15 +75,17 @@ class ImgurUploadWorker : Worker() {
 
             notificationManager.createNotificationChannel(channel)
         }
+    }
 
+    private fun Context.cancelNotification() {
+        NotificationManagerCompat.from(this).cancel(NOTIFICATION_ID)
+    }
+
+    private fun Context.updateNotification() {
         // Create the notification
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(NOTIFICATION_TITLE)
-                .setContentText("Uploading $uploadCount of $maxProgress images")
-                .setPriority(NotificationCompat.PRIORITY_MIN)
+        val builder = getNotificationBuilder()
+                .setContentText("Uploading ${uploadCount + 1} of $maxProgress images")
                 .setProgress(maxProgress, uploadCount, false)
-                .setVibrate(LongArray(0))
 
         // Show the notification
         NotificationManagerCompat.from(this).notify(NOTIFICATION_ID, builder.build())
@@ -110,14 +96,26 @@ class ImgurUploadWorker : Worker() {
         return getApplicationComponent(this).imageService()
     }
 
-    private fun Context.persistDrinkResult(drinkImageUri: Uri, result: UploadResult.Success) {
+    private fun Context.persistDrinkResult(drinkImageUri: Uri, result: UploadImageResponseData) {
         val repo = getApplicationComponent(this).drinkRepository()
         repo.updateDrinkUploadStatus(drinkImageUri,
-                imageId = result.imageId,
-                imageDeleteHash = result.imageDeleteHash,
+                imageId = result.id,
+                imageDeleteHash = result.deleteHash,
                 imageLink = result.link)
     }
 
+    private fun Context.getNotificationBuilder(): NotificationCompat.Builder {
+        if (notificationBuilder == null) {
+            notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setOngoing(true)
+                    .setContentTitle(NOTIFICATION_TITLE)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setVibrate(LongArray(0))
+        }
+
+        return notificationBuilder!!
+    }
 
     private fun getApplicationComponent(context: Context): ApplicationComponent {
         if (applicationComponent == null) {
@@ -127,19 +125,6 @@ class ImgurUploadWorker : Worker() {
         }
 
         return applicationComponent!!
-    }
-
-    /**
-     * Upload result for image uploads
-     */
-    sealed class UploadResult {
-
-        data class Success(
-                val imageId: String,
-                val imageDeleteHash: String,
-                val link: String) : UploadResult()
-
-        data class Failure(val exception: Exception) : UploadResult()
     }
 
     companion object {
