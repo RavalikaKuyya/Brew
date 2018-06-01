@@ -24,7 +24,7 @@ buildscript {
         fotoapparat: '2.0.2',
         gson: '2.8.2',
         glideTransformations: '3.0.1',
-        googleServices: '3.2.0',
+        googleServices: '4.0.1',
         fabricTools: '1.24.4',
         crashlytics: '2.7.1',
         firebase: '11.8.0',
