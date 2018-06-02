@@ -29,7 +29,7 @@ class NetworkModule {
 
     @Provides
     @ApplicationScope
-    fun provideImageService(imgurApi: ImgurApi, preferencesManager: PreferencesManager): ImgurImageService = ImgurImageService(imgurApi, preferencesManager)
+    fun provideImageService(imgurApi: ImgurApi): ImgurImageService = ImgurImageService(imgurApi)
 
     @Provides
     @ApplicationScope

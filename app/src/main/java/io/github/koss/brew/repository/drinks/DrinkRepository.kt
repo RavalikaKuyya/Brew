@@ -7,13 +7,15 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import io.github.koss.brew.data.local.dao.DrinkDao
 import io.github.koss.brew.data.model.Drink
+import io.github.koss.brew.data.remote.DrinkService
 import io.github.koss.brew.data.remote.image.imgur.ImgurUploadWorker
 import io.github.koss.brew.data.remote.image.imgur.ImgurUploadWorker.Companion.KEY_IMAGE_URIS
 import io.reactivex.Maybe
 import kotlinx.coroutines.experimental.launch
 
 class DrinkRepository(
-        private val drinkDao: DrinkDao
+        private val drinkDao: DrinkDao,
+        private val drinkService: DrinkService
 ) {
 
     fun getDrinks(): LiveData<List<Drink>> = drinkDao.loadAllDrinks()

@@ -13,8 +13,6 @@ class PreferencesManager(appContext: Context) {
     private val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
 
     // REGION PREFERENCES
-    var albumHash by preferences.string()
-    var albumId by preferences.string()
 
     // END REGION
 

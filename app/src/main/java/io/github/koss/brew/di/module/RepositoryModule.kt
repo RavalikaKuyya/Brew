@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.github.koss.brew.data.local.dao.DrinkDao
+import io.github.koss.brew.data.remote.DrinkService
 import io.github.koss.brew.di.scope.ApplicationScope
 import io.github.koss.brew.repository.config.ConfigurationRepository
 import io.github.koss.brew.repository.config.PreferencesManager
@@ -23,8 +24,8 @@ class RepositoryModule {
 
     @Provides
     @ApplicationScope
-    fun provideDrinkRepository(drinkDao: DrinkDao): DrinkRepository =
-            DrinkRepository(drinkDao)
+    fun provideDrinkRepository(drinkDao: DrinkDao, drinkService: DrinkService): DrinkRepository =
+            DrinkRepository(drinkDao, drinkService)
 
     @Provides
     @ApplicationScope

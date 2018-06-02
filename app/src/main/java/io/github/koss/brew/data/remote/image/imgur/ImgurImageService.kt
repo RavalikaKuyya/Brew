@@ -3,6 +3,7 @@ package io.github.koss.brew.data.remote.image.imgur
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import io.github.koss.brew.data.remote.error.NotLoggedInException
 import io.github.koss.brew.data.remote.image.imgur.model.request.CreateAlbumRequest
 import io.github.koss.brew.data.remote.image.imgur.model.response.CreditData
@@ -26,8 +27,7 @@ import io.reactivex.schedulers.Schedulers
  * and some form of remote queuing to fully utilise the quota
  */
 class ImgurImageService(
-        private val api: ImgurApi,
-        private val preferencesManager: PreferencesManager
+        private val api: ImgurApi
 ) {
 
     /**
@@ -84,21 +84,17 @@ class ImgurImageService(
         return api.getRemainingCredits().map { it.data }
     }
 
-    // TODO -- Remove the following
-    private fun FirebaseUser.getAlbumDeleteHash(): Maybe<String> {
-        val hash = preferencesManager.albumHash
-
-        return when {
-            hash.isNullOrEmpty() -> Maybe.empty<String>()
-            else -> Maybe.just(hash)
-        }
+    private fun FirebaseUser.getAlbumDeleteHash(): Maybe<String> = Maybe.fromCallable {
+        return@fromCallable FirebaseFirestore.getInstance()
+                .document("users/$uid").get().result.get("album_delete_hash")?.toString()
     }
 
-    private fun FirebaseUser.setAlbumDetails(albumId: String, albumDeleteHash: String): Completable {
-        preferencesManager.albumHash = albumDeleteHash
-        preferencesManager.albumId = albumId
-        Log.d("ImgurImageService", albumId)
-        return Completable.complete()
+    private fun FirebaseUser.setAlbumDetails(albumId: String, albumDeleteHash: String): Completable = Completable.fromAction {
+        FirebaseFirestore.getInstance()
+                .document("users/$uid").set(mapOf(
+                        "album_id" to albumId,
+                        "album_delete_hash" to albumDeleteHash
+                )).result
     }
 }
 
