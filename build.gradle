@@ -27,8 +27,8 @@ buildscript {
         googleServices: '4.0.1',
         fabricTools: '1.24.4',
         crashlytics: '2.7.1',
-        firebase: '11.8.0',
-        firebaseUI: '3.2.2',
+        firebase: '16.0.0',
+        firebaseUI: '4.0.1',
         chipManager: '0.3.7'
     ]
 

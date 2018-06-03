@@ -16,15 +16,11 @@ data class Drink(
         @PrimaryKey(autoGenerate = true)
         var id: Int = 0,
 
+        var remoteId: String? = null,
+
         var name: String = "",
 
         var photoUri: Uri? = null,
-
-        var photoId: String? = null,
-
-        var photoDeleteHash: String? = null,
-
-        var photoLink: String? = null,
 
         var tags: List<String> = emptyList(),
 

@@ -2,17 +2,23 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "14df2fb5c6999782007a90df7e942e22",
+    "identityHash": "8dc8df33867291c498c7cd568743feec",
     "entities": [
       {
         "tableName": "Drink",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `photoUri` TEXT, `photoId` TEXT, `photoDeleteHash` TEXT, `photoLink` TEXT, `tags` TEXT NOT NULL, `description` TEXT, `score` REAL, `review` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remoteId` TEXT, `name` TEXT NOT NULL, `photoUri` TEXT, `tags` TEXT NOT NULL, `description` TEXT, `score` REAL, `review` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remoteId",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -23,24 +29,6 @@
           {
             "fieldPath": "photoUri",
             "columnName": "photoUri",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "photoId",
-            "columnName": "photoId",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "photoDeleteHash",
-            "columnName": "photoDeleteHash",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "photoLink",
-            "columnName": "photoLink",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -81,7 +69,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"14df2fb5c6999782007a90df7e942e22\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8dc8df33867291c498c7cd568743feec\")"
     ]
   }
 }

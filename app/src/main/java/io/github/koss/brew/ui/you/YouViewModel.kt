@@ -1,7 +1,7 @@
 package io.github.koss.brew.ui.you
 
 import android.arch.lifecycle.ViewModel
-import com.firebase.ui.auth.viewmodel.SingleLiveEvent
+import io.github.koss.brew.util.SingleLiveEvent
 import io.github.koss.brew.util.arch.EventBus
 import io.reactivex.rxkotlin.ofType
 import javax.inject.Inject

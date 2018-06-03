@@ -1,20 +1,13 @@
 package io.github.koss.brew.data.remote.image.imgur
 
 import android.net.Uri
-import android.util.Log
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
-import io.github.koss.brew.data.remote.error.NotLoggedInException
 import io.github.koss.brew.data.remote.image.imgur.model.request.CreateAlbumRequest
+import io.github.koss.brew.data.remote.image.imgur.model.response.BasicResponse
+import io.github.koss.brew.data.remote.image.imgur.model.response.CreateAlbumResponseData
 import io.github.koss.brew.data.remote.image.imgur.model.response.CreditData
 import io.github.koss.brew.data.remote.image.imgur.model.response.UploadImageResponseData
-import io.github.koss.brew.repository.config.PreferencesManager
-import io.github.koss.brew.util.Session
 import io.github.koss.brew.util.extension.toMultipartImage
-import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 
 /**
  * Imgur-backed image service. Uses the Imgur public API by creating an album for the user
@@ -36,34 +29,16 @@ class ImgurImageService(
      *
      * Returns a single which emits the images deletehash
      */
-    fun uploadImage(imageUri: Uri): Single<UploadImageResponseData> {
-        val user = Session.user ?: return Single.error(NotLoggedInException())
-
-
-        // The following:
-        // - Gets users album hash
-        // - If the delete hash doesn't exist, create an album
-        // - Upload image and discard redundant information
-        return user
-                .getAlbumDeleteHash()
-                .switchIfEmpty(
-                        api.createAlbum(createAlbumRequest = CreateAlbumRequest())
-                                .map {
-                                    user.setAlbumDetails(it.data.id, it.data.deleteHash)
-                                            .subscribeOn(Schedulers.io())
-                                            .subscribe()
-                                    it.data.deleteHash
-                                }
-                )
-                .flatMap {
-                    api.uploadImage(
+    fun uploadImage(albumDeleteHash: String, imageUri: Uri): Single<BasicResponse<UploadImageResponseData>> {
+        return api.uploadImage(
                             file = imageUri.toMultipartImage(),
-                            albumDeleteHash = it)
-                }.map {
-                    // Remove BasicResponse as any errors will bubble an exception up to subscribers
-                    it.data
-                }
+                            albumDeleteHash = albumDeleteHash)
     }
+
+    /**
+     * Returns an observable for creating an album
+     */
+    fun createAlbum(): Single<BasicResponse<CreateAlbumResponseData>> = api.createAlbum(createAlbumRequest = CreateAlbumRequest())
 
     /**
      * Function for deleting image - By default all Images are tied to the user ID and not the
@@ -82,19 +57,6 @@ class ImgurImageService(
      */
     fun getRemainingCreditData(): Single<CreditData> {
         return api.getRemainingCredits().map { it.data }
-    }
-
-    private fun FirebaseUser.getAlbumDeleteHash(): Maybe<String> = Maybe.fromCallable {
-        return@fromCallable FirebaseFirestore.getInstance()
-                .document("users/$uid").get().result.get("album_delete_hash")?.toString()
-    }
-
-    private fun FirebaseUser.setAlbumDetails(albumId: String, albumDeleteHash: String): Completable = Completable.fromAction {
-        FirebaseFirestore.getInstance()
-                .document("users/$uid").set(mapOf(
-                        "album_id" to albumId,
-                        "album_delete_hash" to albumDeleteHash
-                )).result
     }
 }
 

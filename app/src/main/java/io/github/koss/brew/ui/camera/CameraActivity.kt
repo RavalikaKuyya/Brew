@@ -269,7 +269,7 @@ class CameraActivity: AppCompatActivity() {
                 focusMode = continuousFocusPicture(),
                 flashMode = off(),
                 antiBandingMode = auto(),
-                jpegQuality = highestQuality(),
+                jpegQuality = manualJpegQuality(80),
                 sensorSensitivity = lowestSensorSensitivity()
         )
     }

@@ -25,7 +25,7 @@ class NetworkModule {
 
     @Provides
     @ApplicationScope
-    fun provideDrinkService(imageService: ImgurImageService): DrinkService = DrinkService(imageService)
+    fun provideDrinkService(): DrinkService = DrinkService()
 
     @Provides
     @ApplicationScope

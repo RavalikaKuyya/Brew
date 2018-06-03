@@ -30,6 +30,6 @@ interface DrinkDao {
     @Query("SELECT * FROM drink WHERE id = :drinkId")
     fun getDrinkById(drinkId: Int): Maybe<Drink>
 
-    @Query("UPDATE drink SET photoDeleteHash = :imageDeleteHash, photoId = :imageId, photoLink = :imageLink WHERE photoUri = :drinkImageUri")
-    fun updateDrinkUploadStatus(drinkImageUri: Uri, imageId: String, imageDeleteHash: String, imageLink: String)
+    @Query("UPDATE drink SET remoteId = :firebaseId WHERE id = :drinkId")
+    fun updateDrinkUploadStatus(drinkId: Int, firebaseId: String)
 }

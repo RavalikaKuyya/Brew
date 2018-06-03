@@ -1,59 +1,64 @@
 package io.github.koss.brew.data.remote
 
 import android.net.Uri
+import androidx.work.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import io.github.koss.brew.data.remote.image.imgur.ImgurImageService
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.SingleEmitter
-
-// Number of Imgur credits to not exceed in a cycle with image uploads
-private val CREDIT_BUFFER = 50
+import io.github.koss.brew.data.model.Drink
+import io.github.koss.brew.data.remote.worker.DrinkUploadWorker
+import io.github.koss.brew.data.remote.worker.GetOrCreateAlbumWorker
+import io.github.koss.brew.data.remote.worker.ImageUploadWorker
+import io.github.koss.brew.data.remote.worker.util.*
 
 /**
  * Class for handling network-related drink things
  */
-class DrinkService(
-        private val imageService: ImgurImageService,
-        private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-) {
+class DrinkService {
 
     /**
      * Saves a drink to the firestore under the current users drink doc collection
      */
-    fun saveDrink(name: String, description: String, tags: Array<String>, image: Uri): Completable = Completable.create { emitter ->
-        // Fail early if the user isn't logged in
-        val user = FirebaseAuth.getInstance().currentUser ?: throw IllegalStateException("User must be logged in to save a drink remotely")
+    fun enqueueDrinkUpload(drink: Drink) {
+        val workConstraints = getUploadConstraints()
 
-        val drink = mapOf(
-                "name" to name,
-                "description" to description,
-                "tags" to tags
-        )
+        // Start by getting the users album delete hash
+        var continuation = WorkManager.getInstance().beginWith(
+                OneTimeWorkRequestBuilder<GetOrCreateAlbumWorker>()
+                        .setConstraints(workConstraints)
+                        .addTag(TAG_ALBUM_CREATION)
+                        .build())
 
-        // Upload image
-        val imageResult = uploadImage(image).blockingGet()
-
-        if (emitter.isDisposed) return@create
-
-        // The following creates a drink in the users drinks collection, and adds images to it
-        firestore.collection("users/${user.uid}/drinks").add(drink).addOnSuccessListener {
-            it.collection("images").add(imageResult).addOnSuccessListener {
-                emitter.onComplete()
-            }
+        // Upload the image if it exists
+        drink.photoUri?.let {
+            continuation = continuation.then(it.toUploadRequest())
         }
+
+        // Upload the Drink
+        continuation.then(drink.toUploadRequest())
+                .enqueue()
     }
 
-    /**
-     * Function for uploading an image and formatting the response into a Firebase Cloud Firestore map
-     */
-    private fun uploadImage(imageUri: Uri): Single<Map<String, Any>> =
-        imageService.uploadImage(imageUri)
-                .map { mapOf(
-                        "image_id" to it.id,
-                        "image_delete_hash" to it.deleteHash,
-                        "image_link" to it.link
-                )}
+    private fun Uri.toUploadRequest(): OneTimeWorkRequest {
+        return OneTimeWorkRequestBuilder<ImageUploadWorker>().setInputData(
+                Data.Builder().putAll(mapOf(
+                        KEY_IMAGE_URI to path
+                )).build()
+        ).setInputMerger(OverwritingInputMerger::class).build()
+    }
+
+    private fun Drink.toUploadRequest(): OneTimeWorkRequest {
+        return OneTimeWorkRequestBuilder<DrinkUploadWorker>().setInputData(
+                Data.Builder().putAll(mapOf(
+                        KEY_DRINK_ID to id
+                )).build()
+        ).setInputMerger(OverwritingInputMerger::class).build()
+    }
+
+    private fun getUploadConstraints(): Constraints {
+        return Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .setRequiresBatteryNotLow(true)
+                .build()
+    }
 
 }
