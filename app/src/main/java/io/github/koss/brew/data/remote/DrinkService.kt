@@ -2,13 +2,13 @@ package io.github.koss.brew.data.remote
 
 import android.net.Uri
 import androidx.work.*
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import io.github.koss.brew.data.model.Drink
 import io.github.koss.brew.data.remote.worker.DrinkUploadWorker
 import io.github.koss.brew.data.remote.worker.GetOrCreateAlbumWorker
 import io.github.koss.brew.data.remote.worker.ImageUploadWorker
 import io.github.koss.brew.data.remote.worker.util.*
+import io.github.koss.brew.repository.config.ConfigurationWrapper
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Class for handling network-related drink things
@@ -19,23 +19,32 @@ class DrinkService {
      * Saves a drink to the firestore under the current users drink doc collection
      */
     fun enqueueDrinkUpload(drink: Drink) {
-        val workConstraints = getUploadConstraints()
+        launch {
+            val config = ConfigurationWrapper().apply {
+                waitUntilLoaded()
+            }
 
-        // Start by getting the users album delete hash
-        var continuation = WorkManager.getInstance().beginWith(
-                OneTimeWorkRequestBuilder<GetOrCreateAlbumWorker>()
-                        .setConstraints(workConstraints)
-                        .addTag(TAG_ALBUM_CREATION)
-                        .build())
+            // Get constraints
+            val workConstraints = getUploadConstraints(config)
 
-        // Upload the image if it exists
-        drink.photoUri?.let {
-            continuation = continuation.then(it.toUploadRequest())
+            // TODO - Make this periodic based off user preference
+
+            // Start by getting the users album delete hash
+            var continuation = WorkManager.getInstance().beginWith(
+                    OneTimeWorkRequestBuilder<GetOrCreateAlbumWorker>()
+                            .setConstraints(workConstraints)
+                            .addTag(TAG_ALBUM_CREATION)
+                            .build())
+
+            // Upload the image if it exists
+            drink.photoUri?.let {
+                continuation = continuation.then(it.toUploadRequest())
+            }
+
+            // Upload the Drink
+            continuation.then(drink.toUploadRequest())
+                    .enqueue()
         }
-
-        // Upload the Drink
-        continuation.then(drink.toUploadRequest())
-                .enqueue()
     }
 
     private fun Uri.toUploadRequest(): OneTimeWorkRequest {
@@ -54,9 +63,9 @@ class DrinkService {
         ).setInputMerger(OverwritingInputMerger::class).build()
     }
 
-    private fun getUploadConstraints(): Constraints {
+    private fun getUploadConstraints(configurationWrapper: ConfigurationWrapper): Constraints {
         return Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .setRequiredNetworkType(if (configurationWrapper.syncOver4G) NetworkType.CONNECTED else NetworkType.UNMETERED)
                 .setRequiresBatteryNotLow(true)
                 .build()
     }

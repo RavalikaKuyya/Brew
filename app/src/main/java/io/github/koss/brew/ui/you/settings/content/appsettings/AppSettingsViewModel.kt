@@ -11,8 +11,4 @@ class AppSettingsViewModel @Inject constructor(
     fun onAllLocalDrinksCleared() {
         drinkRepository.clearLocalDrinks()
     }
-
-    fun onSyncRequested() {
-        drinkRepository.syncLocalDrinks()
-    }
 }

@@ -15,6 +15,7 @@ import io.github.koss.brew.ui.home.HomeFragment
 import io.github.koss.brew.ui.main.MainActivityComponent
 import io.github.koss.brew.ui.main.MainActivityModule
 import io.github.koss.brew.ui.main.fragment.MainFragment
+import io.github.koss.brew.ui.syncsettings.SyncSettingsDialogFragment
 import io.github.koss.brew.ui.you.YouFragment
 import io.github.koss.brew.ui.you.loggedout.LoggedOutFragment
 import io.github.koss.brew.ui.you.profile.ProfileFragment
@@ -52,6 +53,8 @@ interface ApplicationComponent {
     fun inject(fragment: YouFragment)
 
     fun inject(fragment: SimpleAddDrinkBottomSheetDialogFragment)
+
+    fun inject(fragment: SyncSettingsDialogFragment)
 
     fun plus(module: MainActivityModule): MainActivityComponent
 

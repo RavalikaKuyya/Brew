@@ -6,7 +6,6 @@ import dagger.Provides
 import io.github.koss.brew.data.local.dao.DrinkDao
 import io.github.koss.brew.data.remote.DrinkService
 import io.github.koss.brew.di.scope.ApplicationScope
-import io.github.koss.brew.repository.config.ConfigurationRepository
 import io.github.koss.brew.repository.config.PreferencesManager
 import io.github.koss.brew.repository.drinks.DrinkRepository
 
@@ -16,11 +15,6 @@ import io.github.koss.brew.repository.drinks.DrinkRepository
         ]
 )
 class RepositoryModule {
-
-    @Provides
-    @ApplicationScope
-    fun provideConfigurationRepository(preferencesManager: PreferencesManager): ConfigurationRepository =
-            ConfigurationRepository(preferencesManager)
 
     @Provides
     @ApplicationScope

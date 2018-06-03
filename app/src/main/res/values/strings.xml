@@ -59,5 +59,16 @@
     <string name="test_contributors">Testing contributors</string>
     <string name="test_thanks_description">Brew wouldn\'t be anywhere near usable without testers. They\'ve helped to find bugs before they\'re released, and help to keep the experience of using Brew as smooth as possible</string>
     <string name="thanks">Thanks</string>
-    <string name="sync_local">Sync local drinks</string>
+    <string name="sync_local">Brew Sync Settings</string>
+    <string name="sync_settings">Sync Settings</string>
+    <string name="timing_settings">Timing settings</string>
+    <string name="public_by_default">Public Drinks by default</string>
+    <string name="sync_settings_header">How we sync your drink data is entirely up to you. You can choose exactly how much information you want to sync, and how often we do it</string>
+    <string name="content_settings">Content settings</string>
+    <string name="content_settings_header">These settings allow you to choose what information is saved to the cloud</string>
+    <string name="sync_your_drinks">Sync your drinks</string>
+    <string name="timing_setting_description">These settings allow you to choose when we sync your information</string>
+    <string name="sync_over_4g">Sync over 4G</string>
+    <string name="sync_immediately">Sync as soon as you log a drink</string>
+    <string name="sync_now">Sync now</string>
 </resources>

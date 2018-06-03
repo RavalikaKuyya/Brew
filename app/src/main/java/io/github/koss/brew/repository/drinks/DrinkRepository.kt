@@ -4,6 +4,8 @@ import android.arch.lifecycle.LiveData
 import io.github.koss.brew.data.local.dao.DrinkDao
 import io.github.koss.brew.data.model.Drink
 import io.github.koss.brew.data.remote.DrinkService
+import io.github.koss.brew.repository.config.ConfigurationWrapper
+import io.github.koss.brew.util.Session
 import io.reactivex.Maybe
 import kotlinx.coroutines.experimental.launch
 
@@ -17,6 +19,16 @@ class DrinkRepository(
     fun addNewDrink(drink: Drink) {
         launch {
             drinkDao.insertDrink(drink)
+
+            if (Session.isLoggedIn) {
+                val shouldSync = ConfigurationWrapper()
+                        .also { it.waitUntilLoaded() }
+                        .shouldSyncImmediately
+
+                if (shouldSync) {
+                    drinkService.enqueueDrinkUpload(drink)
+                }
+            }
         }
     }
 
