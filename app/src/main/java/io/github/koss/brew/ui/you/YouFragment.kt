@@ -21,6 +21,12 @@ import org.jetbrains.anko.childrenRecursiveSequence
 import android.content.ContentResolver
 import android.net.Uri
 import io.github.koss.brew.BrewApp
+import io.github.koss.brew.repository.config.PreferencesManager
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import org.jetbrains.anko.support.v4.alert
 import javax.inject.Inject
 
 
@@ -28,6 +34,9 @@ class YouFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
+
     private lateinit var viewModel: YouViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +63,38 @@ class YouFragment : Fragment() {
     private fun refresh(refreshAdapter: Boolean = true) {
         if (refreshAdapter) {
             viewPager.adapter?.notifyDataSetChanged()
+
+            if (Session.isLoggedIn) {
+
+                if (!preferencesManager.hasSeenSyncPrompt) {
+
+                    viewModel.hasLocalDrinks()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe { hasLocal ->
+                                if (hasLocal) {
+                                    alert {
+                                        title = getString(R.string.sync_drinks)
+                                        message = getString(R.string.sync_drinks_question)
+                                        positiveButton(getString(R.string.sync_now)) {
+                                            viewModel.syncAllDrinks()
+                                            preferencesManager.hasSeenSyncPrompt = true
+                                        }
+
+                                        negativeButton(getString(R.string.later)) {
+                                            it.dismiss()
+                                            preferencesManager.hasSeenSyncPrompt = true
+                                        }
+
+                                        isCancelable = false
+
+                                        show()
+                                    }
+                                }
+                            }
+
+                }
+            }
         }
 
         updateTabFont()

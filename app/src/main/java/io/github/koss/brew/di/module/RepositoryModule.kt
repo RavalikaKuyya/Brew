@@ -19,8 +19,8 @@ class RepositoryModule {
 
     @Provides
     @ApplicationScope
-    fun provideDrinkRepository(drinkDao: DrinkDao, drinkService: DrinkService): DrinkRepository =
-            DrinkRepository(drinkDao, drinkService)
+    fun provideDrinkRepository(drinkDao: DrinkDao, drinkService: DrinkService, preferencesManager: PreferencesManager): DrinkRepository =
+            DrinkRepository(drinkDao, drinkService, preferencesManager)
 
     @Provides
     @ApplicationScope

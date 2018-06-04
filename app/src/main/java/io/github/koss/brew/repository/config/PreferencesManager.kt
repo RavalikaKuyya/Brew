@@ -13,6 +13,8 @@ class PreferencesManager(appContext: Context) {
     private val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
 
     // REGION PREFERENCES
+    var hasSeenSyncPrompt by preferences.boolean()
+    var hasAddedFirstDrink by preferences.boolean()
 
     // END REGION
 

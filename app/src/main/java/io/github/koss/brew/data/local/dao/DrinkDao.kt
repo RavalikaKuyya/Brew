@@ -5,6 +5,7 @@ import android.arch.paging.DataSource
 import android.arch.persistence.room.*
 import io.github.koss.brew.data.model.Drink
 import io.reactivex.Maybe
+import io.reactivex.Single
 
 @Dao
 interface DrinkDao {
@@ -20,6 +21,9 @@ interface DrinkDao {
 
     @Query("SELECT * FROM drink")
     fun getAllDrinks(): List<Drink>
+
+    @Query("SELECT * FROM drink")
+    fun getAllDrinksRx(): Single<List<Drink>>
 
     @Delete
     fun deleteDrink(drink: Drink)

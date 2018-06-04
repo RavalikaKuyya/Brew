@@ -5,13 +5,15 @@ import io.github.koss.brew.data.local.dao.DrinkDao
 import io.github.koss.brew.data.model.Drink
 import io.github.koss.brew.data.remote.DrinkService
 import io.github.koss.brew.repository.config.ConfigurationWrapper
+import io.github.koss.brew.repository.config.PreferencesManager
 import io.github.koss.brew.util.Session
 import io.reactivex.Maybe
 import kotlinx.coroutines.experimental.launch
 
 class DrinkRepository(
         private val drinkDao: DrinkDao,
-        private val drinkService: DrinkService
+        private val drinkService: DrinkService,
+        private val preferencesManager: PreferencesManager
 ) {
 
     fun getDrinks(): LiveData<List<Drink>> = drinkDao.loadAllDrinks()
@@ -19,6 +21,11 @@ class DrinkRepository(
     fun addNewDrink(drink: Drink) {
         launch {
             val id = drinkDao.insertDrink(drink)
+
+            // Unsure if 0 or 1 indexed
+            if (id == 1L || id == 0L) {
+                preferencesManager.hasAddedFirstDrink = true
+            }
 
             if (Session.isLoggedIn) {
                 val shouldSync = ConfigurationWrapper.blockingFetch().shouldSyncImmediately

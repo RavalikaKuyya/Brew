@@ -74,4 +74,7 @@
     <string name="your_recent_activity">Your recent activity</string>
     <string name="temp_empty_state_description">This version of the Brew app lets you keep track of the things you\'ve been drinking. Try clicking the add drink button 🍻</string>
     <string name="welcome_to_brew">Welcome to Brew</string>
+    <string name="sync_drinks">Sync your drinks</string>
+    <string name="sync_drinks_question">It looks like you\'re logging in with drinks which haven\'t been synced. Sync them now?</string>
+    <string name="later">Later</string>
 </resources>
