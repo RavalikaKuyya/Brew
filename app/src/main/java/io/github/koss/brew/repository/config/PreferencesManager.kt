@@ -12,6 +12,8 @@ class PreferencesManager(appContext: Context) {
 
     private val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
 
+    fun clear() = preferences.edit().clear().apply()
+
     // REGION PREFERENCES
     var hasSeenSyncPrompt by preferences.boolean()
     var hasAddedFirstDrink by preferences.boolean()

@@ -14,13 +14,19 @@ import io.github.koss.brew.data.remote.worker.util.*
 class ImageUploadWorker : Worker() {
 
     override fun doWork(): WorkerResult {
+        "Starting upload".d()
+
         val api = applicationContext.getImgurApi()
 
         val albumDeleteHash = inputData.keyValueMap[KEY_ALBUM_DELETE_HASH] as? String
                 ?: throw IllegalArgumentException("Missing Album Delete Hash as input to image upload")
 
+        "Retrieved delete hash".d()
+
         val imagePath = inputData.keyValueMap[KEY_IMAGE_URI] as? String
                 ?: throw IllegalArgumentException("Missing Image URI as input to image upload")
+
+        "Got Image path".d()
 
         val imageUri = Uri.parse(imagePath)
 
@@ -42,4 +48,11 @@ class ImageUploadWorker : Worker() {
                     KEY_IMAGE_LINK to link
             )).build()
 
+    private fun String.d() {
+        Log.d("ImageUploadWorker", this)
+    }
+
+    private fun String.e(exception: Exception) {
+        Log.e("ImageUploadWorker", this, exception)
+    }
 }

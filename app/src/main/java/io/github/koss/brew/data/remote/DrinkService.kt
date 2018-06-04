@@ -9,6 +9,7 @@ import io.github.koss.brew.data.remote.worker.GetOrCreateAlbumWorker
 import io.github.koss.brew.data.remote.worker.ImageUploadWorker
 import io.github.koss.brew.data.remote.worker.util.*
 import io.github.koss.brew.repository.config.ConfigurationWrapper
+import kotlinx.android.synthetic.main.activity_camera.view.*
 import kotlinx.coroutines.experimental.launch
 
 /**
@@ -21,7 +22,7 @@ class DrinkService {
      */
     fun enqueueDrinkUpload(drink: Drink) {
         launch {
-           enqueueDrink(drink)
+            enqueueDrink(drink)
         }
     }
 
@@ -37,36 +38,40 @@ class DrinkService {
         // Start by getting the users album delete hash
         var continuation = WorkManager.getInstance().beginUniqueWork(
                 drink.name + drink.id,
-                ExistingWorkPolicy.KEEP,
+                ExistingWorkPolicy.REPLACE,
                 OneTimeWorkRequestBuilder<GetOrCreateAlbumWorker>()
                         .setConstraints(workConstraints)
-                        .addTag(TAG_ALBUM_CREATION)
                         .build())
 
         // Upload the image if it exists
         drink.photoUri?.let {
-            continuation = continuation.then(it.toUploadRequest())
+            continuation = continuation.then(it.toUploadRequest(workConstraints))
         }
 
         // Upload the Drink
-        continuation.then(drink.toUploadRequest())
+        continuation.then(drink.toUploadRequest(workConstraints))
                 .enqueue()
     }
 
-    private fun Uri.toUploadRequest(): OneTimeWorkRequest {
-        return OneTimeWorkRequestBuilder<ImageUploadWorker>().setInputData(
-                Data.Builder().putAll(mapOf(
-                        KEY_IMAGE_URI to path
-                )).build()
-        ).setInputMerger(OverwritingInputMerger::class).build()
+    private fun Uri.toUploadRequest(constraints: Constraints): OneTimeWorkRequest {
+        return OneTimeWorkRequestBuilder<ImageUploadWorker>()
+                .setInputData(
+                        Data.Builder().putAll(mapOf(
+                                KEY_IMAGE_URI to path
+                        )).build()
+                )
+                .setConstraints(constraints)
+                .setInputMerger(OverwritingInputMerger::class).build()
     }
 
-    private fun Drink.toUploadRequest(): OneTimeWorkRequest {
+    private fun Drink.toUploadRequest(constraints: Constraints): OneTimeWorkRequest {
         return OneTimeWorkRequestBuilder<DrinkUploadWorker>().setInputData(
                 Data.Builder().putAll(mapOf(
                         KEY_DRINK_ID to id
                 )).build()
-        ).setInputMerger(OverwritingInputMerger::class).build()
+                )
+                .setConstraints(constraints)
+                .setInputMerger(OverwritingInputMerger::class).build()
     }
 
     private fun getUploadConstraints(configurationWrapper: ConfigurationWrapper): Constraints {

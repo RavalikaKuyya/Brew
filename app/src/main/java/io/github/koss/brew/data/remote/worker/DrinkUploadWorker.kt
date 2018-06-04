@@ -17,6 +17,7 @@ class DrinkUploadWorker : Worker() {
 
     override fun doWork(): WorkerResult {
         "Starting Drink Upload".d()
+
         val drinkRepository = applicationContext.getDrinkRepository()
         val firestore = FirebaseFirestore.getInstance()
         val user = FirebaseAuth.getInstance().currentUser ?: throw NotLoggedInException()
