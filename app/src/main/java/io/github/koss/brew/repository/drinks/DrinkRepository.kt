@@ -21,9 +21,7 @@ class DrinkRepository(
             drinkDao.insertDrink(drink)
 
             if (Session.isLoggedIn) {
-                val shouldSync = ConfigurationWrapper()
-                        .also { it.waitUntilLoaded() }
-                        .shouldSyncImmediately
+                val shouldSync = ConfigurationWrapper.blockingFetch().shouldSyncImmediately
 
                 if (shouldSync) {
                     drinkService.enqueueDrinkUpload(drink)

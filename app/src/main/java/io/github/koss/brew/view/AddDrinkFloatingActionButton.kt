@@ -17,7 +17,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import kotlinx.android.synthetic.main.button_add_drink.view.*
 
 /**
- * Floating action button containing "Add Drink" text
+ * Floating action button containing "Add DrinkTable" text
  */
 class AddDrinkFloatingActionButton @JvmOverloads constructor(
         context: Context,

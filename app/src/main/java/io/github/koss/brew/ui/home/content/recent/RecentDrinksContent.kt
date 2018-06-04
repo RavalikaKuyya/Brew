@@ -16,10 +16,10 @@ import io.github.koss.brew.*
 import io.github.koss.brew.data.model.Drink
 import io.github.koss.brew.util.epoxy.BuildCallback
 import io.github.koss.brew.util.epoxy.EpoxyContent
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import io.github.koss.brew.ui.drink.DrinkActivity
 import kotlinx.android.synthetic.main.view_holder_drink_item.view.*
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
 class RecentDrinksContent : EpoxyContent<RecentDrinksViewModel>() {

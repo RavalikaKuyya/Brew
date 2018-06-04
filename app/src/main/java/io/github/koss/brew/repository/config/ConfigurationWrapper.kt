@@ -1,14 +1,16 @@
 package io.github.koss.brew.repository.config
 
+import android.support.annotation.WorkerThread
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import io.github.koss.brew.data.remote.error.NotLoggedInException
+import io.github.koss.brew.data.remote.worker.util.await
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class ConfigurationWrapper(private val onLoaded: () -> Unit = {}) {
+class ConfigurationWrapper(private val onLoaded: () -> Unit = {}, private val blockingInit: Boolean = false) {
 
     var shouldSyncDrinks by config(
             configurationName = "should_sync",
@@ -28,31 +30,6 @@ class ConfigurationWrapper(private val onLoaded: () -> Unit = {}) {
             configurationName = "public_by_default",
             default = false
     )
-
-    private var loadedCount = 0
-    private val totalCount = 4
-
-    private var loadCallback = {}
-
-    private fun loaded() {
-        onLoaded()
-        loadedCount += 1
-
-        if (loadedCount == totalCount) {
-            loadCallback()
-        }
-    }
-
-    suspend fun waitUntilLoaded() = suspendCancellableCoroutine<Unit?> {
-        if (loadedCount == totalCount) {
-            it.resume(null)
-            return@suspendCancellableCoroutine
-        }
-
-        loadCallback = {
-            it.resume(null)
-        }
-    }
 
     private fun <T> config(configurationName: String, default: T) = FirebaseConfigDelegate(configurationName, default)
 
@@ -88,11 +65,16 @@ class ConfigurationWrapper(private val onLoaded: () -> Unit = {}) {
 
                 // Notify loaded
                 if (cachedValue == null && newValue != null && !notified) {
-                    loaded()
+                    onLoaded()
                     notified = true
                 }
 
                 cachedValue = newValue
+            }
+
+            if (blockingInit) {
+                @Suppress("UNCHECKED_CAST")
+                cachedValue = configRef.get().await()[configurationName] as T?
             }
         }
 
@@ -106,5 +88,10 @@ class ConfigurationWrapper(private val onLoaded: () -> Unit = {}) {
                         Crashlytics.logException(it)
                     }
         }
+    }
+
+    companion object {
+        @WorkerThread
+        fun blockingFetch() = ConfigurationWrapper(blockingInit = true)
     }
 }

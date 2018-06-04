@@ -71,4 +71,5 @@
     <string name="sync_over_4g">Sync over 4G</string>
     <string name="sync_immediately">Sync as soon as you log a drink</string>
     <string name="sync_now">Sync now</string>
+    <string name="your_recent_activity">Your recent activity</string>
 </resources>

@@ -20,9 +20,7 @@ class DrinkService {
      */
     fun enqueueDrinkUpload(drink: Drink) {
         launch {
-            val config = ConfigurationWrapper().apply {
-                waitUntilLoaded()
-            }
+            val config = ConfigurationWrapper.blockingFetch()
 
             // Get constraints
             val workConstraints = getUploadConstraints(config)
@@ -30,7 +28,9 @@ class DrinkService {
             // TODO - Make this periodic based off user preference
 
             // Start by getting the users album delete hash
-            var continuation = WorkManager.getInstance().beginWith(
+            var continuation = WorkManager.getInstance().beginUniqueWork(
+                    drink.name + drink.id,
+                    ExistingWorkPolicy.KEEP,
                     OneTimeWorkRequestBuilder<GetOrCreateAlbumWorker>()
                             .setConstraints(workConstraints)
                             .addTag(TAG_ALBUM_CREATION)

@@ -115,6 +115,10 @@ dependencies {
 
     implementation deps.firebase.UI
 
+    implementation deps.firebase.firestoreUi
+
+    implementation deps.android.arch.paging.runtime
+
     implementation(deps.crashlytics) {
         transitive = true
     }

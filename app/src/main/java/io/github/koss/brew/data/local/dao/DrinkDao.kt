@@ -1,8 +1,8 @@
 package io.github.koss.brew.data.local.dao
 
 import android.arch.lifecycle.LiveData
+import android.arch.paging.DataSource
 import android.arch.persistence.room.*
-import android.net.Uri
 import io.github.koss.brew.data.model.Drink
 import io.reactivex.Maybe
 
@@ -32,4 +32,7 @@ interface DrinkDao {
 
     @Query("UPDATE drink SET remoteId = :firebaseId WHERE id = :drinkId")
     fun updateDrinkUploadStatus(drinkId: Int, firebaseId: String)
+
+    @Query("SELECT * FROM drink ORDER BY timestamp DESC")
+    fun getPagedDrinks(): DataSource.Factory<Int, Drink>
 }

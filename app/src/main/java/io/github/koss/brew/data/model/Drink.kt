@@ -6,6 +6,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import android.net.Uri
 import android.os.Parcelable
+import com.google.firebase.Timestamp
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
 
@@ -25,6 +26,8 @@ data class Drink(
         var tags: List<String> = emptyList(),
 
         var description: String? = null,
+
+        var timestamp: @RawValue Timestamp? = null,
 
         @Embedded
         var rating: @RawValue Rating? = null

@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 2,
-    "identityHash": "cad62ae176c0595567db4d3d2d7489ea",
+    "version": 3,
+    "identityHash": "8dc8df33867291c498c7cd568743feec",
     "entities": [
       {
         "tableName": "Drink",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remoteId` TEXT, `name` TEXT NOT NULL, `photoUri` TEXT, `tags` TEXT NOT NULL, `description` TEXT, `timestamp` INTEGER, `score` REAL, `review` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remoteId` TEXT, `name` TEXT NOT NULL, `photoUri` TEXT, `tags` TEXT NOT NULL, `description` TEXT, `score` REAL, `review` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -45,12 +45,6 @@
             "notNull": false
           },
           {
-            "fieldPath": "timestamp",
-            "columnName": "timestamp",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
             "fieldPath": "rating.score",
             "columnName": "score",
             "affinity": "REAL",
@@ -75,7 +69,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"cad62ae176c0595567db4d3d2d7489ea\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8dc8df33867291c498c7cd568743feec\")"
     ]
   }
 }

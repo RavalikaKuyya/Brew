@@ -1,21 +1,32 @@
 package io.github.koss.brew.ui.you.profile
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModelProviders
+import android.arch.paging.PagedList
 import android.os.Bundle
+import android.support.transition.TransitionManager
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.firebase.firestore.Query
 import io.github.koss.brew.R
-import io.github.koss.brew.profileEmptyState
-import io.github.koss.brew.sectionHeader
+import io.github.koss.brew.data.model.*
 import io.github.koss.brew.ui.main.MainActivity
 import io.github.koss.brew.util.arch.BrewViewModelFactory
 import io.github.koss.brew.util.extension.component
 import javax.inject.Inject
 import io.github.koss.brew.ui.you.TitleProvider
-import io.github.koss.brew.util.extension.withModels
+import io.github.koss.brew.util.extension.observe
 import kotlinx.android.synthetic.main.fragment_profile.*
+import com.firebase.ui.firestore.paging.FirestorePagingOptions
+import com.google.firebase.firestore.DocumentSnapshot
+import io.github.koss.brew.ui.you.profile.adapter.FirestoreActivityAdapter
+import io.github.koss.brew.ui.you.profile.adapter.LocalActivityAdapter
+
 
 class ProfileFragment: Fragment(), TitleProvider {
 
@@ -37,20 +48,75 @@ class ProfileFragment: Fragment(), TitleProvider {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.withModels {
-            if (viewModel.activity.value?.isNotEmpty() == true) {
-                sectionHeader {
-                    id("recent_activity")
-                    title(getString(R.string.recent_activity))
-                }
-            } else {
-                profileEmptyState {
-                    id("profile_empty_state")
-                }
-            }
+        viewModel.activityType.observe(this) {
+            it?.let(::onActivitySourceLoaded)
         }
+
+        viewModel.loadActivity()
+        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.loadActivity()
+        }
+
+        showLoading()
     }
 
-    override fun getTitle(): String = "Profile"
+    override fun getTitle(): String = "Recent activity"
 
+    private fun showLoading() {
+        progressBar.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+        emptyStateLayout.visibility = View.GONE
+    }
+
+    private fun showEmptyState() {
+        TransitionManager.beginDelayedTransition(parentLayout)
+        progressBar.visibility = View.GONE
+        recyclerView.visibility = View.GONE
+        emptyStateLayout.visibility = View.VISIBLE
+    }
+
+    private fun showLocalActivity(list: LiveData<PagedList<ProfileActivity>>) {
+        TransitionManager.beginDelayedTransition(parentLayout)
+        progressBar.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
+        emptyStateLayout.visibility = View.GONE
+
+        val adapter = LocalActivityAdapter(::onActivityClicked)
+        list.observe(this) { adapter.submitList(it) }
+
+        recyclerView.adapter = adapter
+    }
+
+    private fun showRemoteActivity(query: Query, config: PagedList.Config) {
+        TransitionManager.beginDelayedTransition(parentLayout)
+        progressBar.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
+        emptyStateLayout.visibility = View.GONE
+
+        val options = FirestorePagingOptions.Builder<ProfileActivity>()
+                .setLifecycleOwner(this)
+                .setQuery(query, config, { snapshot: DocumentSnapshot ->
+                    val activity = snapshot.toObject(DrinkAdded::class.java)
+                    return@setQuery activity!!
+                })
+                .build()
+
+        val adapter = FirestoreActivityAdapter(options, ::onActivityClicked)
+        recyclerView.adapter = adapter
+    }
+
+    private fun onActivityClicked(profileActivity: ProfileActivity) {
+
+    }
+
+    private fun onActivitySourceLoaded(activityType: ActivitySource) {
+        swipeRefreshLayout.isRefreshing = false
+
+        when (activityType) {
+            is LocalOnly -> showLocalActivity(activityType.source)
+            is FirestoreOnly -> showRemoteActivity(activityType.query, activityType.config)
+            is NoActivity -> showEmptyState()
+        }
+    }
 }

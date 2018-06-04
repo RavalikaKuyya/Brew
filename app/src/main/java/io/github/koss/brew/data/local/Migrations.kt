@@ -6,5 +6,6 @@ import android.arch.persistence.room.migration.Migration
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE drink ADD COLUMN remoteId TEXT;")
+        database.execSQL("ALTER TABLE drink ADD COLUMN timestamp LONG;")
     }
 }

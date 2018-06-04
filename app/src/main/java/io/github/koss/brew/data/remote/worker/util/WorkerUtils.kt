@@ -28,7 +28,7 @@ fun Context.getImgurApi(): ImgurImageService {
 }
 
 /**
- * Function for getting a Drink repository implementation from the application context
+ * Function for getting a DrinkTable repository implementation from the application context
  */
 fun Context.getDrinkRepository(): DrinkRepository {
     if (applicationComponent == null) {
