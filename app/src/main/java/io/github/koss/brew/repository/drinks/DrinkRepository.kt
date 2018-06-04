@@ -18,13 +18,14 @@ class DrinkRepository(
 
     fun addNewDrink(drink: Drink) {
         launch {
-            drinkDao.insertDrink(drink)
+            val id = drinkDao.insertDrink(drink)
 
             if (Session.isLoggedIn) {
                 val shouldSync = ConfigurationWrapper.blockingFetch().shouldSyncImmediately
 
                 if (shouldSync) {
-                    drinkService.enqueueDrinkUpload(drink)
+                    // Get the new drink from the DB such that it has a valid ID
+                    drinkService.enqueueDrink(drinkDao.getDrinkById(id.toInt()).blockingGet())
                 }
             }
         }

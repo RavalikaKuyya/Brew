@@ -48,7 +48,7 @@ class YouFragment : Fragment() {
         tabLayout.setupWithViewPager(viewPager)
         refresh(refreshAdapter = false)
 
-        viewModel.reloadTrigger.observe(this, Observer<Nothing> { refresh() })
+        viewModel.reloadTrigger.observe(this, Observer { refresh() })
     }
 
     private fun refresh(refreshAdapter: Boolean = true) {

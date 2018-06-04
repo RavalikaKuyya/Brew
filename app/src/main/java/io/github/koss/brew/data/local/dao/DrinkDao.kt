@@ -13,7 +13,7 @@ interface DrinkDao {
     fun insertDrinks(drinks: Array<Drink>)
 
     @Insert
-    fun insertDrink(drink: Drink)
+    fun insertDrink(drink: Drink): Long
 
     @Query("SELECT * FROM drink")
     fun loadAllDrinks(): LiveData<List<Drink>>

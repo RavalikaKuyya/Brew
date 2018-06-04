@@ -27,8 +27,12 @@ import io.github.koss.brew.util.extension.observe
 import kotlinx.android.synthetic.main.fragment_profile.*
 import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.firebase.firestore.DocumentSnapshot
+import io.github.koss.brew.ui.drink.DrinkActivity
+import io.github.koss.brew.ui.drink.DrinkActivity.Companion.ARG_DRINK_ID
+import io.github.koss.brew.ui.drink.DrinkActivity.Companion.ARG_DRINK_REFERENCE
 import io.github.koss.brew.ui.you.profile.adapter.FirestoreActivityAdapter
 import io.github.koss.brew.ui.you.profile.adapter.LocalActivityAdapter
+import org.jetbrains.anko.support.v4.startActivity
 
 
 class ProfileFragment: Fragment(), TitleProvider {
@@ -117,7 +121,15 @@ class ProfileFragment: Fragment(), TitleProvider {
     }
 
     private fun onActivityClicked(profileActivity: ProfileActivity) {
-
+        when (profileActivity) {
+            is DrinkAdded -> {
+                if (profileActivity.drinkId.toIntOrNull() != null) {
+                    startActivity<DrinkActivity>(ARG_DRINK_ID to profileActivity.drinkId)
+                } else {
+                    startActivity<DrinkActivity>(ARG_DRINK_REFERENCE to profileActivity.drinkId)
+                }
+            }
+        }
     }
 
     private fun onActivitySourceLoaded(activityType: ActivitySource) {

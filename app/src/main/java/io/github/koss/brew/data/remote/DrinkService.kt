@@ -1,6 +1,7 @@
 package io.github.koss.brew.data.remote
 
 import android.net.Uri
+import android.support.annotation.WorkerThread
 import androidx.work.*
 import io.github.koss.brew.data.model.Drink
 import io.github.koss.brew.data.remote.worker.DrinkUploadWorker
@@ -20,31 +21,36 @@ class DrinkService {
      */
     fun enqueueDrinkUpload(drink: Drink) {
         launch {
-            val config = ConfigurationWrapper.blockingFetch()
-
-            // Get constraints
-            val workConstraints = getUploadConstraints(config)
-
-            // TODO - Make this periodic based off user preference
-
-            // Start by getting the users album delete hash
-            var continuation = WorkManager.getInstance().beginUniqueWork(
-                    drink.name + drink.id,
-                    ExistingWorkPolicy.KEEP,
-                    OneTimeWorkRequestBuilder<GetOrCreateAlbumWorker>()
-                            .setConstraints(workConstraints)
-                            .addTag(TAG_ALBUM_CREATION)
-                            .build())
-
-            // Upload the image if it exists
-            drink.photoUri?.let {
-                continuation = continuation.then(it.toUploadRequest())
-            }
-
-            // Upload the Drink
-            continuation.then(drink.toUploadRequest())
-                    .enqueue()
+           enqueueDrink(drink)
         }
+    }
+
+    @WorkerThread
+    suspend fun enqueueDrink(drink: Drink) {
+        val config = ConfigurationWrapper.blockingFetch()
+
+        // Get constraints
+        val workConstraints = getUploadConstraints(config)
+
+        // TODO - Make this periodic based off user preference
+
+        // Start by getting the users album delete hash
+        var continuation = WorkManager.getInstance().beginUniqueWork(
+                drink.name + drink.id,
+                ExistingWorkPolicy.KEEP,
+                OneTimeWorkRequestBuilder<GetOrCreateAlbumWorker>()
+                        .setConstraints(workConstraints)
+                        .addTag(TAG_ALBUM_CREATION)
+                        .build())
+
+        // Upload the image if it exists
+        drink.photoUri?.let {
+            continuation = continuation.then(it.toUploadRequest())
+        }
+
+        // Upload the Drink
+        continuation.then(drink.toUploadRequest())
+                .enqueue()
     }
 
     private fun Uri.toUploadRequest(): OneTimeWorkRequest {

@@ -48,9 +48,14 @@ class DrinkActivity: AppCompatActivity() {
                 .of(this, viewModelFactory)
                 .get(DrinkViewModel::class.java)
 
-        val drinkId = intent.extras.getString(ARG_DRINK_ID) ?: throw IllegalArgumentException("Drink ID is required")
+        val drinkId = intent.extras.getString(ARG_DRINK_ID)
+        val drinkRef = intent.extras.getString(ARG_DRINK_REFERENCE)
 
-        viewModel.initialise(drinkId)
+        if (drinkId == null) {
+            viewModel.initialise(drinkRef, isReference = true)
+        } else {
+            viewModel.initialise(drinkId, isReference = false)
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -79,6 +84,8 @@ class DrinkActivity: AppCompatActivity() {
     private fun showDrinkRetrieved(state: DrinkState.DrinkRetrieved) {
         TransitionManager.beginDelayedTransition(coordinator)
 
+        progressBar.visibility = View.GONE
+
         if (state.drink == null) {
             showLoading()
             return
@@ -92,6 +99,7 @@ class DrinkActivity: AppCompatActivity() {
         if (state.drink.photoUri == null) {
             drinkImageView.visibility = View.GONE
         } else {
+            drinkImageView.visibility = View.VISIBLE
             Glide.with(this)
                     .asBitmap()
                     .load(state.drink.photoUri)
@@ -105,7 +113,7 @@ class DrinkActivity: AppCompatActivity() {
             // TODO - Add drink things here
             drinkDetails {
                 id(ID_DRINK_BODY)
-                location("TODO - Make this part of the Drink Model")
+                location("Coming in v0.3")
                 description(state.drink.description)
             }
 
@@ -119,11 +127,7 @@ class DrinkActivity: AppCompatActivity() {
     }
 
     private fun showLoading() {
-        recyclerView.withModels {
-            fullScreenLoadingIndicator {
-                id(ID_DRINK_LOADING)
-            }
-        }
+        progressBar.visibility = View.VISIBLE
     }
 
     private fun showUnrecoverableError(title: String, message: String) {
@@ -158,6 +162,7 @@ class DrinkActivity: AppCompatActivity() {
     companion object {
         // Arguments
         const val ARG_DRINK_ID = "arg_drink_id"
+        const val ARG_DRINK_REFERENCE = "arg_drink_reference"
 
         // Epoxy IDs
         const val ID_DRINK_LOADING = "loading"

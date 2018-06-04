@@ -58,11 +58,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:contentDescription="@null"
         android:elevation="12dp"
         android:focusable="true"
         android:foreground="?selectableItemBackgroundBorderless"
         android:padding="16dp"
-        android:contentDescription="@null"
         app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
 
     <com.airbnb.epoxy.EpoxyRecyclerView
@@ -71,5 +71,13 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminate="true" />
 
 </android.support.design.widget.CoordinatorLayout>
