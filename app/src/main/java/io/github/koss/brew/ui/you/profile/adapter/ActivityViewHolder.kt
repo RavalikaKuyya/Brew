@@ -41,7 +41,7 @@ class DrinkActivityViewHolder(itemView: View): ActivityViewHolder(itemView) {
 
             titleTextView.text = activity.drinkName
             descriptionTextView.text = activity.drinkDescription
-            timestampTextView.text = activity.timestamp?.format()
+            activityTextView.text = activity.timestamp?.format() ?: "You added a drink"
             setOnClickListener { _ -> onClick() }
         }
 
@@ -52,12 +52,12 @@ class DrinkActivityViewHolder(itemView: View): ActivityViewHolder(itemView) {
             Glide.with(this).clear(drinkImageView)
             titleTextView.text = ""
             descriptionTextView.text = ""
-            timestampTextView.text = ""
+            activityTextView.text = ""
         }
     }
 
     private fun Timestamp.format(): String {
-        val formatString = "ha - d MMM"
+        val formatString = "'You added a drink at' h:mma 'on' d MMM"
         return DateFormat.format(formatString, toDate()).toString()
     }
 

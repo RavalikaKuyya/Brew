@@ -6,6 +6,9 @@ import android.arch.paging.PagedList
 import android.os.Bundle
 import android.support.transition.TransitionManager
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -48,14 +51,21 @@ class ProfileFragment: Fragment(), TitleProvider {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.activityType.observe(this) {
-            it?.let(::onActivitySourceLoaded)
-        }
 
         viewModel.loadActivity()
+
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+
+        recyclerView.addItemDecoration(
+                DividerItemDecorator(ContextCompat.getDrawable(context!!, R.drawable.list_divider)!!)
+        )
+
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.loadActivity()
+        }
+
+        viewModel.activityType.observe(this) {
+            it?.let(::onActivitySourceLoaded)
         }
 
         showLoading()
