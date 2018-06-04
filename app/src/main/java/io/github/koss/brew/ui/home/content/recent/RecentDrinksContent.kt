@@ -60,6 +60,10 @@ class RecentDrinksContent : EpoxyContent<RecentDrinksViewModel>() {
                         })
                 )
             }
+        } else {
+            recentDrinksEmptyState {
+                id("recent_drink_empty_state")
+            }
         }
     }
 
