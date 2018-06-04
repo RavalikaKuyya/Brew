@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel
 import io.github.koss.brew.data.model.Drink
 import io.github.koss.brew.repository.config.PreferencesManager
 import io.github.koss.brew.repository.drinks.DrinkRepository
+import io.github.koss.brew.util.Session
 import io.github.koss.brew.util.event.RebuildHomescreen
 import io.github.koss.brew.util.event.UiEvent
 import io.github.koss.brew.util.event.UiEventBus
@@ -30,7 +31,7 @@ class RecentDrinksViewModel @Inject constructor(
     }
 
     fun shouldShowEmptyState(): Boolean {
-        return !preferencesManager.hasAddedFirstDrink
+        return !preferencesManager.hasAddedFirstDrink && !Session.isLoggedIn
     }
 
     fun postEvent(event: UiEvent) {
