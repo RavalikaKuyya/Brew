@@ -8,11 +8,11 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "io.github.koss.brew"
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion 27
         multiDexEnabled true
-        versionCode 2
-        versionName "0.1-alpha2"
+        versionCode 3
+        versionName "0.2-alpha1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "IMGUR_CLIENT_ID", IMGUR_CLIENT_ID
