@@ -85,7 +85,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
             onBackPressed()
         }
 
-        drinkToolbar.inflateMenu(R.menu.add_drink_item)
+        drinkToolbar.inflateMenu(R.menu.menu_done_button)
         drinkToolbar.onMenuItemClick {
             // There's only one menu item, so assume that means the user's done
             onDonePressed()
@@ -244,7 +244,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
     }
 
     private fun showCircularReveal(view: View) {
-        var revealSettings = arguments?.getParcelable(ARG_REVEAL_SETTINGS) as RevealAnimationSettings
+        var revealSettings = arguments?.getParcelable(ARG_REVEAL_SETTINGS) as? RevealAnimationSettings ?: return
 
         // Update RevealSettings to reflect required behavior
         revealSettings = revealSettings.copy(
@@ -252,7 +252,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
                 targetView = view,
                 statusBarAnimationSettings = StatusBarAnimationSettings(
                         startColor = activity?.window?.statusBarColor ?: 0,
-                        endColor = ContextCompat.getColor(context!!, R.color.colorAccentDark),
+                        endColor = ContextCompat.getColor(context!!, R.color.material_white),
                         window = activity?.window
                 )
         )
@@ -276,7 +276,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
     }
 
     private fun showCircularExit(onFinish: () -> Unit) {
-        var revealSettings = arguments?.getParcelable(ARG_REVEAL_SETTINGS) as RevealAnimationSettings
+        var revealSettings = arguments?.getParcelable(ARG_REVEAL_SETTINGS)  as? RevealAnimationSettings ?: return
 
         // Update RevealSettings to reflect required behavior
         revealSettings = revealSettings.copy(
@@ -284,7 +284,7 @@ class AddDrinkFragment : BackButtonListener, Fragment() {
                 targetView = view,
                 statusBarAnimationSettings = StatusBarAnimationSettings(
                         startColor = activity?.window?.statusBarColor ?: 0,
-                        endColor = ContextCompat.getColor(context!!, R.color.colorPrimaryDark),
+                        endColor = ContextCompat.getColor(context!!, R.color.material_white),
                         window = activity?.window
                 )
         )

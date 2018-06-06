@@ -5,6 +5,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.github.koss.brew.data.local.BrewDatabase
+import io.github.koss.brew.data.local.MIGRATION_1_2
 import io.github.koss.brew.data.local.dao.DrinkDao
 import io.github.koss.brew.di.scope.ApplicationScope
 
@@ -16,6 +17,9 @@ class DatabaseModule {
     fun provideDatabase(context: Context): BrewDatabase {
         return Room
                 .databaseBuilder(context, BrewDatabase::class.java, DB_NAME)
+                .addMigrations(
+                        MIGRATION_1_2
+                )
                 .build()
     }
 

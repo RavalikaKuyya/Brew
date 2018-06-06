@@ -11,7 +11,7 @@ class LocalCiceroneCache {
 
     fun getCicerone(containerTag: String): Cicerone<Router> {
         if (!containers.containsKey(containerTag)) {
-            containers.put(containerTag, Cicerone.create())
+            containers[containerTag] = Cicerone.create()
         }
         return containers[containerTag]!!
     }

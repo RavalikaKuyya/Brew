@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,6 +21,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -26,12 +29,21 @@
 
         <activity
             android:name="io.github.koss.brew.ui.main.MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <!-- TODO: The orientation of this screen should be unlocked post design considerations -->
         <activity
             android:name="io.github.koss.brew.ui.camera.CameraActivity"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".ui.drink.DrinkActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="ce4f5a2f9fd20365388fb0c06764af3fb6984930" />
+
     </application>
 
 </manifest>

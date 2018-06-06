@@ -4,7 +4,7 @@ import android.net.Uri
 
 
 /**
- * Class encapsulating actions that can be made on the Drink screen
+ * Class encapsulating actions that can be made on the DrinkTable screen
  */
 sealed class DrinkAction
 

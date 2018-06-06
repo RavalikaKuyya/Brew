@@ -2,6 +2,7 @@ package io.github.koss.brew.util.arch
 
 import android.arch.persistence.room.TypeConverter
 import android.net.Uri
+import com.google.firebase.Timestamp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -26,5 +27,12 @@ class RoomTypeConverters {
     @TypeConverter
     fun stringToList(string: String): List<String> =
             Gson().fromJson(string, object: TypeToken<List<String>>(){}.type)
+
+
+    @TypeConverter
+    fun timestampFromSeconds(seconds: Long): Timestamp = Timestamp(seconds, 0)
+
+    @TypeConverter
+    fun secondsFromTimestamp(timestamp: Timestamp): Long = timestamp.seconds
 
 }

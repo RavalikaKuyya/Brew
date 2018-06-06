@@ -3,12 +3,14 @@ buildscript {
         minSdk: 21,
         compileSdk: 27,
         supportLibrary: '27.0.2',
-        androidPlugin: '3.0.1',
+        androidPlugin: '3.1.1',
         androidTools: '26.0.0',
-        kotlin: '1.2.20',
+        kotlin: '1.2.41',
         coroutines: '0.21.2',
         anko: '0.10.4',
         arch: '1.0.0',
+        room: '1.1.1-rc1',
+        paging: '1.0.0',
         dagger: '2.11',
         cicerone: '2.1.0',
         constraint: '1.0.2',
@@ -23,10 +25,12 @@ buildscript {
         fotoapparat: '2.0.2',
         gson: '2.8.2',
         glideTransformations: '3.0.1',
-        googleServices: '3.2.0',
+        googleServices: '4.0.1',
         fabricTools: '1.24.4',
         crashlytics: '2.7.1',
-        firebase: '11.8.0'
+        firebase: '16.0.0',
+        firebaseUI: '4.0.1',
+        chipManager: '0.3.7'
     ]
 
     ext.deps = [
@@ -49,10 +53,14 @@ buildscript {
                         ],
                         persistence: [
                                 room: [
-                                        runtime: "android.arch.persistence.room:runtime:${versions.arch}",
-                                        compiler: "android.arch.persistence.room:compiler:${versions.arch}"
+                                        runtime: "android.arch.persistence.room:runtime:${versions.room}",
+                                        compiler: "android.arch.persistence.room:compiler:${versions.room}",
+                                        rx: "android.arch.persistence.room:rxjava2:${versions.room}"
                                 ]
 
+                        ],
+                        paging: [
+                                runtime: "android.arch.paging:runtime:${versions.paging}"
                         ]
                 ],
                 databinding: [
@@ -87,7 +95,9 @@ buildscript {
                 compiler: "com.github.bumptech.glide:compiler:${versions.glide}"
         ],
         firebase: [
-                core: "com.google.firebase:firebase-core:${versions.firebase}"
+                core: "com.google.firebase:firebase-core:${versions.firebase}",
+                UI: "com.firebaseui:firebase-ui-auth:${versions.firebaseUI}",
+                firestoreUi: "com.firebaseui:firebase-ui-firestore:${versions.firebaseUI}"
         ],
         junit: "junit:junit:${versions.junit}",
         cicerone: "ru.terrakok.cicerone:cicerone:${versions.cicerone}",
@@ -99,7 +109,8 @@ buildscript {
         fotoapparat: "io.fotoapparat.fotoapparat:library:${versions.fotoapparat}",
         gson: "com.google.code.gson:gson:${versions.gson}",
         glideTransformations: "jp.wasabeef:glide-transformations:${versions.glideTransformations}",
-        crashlytics: "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}@aar"
+        crashlytics: "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}@aar",
+        chipManager: "com.beloo.widget:ChipsLayoutManager:${versions.chipManager}@aar"
     ]
 
     repositories {
@@ -110,7 +121,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:${versions.androidPlugin}"
+        classpath 'com.android.tools.build:gradle:3.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabricTools}"

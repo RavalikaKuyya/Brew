@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="location"
+            type="String"/>
+
+        <variable
+            name="description"
+            type="String"/>
+
+        <import type="android.view.View"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="12sp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+            android:textColor="#8A000000"
+            android:visibility="@{location != null ? View.VISIBLE : View.GONE}"
+            android:text="@string/location_title"/>
+
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:text="@{location}"
+            android:visibility="@{location != null ? View.VISIBLE : View.GONE}"
+            tools:text="Fortune Favours, Leeds Street, Wellington"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+            android:textSize="12sp"
+            android:textColor="#8A000000"
+            android:visibility="@{description != null ? View.VISIBLE : View.GONE}"
+            android:text="@string/description_title" />
+
+        <TextView
+            android:id="@+id/descriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:text="@{description}"
+            android:visibility="@{description != null ? View.VISIBLE : View.GONE}"
+            tools:text="Yeah nah it was pretty tasty. I'd give it another go for sure"/>
+    </LinearLayout>
+</layout>

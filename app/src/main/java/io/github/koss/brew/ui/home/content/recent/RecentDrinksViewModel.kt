@@ -4,7 +4,9 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import io.github.koss.brew.data.model.Drink
+import io.github.koss.brew.repository.config.PreferencesManager
 import io.github.koss.brew.repository.drinks.DrinkRepository
+import io.github.koss.brew.util.Session
 import io.github.koss.brew.util.event.RebuildHomescreen
 import io.github.koss.brew.util.event.UiEvent
 import io.github.koss.brew.util.event.UiEventBus
@@ -12,7 +14,8 @@ import javax.inject.Inject
 
 class RecentDrinksViewModel @Inject constructor(
         private val drinksRepository: DrinkRepository,
-        private val eventBus: UiEventBus
+        private val eventBus: UiEventBus,
+        private val preferencesManager: PreferencesManager
 ): ViewModel() {
 
     val recentDrinks: LiveData<List<Drink>> = Transformations.map(drinksRepository.getDrinks()) {
@@ -25,6 +28,10 @@ class RecentDrinksViewModel @Inject constructor(
 
     fun removeDrink(drink: Drink) {
         drinksRepository.removeDrink(drink)
+    }
+
+    fun shouldShowEmptyState(): Boolean {
+        return !preferencesManager.hasAddedFirstDrink && !Session.isLoggedIn
     }
 
     fun postEvent(event: UiEvent) {

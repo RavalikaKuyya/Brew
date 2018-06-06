@@ -7,7 +7,8 @@ import android.support.v4.app.FragmentManager
 class BottomTab(
         val fragment: Fragment,
         val tag: String,
-        @IdRes val menuId: Int
+        @IdRes val menuId: Int,
+        val supportsAddDrinkAction: Boolean
 ) {
 
     fun addToContainer(@IdRes id: Int, manager: FragmentManager) {

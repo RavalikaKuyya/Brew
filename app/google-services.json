@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "337858284658-uu0173adrbf1eskd148cjtdsse8jq7ra.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.github.koss.brew",
+            "certificate_hash": "75fd63f4dbc2cdd8b9537549780332950388fc6e"
+          }
+        },
+        {
+          "client_id": "337858284658-flnii7p2jgu44k9htfje307makv8kq11.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.github.koss.brew",
+            "certificate_hash": "d65dfd2e340be9c8e5eca4029929ecf5ac1d6a25"
+          }
+        },
+        {
           "client_id": "337858284658-5j7550knqck8sdim018v41ptn69cjlid.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +45,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "337858284658-5j7550knqck8sdim018v41ptn69cjlid.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

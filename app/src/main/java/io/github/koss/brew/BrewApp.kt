@@ -1,6 +1,8 @@
 package io.github.koss.brew
 
 import android.app.Application
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
 import io.github.koss.brew.di.component.ApplicationComponent
 import io.github.koss.brew.di.component.DaggerApplicationComponent
 import io.github.koss.brew.di.module.ApplicationModule
@@ -14,6 +16,7 @@ class BrewApp: Application() {
     override fun onCreate() {
         super.onCreate()
         INSTANCE = this
+        Fabric.with(this, Crashlytics())
 
         applicationComponent = DaggerApplicationComponent
                 .builder()

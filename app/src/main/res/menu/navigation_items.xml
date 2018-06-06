@@ -7,7 +7,7 @@
         android:title="@string/discover"
         android:icon="@drawable/ic_local_cafe_black_24dp" />
     <item android:id="@+id/action_profile"
-        android:title="@string/profile"
+        android:title="@string/you"
         android:icon="@drawable/ic_face_black_24dp" />
 
 </menu>

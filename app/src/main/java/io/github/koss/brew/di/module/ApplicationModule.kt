@@ -5,6 +5,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.github.koss.brew.di.scope.ApplicationScope
+import io.github.koss.brew.util.arch.EventBus
 import io.github.koss.brew.util.event.UiEventBus
 import io.github.koss.brew.util.nav.LocalCiceroneCache
 
@@ -29,4 +30,8 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @ApplicationScope
     fun provideUiEventBus(): UiEventBus = UiEventBus()
+
+    @Provides
+    @ApplicationScope
+    fun provideEventBus(): EventBus = EventBus()
 }

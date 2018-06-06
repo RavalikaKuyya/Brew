@@ -11,9 +11,12 @@ android {
         minSdkVersion 21
         targetSdkVersion 27
         multiDexEnabled true
-        versionCode 2
-        versionName "0.1-alpha2"
+        versionCode 3
+        versionName "0.2-alpha1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "IMGUR_CLIENT_ID", IMGUR_CLIENT_ID
+        buildConfigField "String", "IMGUR_CLIENT_SECRET", IMGUR_CLIENT_SECRET
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -39,10 +42,26 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    sourceSets {
+        androidTest.assets.srcDirs +=
+                files("$projectDir/schemas".toString())
+    }
 }
 
 repositories {
     google()
+}
+
+// Workaround for Room/Kotlin 1.2.40 issue
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.name == "kotlin-compiler-embeddable") {
+                useVersion("1.2.30")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -70,9 +89,8 @@ dependencies {
     kapt deps.android.arch.lifecycle.compiler
 
     implementation deps.android.arch.persistence.room.runtime
+    implementation deps.android.arch.persistence.room.rx
     kapt deps.android.arch.persistence.room.compiler
-
-    kapt deps.android.databinding.compiler
 
     // Kapt appears to have an issue due to not having an explicit annotation processor declaration
     // on the classpath of the epoxy processor dependency. The fix for this is to use annotationProcessor for now
@@ -98,17 +116,49 @@ dependencies {
 
     implementation deps.glideTransformations
 
-    implementation(deps.firebase.core)
+    implementation deps.firebase.core
+
+    implementation deps.firebase.UI
+
+    implementation deps.firebase.firestoreUi
+
+    implementation deps.android.arch.paging.runtime
 
     implementation(deps.crashlytics) {
         transitive = true
     }
 
+    // RxJava
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
+
+    // Work manager
+    def work_version = "1.0.0-alpha02"
+    implementation "android.arch.work:work-runtime-ktx:$work_version"
+    implementation "android.arch.work:work-firebase:$work_version"
+
+    def okHttp = "3.9.0"
+    def retrofit = "2.3.0"
+    def moshi = "1.6.0"
+    implementation "com.squareup.okhttp3:okhttp:$okHttp"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttp"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshi"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
+
+    implementation 'com.google.firebase:firebase-firestore:17.0.1'
+
     implementation deps.glide.glide
     kapt deps.glide.compiler
 
+    implementation deps.chipManager
+
     testImplementation deps.junit
     androidTestImplementation deps.android.support.test.runner
+    androidTestImplementation "android.arch.persistence.room:testing:1.1.1-rc1"
 }
 
 kotlin {

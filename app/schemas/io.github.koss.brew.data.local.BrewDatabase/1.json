@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5cd02dd6dfd3237377425b474f90c053",
+    "identityHash": "14df2fb5c6999782007a90df7e942e22",
     "entities": [
       {
         "tableName": "Drink",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `photoUri` TEXT, `tags` TEXT NOT NULL, `score` REAL, `review` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `photoUri` TEXT, `photoId` TEXT, `photoDeleteHash` TEXT, `photoLink` TEXT, `tags` TEXT NOT NULL, `description` TEXT, `score` REAL, `review` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -27,10 +27,34 @@
             "notNull": false
           },
           {
+            "fieldPath": "photoId",
+            "columnName": "photoId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photoDeleteHash",
+            "columnName": "photoDeleteHash",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photoLink",
+            "columnName": "photoLink",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "tags",
             "columnName": "tags",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "rating.score",
@@ -57,7 +81,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5cd02dd6dfd3237377425b474f90c053\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"14df2fb5c6999782007a90df7e942e22\")"
     ]
   }
 }

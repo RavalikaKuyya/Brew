@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.net.Uri
+import com.google.firebase.Timestamp
 import io.github.koss.brew.data.model.Drink
 import io.github.koss.brew.repository.drinks.DrinkRepository
 import javax.inject.Inject
@@ -43,7 +44,7 @@ class AddDrinkViewModel @Inject constructor(
         model = when (action) {
             is DrinkSubmitted -> {
                 if (modelNotEmpty) {
-                    drinkRepository.addNewDrink(model)
+                    drinkRepository.addNewDrink(model.copy(timestamp = Timestamp.now()))
                 }
                 model
             }

@@ -1,18 +1,9 @@
 package io.github.koss.brew.ui.main.navigator
 
-import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
-import io.github.koss.brew.ui.create.drink.AddDrinkFragment
-import io.github.koss.brew.ui.create.drink.AddDrinkFragment.Companion.ARG_REVEAL_SETTINGS
-import io.github.koss.brew.ui.drink.DrinkFragment
-import io.github.koss.brew.ui.drink.DrinkFragment.Companion.ARG_DRINK_REVEAL_SETTINGS
-import io.github.koss.brew.ui.drink.DrinkRevealSettings
 import io.github.koss.brew.ui.main.fragment.MainFragment
-import io.github.koss.brew.util.anim.RevealAnimationSettings
-import org.jetbrains.anko.bundleOf
 import ru.terrakok.cicerone.android.SupportFragmentNavigator
 import ru.terrakok.cicerone.commands.Command
 
@@ -23,22 +14,6 @@ class BrewNavigator(
 
     override fun createFragment(screenKey: String?, data: Any?): Fragment = when (screenKey) {
         Screens.MAIN_SCREEN -> MainFragment()
-        Screens.ADD_DRINK_SCREEN -> {
-            val fragment = AddDrinkFragment()
-            if (data != null) {
-                val args = Bundle()
-                args.putParcelable(ARG_REVEAL_SETTINGS, data as RevealAnimationSettings)
-                fragment.arguments = args
-            }
-            fragment
-        }
-        Screens.DRINK_SCREEN -> {
-            val fragment = DrinkFragment()
-            fragment.arguments = bundleOf(
-                    ARG_DRINK_REVEAL_SETTINGS to data as DrinkRevealSettings
-            )
-            fragment
-        }
         else -> throw IllegalArgumentException("Screen key doesn't map to fragment ($screenKey)")
     }
 
@@ -53,20 +28,8 @@ class BrewNavigator(
         }
     }
 
-    override fun setupFragmentTransactionAnimation(command: Command?, currentFragment: Fragment?, nextFragment: Fragment?, fragmentTransaction: FragmentTransaction?) {
-        if (command is ForwardToDrinkScreen && nextFragment is DrinkFragment) {
-            fragmentTransaction?.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-        } else if (command is Remove && currentFragment is DrinkFragment) {
-            fragmentTransaction?.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-        } else {
-            super.setupFragmentTransactionAnimation(command, currentFragment, nextFragment, fragmentTransaction)
-        }
-    }
-
     override fun applyCommand(command: Command?) {
-        if (command is Add || command is ForwardToDrinkScreen) {
-            command as Add
-
+        if (command is Add) {
             if (fragmentManager.findFragmentByTag(command.screenkey) == null) {
                 val fragment = createFragment(command.screenkey, command.transitionData)
                 val fragmentTransaction = fragmentManager.beginTransaction()

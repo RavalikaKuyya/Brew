@@ -11,7 +11,7 @@ import io.github.koss.brew.util.arch.RoomTypeConverters
         entities = [
             Drink::class
         ],
-        version = 1)
+        version = 2)
 @TypeConverters(value = [RoomTypeConverters::class])
 abstract class BrewDatabase: RoomDatabase() {
 

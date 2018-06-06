@@ -3,6 +3,6 @@
     <dimen name="photo_header_height">96dp</dimen>
     <dimen name="drink_item_width">256dp</dimen>
     <dimen name="drink_item_height">164dp</dimen>
-    <dimen name="drink_header_height">240dp</dimen>
+    <dimen name="drink_header_height">180dp</dimen>
     <dimen name="full_width_drink_margin">8dp</dimen>
 </resources>

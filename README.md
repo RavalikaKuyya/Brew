@@ -38,3 +38,4 @@ Are we Instagram yet?
 #### V0.5 (Beta) - V1.0
 Further steps are yet to be decided. Some other things that'd be nice and might make it into V1.0 are:
 - Drink recipes, so your friends can see how to make your drinks
+- Proper backend for scalability using ktor

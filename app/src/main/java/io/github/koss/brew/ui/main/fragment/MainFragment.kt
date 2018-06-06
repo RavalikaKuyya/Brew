@@ -3,20 +3,24 @@ package io.github.koss.brew.ui.main.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.transition.TransitionManager
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.view.*
 import io.github.koss.brew.R
 import ru.terrakok.cicerone.Navigator
 import android.widget.Toast
+import io.github.koss.brew.ui.create.drink.AddDrinkFragment
+import io.github.koss.brew.ui.create.drink.simple.SimpleAddDrinkBottomSheetDialogFragment
 import io.github.koss.brew.ui.discover.DiscoverFragment
 import io.github.koss.brew.ui.home.HomeFragment
 import io.github.koss.brew.ui.main.MainActivity
-import io.github.koss.brew.ui.profile.ProfileFragment
+import io.github.koss.brew.ui.you.YouFragment
 import io.github.koss.brew.util.arch.BrewViewModelFactory
 import io.github.koss.brew.util.extension.component
 import io.github.koss.brew.util.nav.LocalCiceroneCache
 import kotlinx.android.synthetic.main.fragment_main.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.commands.*
@@ -39,13 +43,13 @@ class MainFragment : Fragment(), NestedScrollListener {
 
     private lateinit var homeTab: BottomTab
     private lateinit var discoverTab: BottomTab
-    private lateinit var profileTab: BottomTab
+    private lateinit var youTab: BottomTab
 
     private var lastSelected = ""
     private var isAnimating = false
 
     private val bottomNavTabs
-        get() = arrayOf(homeTab, discoverTab, profileTab)
+        get() = arrayOf(homeTab, discoverTab, youTab)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +69,6 @@ class MainFragment : Fragment(), NestedScrollListener {
         initialiseFragments()
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item: MenuItem ->
-
             val tabSelected = bottomNavTabs.first { it.menuId == item.itemId }
             viewModel.updateCurrentScreen(tabSelected.tag)
 
@@ -74,11 +77,19 @@ class MainFragment : Fragment(), NestedScrollListener {
 
         viewModel.currentScreen.observe(this, Observer { screenName ->
             if (lastSelected != screenName) {
-                bottomNavigationView.selectedItemId = bottomNavTabs.first { screenName == it.tag }.menuId
+                val tab =  bottomNavTabs.first { screenName == it.tag }
+                bottomNavigationView.selectedItemId = tab.menuId
                 cicerone.router.replaceScreen(screenName)
                 lastSelected = screenName ?: ""
+
+                TransitionManager.beginDelayedTransition(parent)
+                floatingActionButton.visibility = if (tab.supportsAddDrinkAction) View.VISIBLE else View.GONE
             }
         })
+
+        floatingActionButton.onClick {
+            SimpleAddDrinkBottomSheetDialogFragment().show(fragmentManager, SIMPLE_ADD)
+        }
     }
 
     private fun initialiseFragments() {
@@ -87,17 +98,20 @@ class MainFragment : Fragment(), NestedScrollListener {
         homeTab = BottomTab(
                 fragment = manager.findFragmentByTag(HOME) ?: HomeFragment(),
                 tag = HOME,
-                menuId = R.id.action_home)
+                menuId = R.id.action_home,
+                supportsAddDrinkAction = true)
 
         discoverTab = BottomTab(
                 fragment = manager.findFragmentByTag(DISCOVER) ?: DiscoverFragment(),
                 tag = DISCOVER,
-                menuId = R.id.action_discover)
+                menuId = R.id.action_discover,
+                supportsAddDrinkAction = true)
 
-        profileTab = BottomTab(
-                fragment = manager.findFragmentByTag(PROFILE) ?: ProfileFragment(),
-                tag = PROFILE,
-                menuId = R.id.action_profile)
+        youTab = BottomTab(
+                fragment = manager.findFragmentByTag(YOU) ?: YouFragment(),
+                tag = YOU,
+                menuId = R.id.action_profile,
+                supportsAddDrinkAction = false)
 
         bottomNavTabs.map {
             it.addToContainer(R.id.fragmentContainer, manager)
@@ -127,6 +141,17 @@ class MainFragment : Fragment(), NestedScrollListener {
                     .withStartAction { isAnimating = true }
                     .withEndAction { isAnimating = false }
                     .start()
+
+            floatingActionButton
+                    .animate()
+                    .translationY(finalTranslation)
+                    .setDuration(200L)
+                    .start()
+
+            when (direction) {
+                Direction.DOWN -> floatingActionButton.collapse(duration = 200L)
+                Direction.UP -> floatingActionButton.expand(duration = 200L)
+            }
         }
     }
 
@@ -179,7 +204,9 @@ class MainFragment : Fragment(), NestedScrollListener {
     companion object BottomNavigationScreens {
         const val HOME = "bottom_nav_home_screen"
         const val DISCOVER = "bottom_nav_discover_screen"
-        const val PROFILE = "bottom_nav_profile_screen"
+        const val YOU = "bottom_nav_you_screen"
+
+        const val SIMPLE_ADD = "simple_add_drink"
 
         const val MAIN_FRAGMENT_TAG = "main_frag_tag"
     }
